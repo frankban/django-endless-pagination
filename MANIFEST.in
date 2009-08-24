@@ -1,0 +1,8 @@
+include AUTHORS
+include INSTALL
+include LICENSE
+include MANIFEST.in
+recursive-include doc *
+recursive-include media *
+recursive-include endless_pagination/locale *
+recursive-include endless_pagination/templates *

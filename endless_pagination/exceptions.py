@@ -1,0 +1,1 @@
+class PaginationError(Exception): pass

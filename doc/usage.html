@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="it" lang="it">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
+<title>Endless Pagination</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:Date: $Date: 2005-05-26 12:51:39 +0200 (Thu, 26 May 2005) $
+:Version: $Revision: 3368 $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* "! important" is used here to override other ``margin-top`` and
+   ``margin-bottom`` styles that are later in the stylesheet or 
+   more specific.  See http://www.w3.org/TR/CSS1#the-cascade */
+.first {
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+a[href]:hover {
+  text-decoration: underline;
+  color: blue;
+}
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;
+  background-color: #eeeeee }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (<h#> element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid thin gray }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid thin black }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+/*
+tt.docutils {
+  background-color: #eeeeee }
+*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document" id="endless-pagination">
+<h1 class="title">Endless Pagination</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr class="field"><th class="docinfo-name">Author:</th><td class="field-body">Francesco Banconi &lt;<a class="reference external" href="mailto:francesco.banconi&#64;gmail.com">francesco.banconi&#64;gmail.com</a>&gt;</td>
+</tr>
+</tbody>
+</table>
+<div class="contents topic" id="index">
+<p class="topic-title first">Index</p>
+<ul class="auto-toc simple">
+<li><a class="reference internal" href="#introduction" id="id1">1&nbsp;&nbsp;&nbsp;Introduction</a></li>
+<li><a class="reference internal" href="#installation" id="id2">2&nbsp;&nbsp;&nbsp;Installation</a><ul class="auto-toc">
+<li><a class="reference internal" href="#requirements" id="id3">2.1&nbsp;&nbsp;&nbsp;Requirements</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage" id="id4">3&nbsp;&nbsp;&nbsp;Usage</a><ul class="auto-toc">
+<li><a class="reference internal" href="#settings" id="id5">3.1&nbsp;&nbsp;&nbsp;Settings</a></li>
+<li><a class="reference internal" href="#let-s-start" id="id6">3.2&nbsp;&nbsp;&nbsp;Let's start</a></li>
+<li><a class="reference internal" href="#split-the-template" id="id7">3.3&nbsp;&nbsp;&nbsp;Split the template</a></li>
+<li><a class="reference internal" href="#a-shortcut-for-ajaxed-views" id="id8">3.4&nbsp;&nbsp;&nbsp;A shortcut for ajaxed views</a></li>
+<li><a class="reference internal" href="#pagination" id="id9">3.5&nbsp;&nbsp;&nbsp;Pagination</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#templatetags-reference" id="id10">4&nbsp;&nbsp;&nbsp;Templatetags reference</a><ul class="auto-toc">
+<li><a class="reference internal" href="#paginate" id="id11">4.1&nbsp;&nbsp;&nbsp;paginate</a></li>
+<li><a class="reference internal" href="#show-more" id="id12">4.2&nbsp;&nbsp;&nbsp;show_more</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#customization" id="id13">5&nbsp;&nbsp;&nbsp;Customization</a></li>
+</ul>
+</div>
+<div class="section" id="introduction">
+<h1><a class="toc-backref" href="#id1">1&nbsp;&nbsp;&nbsp;Introduction</a></h1>
+<p>This app may be used to provide Twitter-style ajaxed pagination. Future
+developments will add support for normal Digg-style pagination.</p>
+<p>The initial idea, which has guided the development of this application,
+is to allow ajax pagination of web contents in very few steps, as done by
+the excellent tool <em>django-pagination</em>
+(see <a class="reference external" href="http://github.com/ericflo/django-pagination/tree/master">http://github.com/ericflo/django-pagination/tree/master</a>).</p>
+</div>
+<div class="section" id="installation">
+<h1><a class="toc-backref" href="#id2">2&nbsp;&nbsp;&nbsp;Installation</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">endless_pagination</span></tt> package, included in the distribution, should be
+placed on the <em>Python path</em>.</p>
+<p>Or just <tt class="docutils literal"><span class="pre">easy_install</span> <span class="pre">django-endless-pagination</span></tt>.</p>
+<div class="section" id="requirements">
+<h2><a class="toc-backref" href="#id3">2.1&nbsp;&nbsp;&nbsp;Requirements</a></h2>
+<ul class="simple">
+<li>Python &gt;= 2.5</li>
+<li>Django &gt;= 1.0</li>
+<li>jQuery &gt;= 1.3</li>
+</ul>
+</div>
+</div>
+<div class="section" id="usage">
+<h1><a class="toc-backref" href="#id4">3&nbsp;&nbsp;&nbsp;Usage</a></h1>
+<div class="section" id="settings">
+<h2><a class="toc-backref" href="#id5">3.1&nbsp;&nbsp;&nbsp;Settings</a></h2>
+<p>Add the request context processor in your <em>settings.py</em>, e.g.:</p>
+<pre class="literal-block">
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
+TEMPLATE_CONTEXT_PROCESSORS += (
+     'django.core.context_processors.request',
+)
+</pre>
+<p>Add <tt class="docutils literal"><span class="pre">'endless_pagination'</span></tt> to the <tt class="docutils literal"><span class="pre">INSTALLED_APPS</span></tt> in your <em>settings.py</em>.</p>
+<p>See <em>Customization</em> section of this documentation for other settings options.</p>
+</div>
+<div class="section" id="let-s-start">
+<h2><a class="toc-backref" href="#id6">3.2&nbsp;&nbsp;&nbsp;Let's start</a></h2>
+<p>As creative example, the developer wants pagination of entries of a blog post.</p>
+<p>In <em>views.py</em> we have:</p>
+<pre class="literal-block">
+def entry_index(request, template=&quot;myapp/entry_index.html&quot;):
+    context = {
+        'objects': Entry.objects.all(),
+    }
+    return render_to_response(template, context,
+        context_instance=RequestContext(request))
+</pre>
+<p>In <em>myapp/entry_index.html</em>:</p>
+<pre class="literal-block">
+&lt;h2&gt;Entries:&lt;/h2&gt;
+{% for object in objects %}
+    {# your code to show the entry #}
+{% endfor %}
+</pre>
+</div>
+<div class="section" id="split-the-template">
+<h2><a class="toc-backref" href="#id7">3.3&nbsp;&nbsp;&nbsp;Split the template</a></h2>
+<p>A response to an AJAX request should not return the entire template,
+but only the portion of the page to update or add.
+So it is convenient to extrapolate from the template the part containing entries
+and use the new one to render the context if the request is AJAX.
+The main template will include the other, so it is convenient to put
+the page template in the context.</p>
+<p><em>views.py</em> becomes:</p>
+<pre class="literal-block">
+def entry_index(request,
+    template=&quot;myapp/entry_index.html&quot;,
+    page_template=&quot;myapp/entry_index_page.html&quot;):
+    context = {
+        'objects': Entry.objects.all(),
+        'page_template': page_template,
+    }
+    if request.is_ajax():
+        template = page_template
+    return render_to_response(template, context,
+        context_instance=RequestContext(request))
+</pre>
+<p>See below how to obtain the same result <strong>just decorating the view</strong>
+(in a way compatible with generic views too).</p>
+<p><em>myapp/entry_index.html</em> becomes:</p>
+<pre class="literal-block">
+&lt;h2&gt;Entries:&lt;/h2&gt;
+{% include page_template %}
+</pre>
+<p><em>myapp/entry_index_page.html</em> becomes:</p>
+<pre class="literal-block">
+{% for object in objects %}
+    {# your code to show the entry #}
+{% endfor %}
+</pre>
+</div>
+<div class="section" id="a-shortcut-for-ajaxed-views">
+<h2><a class="toc-backref" href="#id8">3.4&nbsp;&nbsp;&nbsp;A shortcut for ajaxed views</a></h2>
+<p>A good practice in writing views is to allow other developers to inject
+the template name and extra data to be added to the context.
+This allows the view to be easily reused. Let's resume the original view
+with extra context injection:</p>
+<p><em>views.py</em>:</p>
+<pre class="literal-block">
+def entry_index(request, template=&quot;myapp/entry_index.html&quot;,
+    extra_context={}):
+    context = {
+        'objects': Entry.objects.all(),
+    }
+    context.upgrade(extra_context)
+    return render_to_response(template, context,
+        context_instance=RequestContext(request))
+</pre>
+<p>Splitting templates and putting the ajax template name in the context
+is easily achievable at this point (using a builtin decorator).</p>
+<p><em>views.py</em> becomes:</p>
+<pre class="literal-block">
+from endless_pagination.decorators import page_template
+
+&#64;page_template(&quot;myapp/entry_index_page.html&quot;) # just add this decorator
+def entry_index(request, template=&quot;myapp/entry_index.html&quot;,
+    extra_context={}):
+    context = {
+        'objects': Entry.objects.all(),
+    }
+    context.upgrade(extra_context)
+    return render_to_response(template, context,
+        context_instance=RequestContext(request))
+</pre>
+<p>This way, <em>endless-pagination</em> can be included in <strong>generic views</strong> too.</p>
+</div>
+<div class="section" id="pagination">
+<h2><a class="toc-backref" href="#id9">3.5&nbsp;&nbsp;&nbsp;Pagination</a></h2>
+<p>Nothing remains but to change the page template, loading endless templatetags and
+the javascript file <em>endless.js</em> included in the distribution under <tt class="docutils literal"><span class="pre">/media/js/</span></tt>.</p>
+<p><em>myapp/entry_index.html</em> becomes:</p>
+<pre class="literal-block">
+{% block js %}
+    {{ block.super }}
+    &lt;script src=&quot;/path/to/endless.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+{% endblock %}
+
+&lt;h2&gt;Entries:&lt;/h2&gt;
+{% include page_template %}
+</pre>
+<p><em>myapp/entry_index_page.html</em> becomes:</p>
+<pre class="literal-block">
+{% load endless %}
+
+{% paginate objects %}
+{% for object in objects %}
+    {# your code to show the entry #}
+{% endfor %}
+{% show_more %}
+</pre>
+<p>That's all. Read the next section of the documentation to improve the use of
+included templatetags.</p>
+</div>
+</div>
+<div class="section" id="templatetags-reference">
+<h1><a class="toc-backref" href="#id10">4&nbsp;&nbsp;&nbsp;Templatetags reference</a></h1>
+<div class="section" id="paginate">
+<h2><a class="toc-backref" href="#id11">4.1&nbsp;&nbsp;&nbsp;paginate</a></h2>
+<p>Usage:</p>
+<pre class="literal-block">
+{% paginate objects %}
+</pre>
+<p>After this call, in the template context the <em>objects</em> variable is replaced
+with only the objects of the current page.</p>
+<p>You can also mantain your <em>objects</em> original variable (commonly a queryset)
+and add to context another name referring to objects of the current page,
+e.g.:</p>
+<pre class="literal-block">
+{% paginate objects as page_objects %}
+</pre>
+<p>The number of paginated object is taken from settings, but you can
+override the default, e.g.:</p>
+<pre class="literal-block">
+{% paginate 20 objects %}
+</pre>
+<p>Of course you can mix it all:</p>
+<pre class="literal-block">
+{% paginate 20 objects as paginated_objects %}
+</pre>
+<p>You must use this tag before calling the <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">show_more</span> <span class="pre">%}</span></tt> one.</p>
+</div>
+<div class="section" id="show-more">
+<h2><a class="toc-backref" href="#id12">4.2&nbsp;&nbsp;&nbsp;show_more</a></h2>
+<p>Show the link to get the next page in a Twitter-like pagination.
+Usage:</p>
+<pre class="literal-block">
+{% show_more %}
+</pre>
+<p>Must be called after <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">paginate</span> <span class="pre">objects</span> <span class="pre">%}</span></tt>.</p>
+</div>
+</div>
+<div class="section" id="customization">
+<h1><a class="toc-backref" href="#id13">5&nbsp;&nbsp;&nbsp;Customization</a></h1>
+<p>You can customize the application using <tt class="docutils literal"><span class="pre">settings.py</span></tt>.</p>
+<ul>
+<li><p class="first"><em>ENDLESS_PAGINATION_PER_PAGE</em> (default=10):
+How many objects are normally displayed in a page (overwriteable by templatetag).</p>
+</li>
+<li><p class="first"><em>ENDLESS_PAGINATION_PAGE_LABEL</em> (default=&quot;page&quot;):
+The querystring key of the page number (e.g. <tt class="docutils literal"><span class="pre">http://example.com?page=2</span></tt>)</p>
+</li>
+<li><p class="first"><em>ENDLESS_PAGINATION_ORPHANS</em> (default=0):
+See django <em>Paginator</em> definition of orphans.</p>
+</li>
+<li><p class="first"><em>ENDLESS_PAGINATION_SHOW_MORE_TEMPLATE</em> (default=&quot;endless/show_more.html&quot;):
+The template used by <em>show_more</em> templatetag.
+You can provide your customized template that must meet the following rules:
+- <em>more</em> link is showed only if variable &quot;querystring&quot; is not False
+- the container (most external html element) class is <em>endless_container</em>
+- the <em>more</em> link and the loader hidden element live inside the container
+- the <em>more</em> link class is <em>endless_more</em>
+- the loader hidden element class is <em>endless_loading</em></p>
+</li>
+<li><p class="first"><em>ENDLESS_PAGINATION_LOADING</em> (default=&quot;loading&quot;):
+If you use the default <em>show_more</em> template, here you can customize
+the content of the loader hidden element
+Html is safe here, e.g. you can show your pretty animated gif:</p>
+<pre class="literal-block">
+ENDLESS_PAGINATION_LOADING = &quot;&quot;&quot;
+    &lt;img src=&quot;/site_media/img/loader.gif&quot; alt=&quot;loading&quot; /&gt;
+&quot;&quot;&quot;
+</pre>
+</li>
+</ul>
+</div>
+</div>
+</body>
+</html>
