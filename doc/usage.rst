@@ -153,13 +153,15 @@ This way, *endless-pagination* can be included in **generic views** too.
 Pagination
 ~~~~~~~~~~
 
-Nothing remains but to change the page template, loading endless templatetags and
-the javascript file *endless.js* included in the distribution under ``/media/js/``.
+Nothing remains but to change the page template, loading endless templatetags,
+the jQuery library and the javascript file *endless.js* included 
+in the distribution under ``/media/js/``.
 
 *myapp/entry_index.html* becomes::
 
     {% block js %}
         {{ block.super }}
+        <script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
         <script src="/path/to/endless.js" type="text/javascript" charset="utf-8"></script>
     {% endblock %}
     
@@ -235,15 +237,6 @@ You can customize the application using ``settings.py``.
 - *ENDLESS_PAGINATION_ORPHANS* (default=0):
   See django *Paginator* definition of orphans.
 
-- *ENDLESS_PAGINATION_SHOW_MORE_TEMPLATE* (default="endless/show_more.html"):
-  The template used by *show_more* templatetag.
-  You can provide your customized template that must meet the following rules:
-  - *more* link is showed only if variable "querystring" is not False
-  - the container (most external html element) class is *endless_container*
-  - the *more* link and the loader hidden element live inside the container
-  - the *more* link class is *endless_more*
-  - the loader hidden element class is *endless_loading*
-  
 - *ENDLESS_PAGINATION_LOADING* (default="loading"):
   If you use the default *show_more* template, here you can customize
   the content of the loader hidden element
@@ -252,4 +245,17 @@ You can customize the application using ``settings.py``.
      ENDLESS_PAGINATION_LOADING = """
          <img src="/site_media/img/loader.gif" alt="loading" />
      """
+     
+Template and css
+~~~~~~~~~~~~~~~~
 
+You can override the default template for *show_more* templatetag following
+some rules:
+
+- *more* link is showed only if variable ``querystring`` is not False
+- the container (most external html element) class is *endless_container*
+- the *more* link and the loader hidden element live inside the container
+- the *more* link class is *endless_more*
+- the loader hidden element class is *endless_loading*
+
+Application comes with English and Italian i18n.

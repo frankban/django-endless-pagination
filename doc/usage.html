@@ -312,7 +312,10 @@ ul.auto-toc {
 <li><a class="reference internal" href="#show-more" id="id12">4.2&nbsp;&nbsp;&nbsp;show_more</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#customization" id="id13">5&nbsp;&nbsp;&nbsp;Customization</a></li>
+<li><a class="reference internal" href="#customization" id="id13">5&nbsp;&nbsp;&nbsp;Customization</a><ul class="auto-toc">
+<li><a class="reference internal" href="#template-and-css" id="id14">5.1&nbsp;&nbsp;&nbsp;Template and css</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="introduction">
@@ -445,12 +448,14 @@ def entry_index(request, template=&quot;myapp/entry_index.html&quot;,
 </div>
 <div class="section" id="pagination">
 <h2><a class="toc-backref" href="#id9">3.5&nbsp;&nbsp;&nbsp;Pagination</a></h2>
-<p>Nothing remains but to change the page template, loading endless templatetags and
-the javascript file <em>endless.js</em> included in the distribution under <tt class="docutils literal"><span class="pre">/media/js/</span></tt>.</p>
+<p>Nothing remains but to change the page template, loading endless templatetags,
+the jQuery library and the javascript file <em>endless.js</em> included
+in the distribution under <tt class="docutils literal"><span class="pre">/media/js/</span></tt>.</p>
 <p><em>myapp/entry_index.html</em> becomes:</p>
 <pre class="literal-block">
 {% block js %}
     {{ block.super }}
+    &lt;script src=&quot;/path/to/jquery.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
     &lt;script src=&quot;/path/to/endless.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
 {% endblock %}
 
@@ -521,15 +526,6 @@ The querystring key of the page number (e.g. <tt class="docutils literal"><span 
 <li><p class="first"><em>ENDLESS_PAGINATION_ORPHANS</em> (default=0):
 See django <em>Paginator</em> definition of orphans.</p>
 </li>
-<li><p class="first"><em>ENDLESS_PAGINATION_SHOW_MORE_TEMPLATE</em> (default=&quot;endless/show_more.html&quot;):
-The template used by <em>show_more</em> templatetag.
-You can provide your customized template that must meet the following rules:
-- <em>more</em> link is showed only if variable &quot;querystring&quot; is not False
-- the container (most external html element) class is <em>endless_container</em>
-- the <em>more</em> link and the loader hidden element live inside the container
-- the <em>more</em> link class is <em>endless_more</em>
-- the loader hidden element class is <em>endless_loading</em></p>
-</li>
 <li><p class="first"><em>ENDLESS_PAGINATION_LOADING</em> (default=&quot;loading&quot;):
 If you use the default <em>show_more</em> template, here you can customize
 the content of the loader hidden element
@@ -541,6 +537,19 @@ ENDLESS_PAGINATION_LOADING = &quot;&quot;&quot;
 </pre>
 </li>
 </ul>
+<div class="section" id="template-and-css">
+<h2><a class="toc-backref" href="#id14">5.1&nbsp;&nbsp;&nbsp;Template and css</a></h2>
+<p>You can override the default template for <em>show_more</em> templatetag following
+some rules:</p>
+<ul class="simple">
+<li><em>more</em> link is showed only if variable <tt class="docutils literal"><span class="pre">querystring</span></tt> is not False</li>
+<li>the container (most external html element) class is <em>endless_container</em></li>
+<li>the <em>more</em> link and the loader hidden element live inside the container</li>
+<li>the <em>more</em> link class is <em>endless_more</em></li>
+<li>the loader hidden element class is <em>endless_loading</em></li>
+</ul>
+<p>Application comes with English and Italian i18n.</p>
+</div>
 </div>
 </div>
 </body>
