@@ -16,3 +16,18 @@ ORPHANS = getattr(settings, "ENDLESS_PAGINATION_ORPHANS", 0)
 #    """
 LOADING = getattr(settings, 
     "ENDLESS_PAGINATION_LOADING", "loading")
+
+# Labels for previous and next page links.
+PREVIOUS_LABEL = getattr(settings, "ENDLESS_PAGINATION_PREVIOUS_LABEL", u"&lt;&lt;")
+NEXT_LABEL = getattr(settings, "ENDLESS_PAGINATION_NEXT_LABEL", u"&gt;&gt;")
+
+# Callable that returns pages to be displayed.
+# If None a default callable is used (that produces digg-style pagination).
+PAGE_LIST_CALLABLE = getattr(settings, "ENDLESS_PAGINATION_PAGE_LIST_CALLABLE", None)
+
+# Default callable returns pages for digg-style pagination, and depends
+# on the settings below.
+DEFAULT_CALLABLE_EXTREMES = getattr(settings, 
+    "ENDLESS_PAGINATION_DEFAULT_CALLABLE_EXTREMES", 3)
+DEFAULT_CALLABLE_AROUNDS = getattr(settings, 
+    "ENDLESS_PAGINATION_DEFAULT_CALLABLE_AROUNDS", 2)

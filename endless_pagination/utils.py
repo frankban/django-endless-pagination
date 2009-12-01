@@ -1,4 +1,5 @@
-from endless_pagination.settings import PAGE_LABEL
+from endless_pagination.settings import (PAGE_LABEL, 
+    DEFAULT_CALLABLE_EXTREMES, DEFAULT_CALLABLE_AROUNDS)
 from endless_pagination import exceptions
 
 def get_page_number_from_request(request, page_label=PAGE_LABEL):
@@ -36,5 +37,47 @@ def get_querystring_for_page(request, page_number, prefix="?"):
     if querydict:
         return "%s%s" % (prefix, querydict.urlencode())
     return ""
-        
     
+def get_page_numbers(current_page, num_pages, 
+    extremes=DEFAULT_CALLABLE_EXTREMES, arounds=DEFAULT_CALLABLE_AROUNDS):
+    """
+    Default callable for page listing.
+    Produces a digg-style pagination.
+    """
+    page_range = range(1, num_pages+1)
+    pages = ["previous"]
+    
+    # get first and last pages (extremes)
+    first = page_range[:extremes]
+    pages.extend(first)
+    last = page_range[-extremes:]
+    
+    # get current pages (arounds)
+    current_start = current_page - 1 - arounds
+    if current_start < 0:
+        current_start = 0
+    current_end = current_page + arounds
+    if current_end > num_pages:
+        current_end = num_pages
+    current = page_range[current_start:current_end]
+    
+    # mix first with current pages
+    diff = current[0] - first[-1]
+    to_add = current
+    if diff > 1:
+        pages.append(None)
+    elif diff < 1:
+        to_add = current[abs(diff)+1:]
+    pages.extend(to_add)
+    
+    # mix current with last pages
+    diff = last[0] - current[-1]
+    to_add = last
+    if diff > 1:
+        pages.append(None)
+    elif diff < 1:
+        to_add = last[abs(diff)+1:]
+    pages.extend(to_add)
+    
+    pages.append("next")
+    return pages

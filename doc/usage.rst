@@ -8,11 +8,11 @@ Endless Pagination
 
 .. sectnum::
 
+
 Introduction
 ============
 
-This app may be used to provide Twitter-style ajaxed pagination. Future
-developments will add support for normal Digg-style pagination.
+This app can be used to provide ajaxed Twitter-style or Digg-style pagination.
 
 The initial idea, which has guided the development of this application, 
 is to allow ajax pagination of web contents in very few steps, as done by 
@@ -51,7 +51,7 @@ Add the request context processor in your *settings.py*, e.g.::
     
 Add ``'endless_pagination'`` to the ``INSTALLED_APPS`` in your *settings.py*.
 
-See *Customization* section of this documentation for other settings options.
+See *Customization* section in this documentation for other settings options.
 
 Let's start
 ~~~~~~~~~~~
@@ -123,11 +123,12 @@ with extra context injection:
 *views.py*::
 
     def entry_index(request, template="myapp/entry_index.html", 
-        extra_context={}):
+        extra_context=None):
         context = {
             'objects': Entry.objects.all(),
         }
-        context.upgrade(extra_context)
+        if extra_context is not None:
+            context.update(extra_context)
         return render_to_response(template, context, 
             context_instance=RequestContext(request))
 
@@ -140,11 +141,12 @@ is easily achievable at this point (using a builtin decorator).
     
     @page_template("myapp/entry_index_page.html") # just add this decorator
     def entry_index(request, template="myapp/entry_index.html", 
-        extra_context={}):
+        extra_context=None):
         context = {
             'objects': Entry.objects.all(),
         }
-        context.upgrade(extra_context)
+        if extra_context is not None:
+            context.update(extra_context)
         return render_to_response(template, context, 
             context_instance=RequestContext(request))
 
@@ -182,6 +184,84 @@ That's all. Read the next section of the documentation to improve the use of
 included templatetags.
 
 
+Digg-style pagination
+=====================
+
+Digg-style pagination of queryset objects is really easy to implement.
+If AJAX pagination is not needed, all you have to do is modify the template, e.g.::
+
+    {% load endless %}
+    
+    {% paginate objects %}
+    {% for object in objects %}
+        {# your code to show the entry #}
+    {% endfor %}
+    {% show_pages %}
+    
+That's it!
+If you want to display only previous and next links (in a page-by-page pagination)
+you need to use the lower level *get_pages* templatetag (see reference below),
+e.g.::
+
+    {% load endless %}
+    
+    {% paginate objects %}
+    {% for object in objects %}
+        {# your code to show the entry #}
+    {% endfor %}
+    {% get_pages %}
+    {{ pages.previous }} {{ pages.next }}
+
+See the paragraph *Customization* that explains how to customize arrows
+of previous and next pages.
+
+Adding ajax
+~~~~~~~~~~~
+
+The view is exactly the same as in *show_more* twitter-style pagination::
+
+    from endless_pagination.decorators import page_template
+    
+    @page_template("myapp/entry_index_page.html") # just add this decorator
+    def entry_index(request, template="myapp/entry_index.html", 
+        extra_context=None):
+        context = {
+            'objects': Entry.objects.all(),
+        }
+        if extra_context is not None:
+            context.update(extra_context)
+        return render_to_response(template, context, 
+            context_instance=RequestContext(request))
+            
+Of course you have to split templates, but this time a container for 
+page template is needed too, and must have a class named *endless_page_template*.
+
+*myapp/entry_index.html* becomes::
+
+    {% block js %}
+        {{ block.super }}
+        <script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/path/to/endless.js" type="text/javascript" charset="utf-8"></script>
+    {% endblock %}
+    
+    <h2>Entries:</h2>
+    <div class="endless_page_template">
+        {% include page_template %}
+    </div>
+
+*myapp/entry_index_page.html* becomes::
+
+    {% load endless %}
+    
+    {% paginate objects %}
+    {% for object in objects %}
+        {# your code to show the entry #}
+    {% endfor %}
+    {% show_pages %}
+    
+Done.
+    
+
 Templatetags reference
 ======================
 
@@ -210,7 +290,7 @@ Of course you can mix it all::
 
     {% paginate 20 objects as paginated_objects %}
     
-You must use this tag before calling the ``{% show_more %}`` one.
+You must use this tag before calling ``{% show_more %}`` or ``{% show_pages %}``.
 
 show_more
 ~~~~~~~~~
@@ -220,6 +300,114 @@ Usage::
 
     {% show_more %}
     
+Must be called after ``{% paginate objects %}``.
+
+get_pages
+~~~~~~~~~
+
+Usage::
+
+    {% get_pages %}
+
+This is mostly used for digg-style pagination.
+This call inserts in the template context a *pages* variable, as a sequence
+of page links. You can use *pages* in different ways:
+
+just print *pages* and you will get digg-style pagination displayed::
+
+    {{ pages }}
+    
+display pages count::
+
+    {{ pages|length }}
+    
+get a specific page::
+    
+    {# the current selected page #}
+    {{ pages.current }} 
+    
+    {# the first page #}
+    {{ pages.first }} 
+    
+    {# the last page #}
+    {{ pages.last }} 
+    
+    {# the previous page (or nothing if you are on first page) #}
+    {{ pages.previous }} 
+    
+    {# the next page (or nothing if you are in last page) #}
+    {{ pages.next }}
+    
+    {# the third page #}
+    {{ pages.3 }}
+    {# this means page.1 is the same as page.first #}
+    
+iterate over *pages* to get all pages::
+
+    {% for page in pages %}
+        {# display page link #}
+        {{ page }} 
+        
+        {# the page url (beginning with "?") #}
+        {{ page.url }} 
+        
+        {# the page path #}
+        {{ page.path }} 
+        
+        {# the page number #}
+        {{ page.number }} 
+        
+        {# a string representing the page (commonly the page number) #}
+        {{ page.label }}
+        
+        {# check if the page is the current one #}
+        {{ page.is_current }}
+        
+        {# check if the page is the first one #}
+        {{ page.is_first }}
+        
+        {# check if the page is the last one #}
+        {{ page.is_last }} 
+    {% endfor %}
+    
+You can change the variable name, e.g.::
+
+    {% get_pages as page_links %}
+
+Must be called after ``{% paginate objects %}``.
+
+show_pages
+~~~~~~~~~~
+
+Show page links.
+Usage::
+
+    {% show_pages %}
+    
+It is only a shortcut for::
+
+    {% get_pages %}
+    {{ pages }}
+
+You can set *ENDLESS_PAGE_LIST_CALLABLE* in your settings.py as a callable 
+used to customize the pages that are displayed.
+The callable takes the current page number and the total number of pages
+and must return a sequence of page numbers that will be displayed.
+The sequence can contain other values:
+
+    - *"previous"*: will display the previous page in that position
+    - *"next"*: will display the next page in that position
+    - *None*: a separator will be displayed in that position
+    
+Here is an example of custom callable that displays previous page, then
+first page, then a separator, then current page, then next page::
+
+    def get_page_numbers(current_page, num_pages):
+        return ("previous", 1, "...", current_page, "next")
+
+If *ENDLESS_PAGE_LIST_CALLABLE* is *None* an internal callable is used,
+generating a digg-style pagination.
+
 Must be called after ``{% paginate objects %}``.
 
 
@@ -240,11 +428,29 @@ You can customize the application using ``settings.py``.
 - *ENDLESS_PAGINATION_LOADING* (default="loading"):
   If you use the default *show_more* template, here you can customize
   the content of the loader hidden element
-  Html is safe here, e.g. you can show your pretty animated gif::
+  Html is safe here, e.g. you can show your pretty animated gif
   
+
+
+::
+
      ENDLESS_PAGINATION_LOADING = """
          <img src="/site_media/img/loader.gif" alt="loading" />
      """
+  
+     
+- *ENDLESS_PAGINATION_PREVIOUS_LABEL* (default=u"&lt;&lt;") and *NEXT_LABEL* (default=u"&gt;&gt;"):
+  Labels for previous and next page links.
+  
+- *ENDLESS_PAGINATION_PAGE_LIST_CALLABLE* (default=None):
+  Callable that returns pages to be displayed.
+  If None a default callable is used (that produces digg-style pagination).
+  
+  Default callable returns pages for digg-style pagination, and depends
+  on the settings below:
+  
+- *ENDLESS_PAGINATION_DEFAULT_CALLABLE_EXTREMES* (default=3)
+- *ENDLESS_PAGINATION_DEFAULT_CALLABLE_AROUNDS* (default=2)
      
 Template and css
 ~~~~~~~~~~~~~~~~
@@ -259,3 +465,11 @@ some rules:
 - the loader hidden element class is *endless_loading*
 
 Application comes with English and Italian i18n.
+
+
+Related projects
+================
+
+Try out http://code.google.com/p/django-yafinder/ if you need to add filter
+and sort capabilities to your index page.
+

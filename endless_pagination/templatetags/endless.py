@@ -4,7 +4,7 @@ from django import template
 from django.core.paginator import Paginator, EmptyPage
 from django.http import Http404
 
-from endless_pagination import settings, utils
+from endless_pagination import settings, models, utils
 
 register = template.Library()
 
@@ -115,3 +115,162 @@ def show_more(context):
         }
     # no next page, nothing to see
     return {}
+    
+    
+@register.tag
+def get_pages(parser, token):
+    """
+    Usage::
+    
+        {% get_pages %}
+    
+    This is mostly used for digg-style pagination.
+    This call inserts in the template context a *pages* variable, as a sequence
+    of page links. You can use *pages* in different ways:
+    
+        - just print *pages* and you will get digg-style pagination displayed::
+    
+            {{ pages }}
+            
+        - display pages count::
+        
+            {{ pages|length }}
+            
+        - get a specific page::
+            
+            {# the current selected page #}
+            {{ pages.current }} 
+            
+            {# the first page #}
+            {{ pages.first }} 
+            
+            {# the last page #}
+            {{ pages.last }} 
+            
+            {# the previous page (or nothing if you are on first page) #}
+            {{ pages.previous }} 
+            
+            {# the next page (or nothing if you are in last page) #}
+            {{ pages.next }}
+            
+            {# the third page #}
+            {{ pages.3 }}
+            {# this means page.1 is the same as page.first #}
+            
+        - iterate over *pages* to get all pages::
+        
+            {% for page in pages %}
+                {# display page link #}
+                {{ page }} 
+                
+                {# the page url (beginning with "?") #}
+                {{ page.url }} 
+                
+                {# the page path #}
+                {{ page.path }} 
+                
+                {# the page number #}
+                {{ page.number }} 
+                
+                {# a string representing the page (commonly the page number) #}
+                {{ page.label }}
+                
+                {# check if the page is the current one #}
+                {{ page.is_current }}
+                
+                {# check if the page is the first one #}
+                {{ page.is_first }}
+                
+                {# check if the page is the last one #}
+                {{ page.is_last }} 
+            {% endfor %}
+        
+    You can change the variable name, e.g.::
+    
+        {% get_pages as page_links %}
+    
+    Must be called after {% paginate objects %}.
+    """
+    # args validation
+    try:
+        tag_name, args = token.contents.split(None, 1)
+    except ValueError:
+        var_name = "pages"
+    else:
+        args = args.split()
+        if len(args) == 2 and args[0] == "as":
+            var_name = args[1]
+        else:
+            message = "%r tag invalid arguments" % tag_name
+            raise template.TemplateSyntaxError, message
+            
+    # call the node
+    return GetPagesNode(var_name)
+    
+class GetPagesNode(template.Node):
+    """
+    Insert into context the page list.
+    """
+    def __init__(self, var_name):
+        self.var_name = var_name 
+    
+    def render(self, context):
+        # this can raise a PaginationError 
+        # (you have to call paginate before including the get pages template)
+        page = utils.get_page_from_context(context)
+        # put the PageList instance in the context
+        context[self.var_name] = models.PageList(context["request"], page)
+        return ""
+        
+        
+@register.tag
+def show_pages(parser, token):
+    """
+    Show page links.
+    Usage::
+    
+        {% show_pages %}
+        
+    It is only a shortcut for::
+    
+        {% get_pages %}
+        {{ pages }}
+    
+    You can set *ENDLESS_PAGE_LIST_CALLABLE* in your settings.py as a callable 
+    used to customize the pages that are displayed.
+    The callable takes the current page number and the total number of pages
+    and must return a sequence of page numbers that will be displayed.
+    The sequence can contain other values:
+    
+        - *"previous"*: will display the previous page in that position
+        - *"next"*: will display the next page in that position
+        - *None*: a separator will be displayed in that position
+        
+    Here is an example of custom calable that displays previous page, then
+    first page, then a separator, then current page, then next page::
+    
+        def get_page_numbers(current_page, num_pages):
+            return ("previous", 1, "...", current_page, "next")
+    
+    If *ENDLESS_PAGE_LIST_CALLABLE* is *None* an internal callable is used,
+    generating a digg-style pagination.
+    
+    Must be called after {% paginate objects %}.
+    """
+    # args validation
+    if len(token.contents.split()) != 1:
+        message = "%r tag takes no arguments" % token.contents.split()[0]
+        raise template.TemplateSyntaxError, message
+    # call the node
+    return ShowPagesNode()
+    
+class ShowPagesNode(template.Node):
+    """
+    Show the pagination.
+    """
+    def render(self, context):
+        # this can raise a PaginationError 
+        # (you have to call paginate before including the get pages template)
+        page = utils.get_page_from_context(context)
+        # unicode representation of the sequence of pages
+        return unicode(models.PageList(context["request"], page))

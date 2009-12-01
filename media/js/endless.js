@@ -1,6 +1,6 @@
 $(document).ready(function(){
     // initializes links for ajax requests
-    $(".endless_more").live("click", function(){
+    $("a.endless_more").live("click", function(){
         var container = $(this).closest(".endless_container");
         var loading = container.find(".endless_loading");
         $(this).hide();
@@ -11,4 +11,8 @@ $(document).ready(function(){
         });
         return false;
     });
+    $("a.endless_page_link").live("click", function(){
+        $(this).closest(".endless_page_template").load($(this).attr("href"));
+        return false;
+    }); 
 });
