@@ -5,14 +5,16 @@ $(document).ready(function(){
         var loading = container.find(".endless_loading");
         $(this).hide();
         loading.show();
-        $.get($(this).attr("href"), function(data){
+        var data = {"querystring_key": $(this).attr("rel").split(" ")[0]};
+        $.get($(this).attr("href"), data, function(data) {
             container.before(data);
             container.remove();
         });
         return false;
     });
     $("a.endless_page_link").live("click", function(){
-        $(this).closest(".endless_page_template").load($(this).attr("href"));
+        var data = {"querystring_key": $(this).attr("rel").split(" ")[0]};
+        $(this).closest(".endless_page_template").load($(this).attr("href"), data);
         return false;
     }); 
 });

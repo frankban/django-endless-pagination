@@ -39,7 +39,7 @@ Requirements
 Usage
 =====
 
-Settings 
+Settings
 ~~~~~~~~
 
 Add the request context processor in your *settings.py*, e.g.::
@@ -260,6 +260,125 @@ page template is needed too, and must have a class named *endless_page_template*
     {% show_pages %}
     
 Done.
+
+
+Multiple pagination in the same page
+====================================
+
+**New in version 0.4**
+
+Sometimes it is necessary to show different types of paginated objects in the 
+same page. In this case we have to associate to every pagination a different 
+querystring key. 
+Normally, the key used is the one specified in *ENDLESS_PAGINATION_PAGE_LABEL*, 
+but in the case of multiple pagination the application provides a simple way to 
+override the settings. 
+If you do not need ajax, the only file you need to edit
+is the template. Here is a usecase example with 2 different paginations 
+(*objects* and *other_objects*) in the same page, but there is no limit to the 
+number of different paginations in a page::
+
+    {% load endless %}
+    
+    {% paginate objects %}
+    {% for object in objects %}
+        {# your code to show the entry #}
+    {% endfor %}
+    {% show_pages %}
+    
+    {% paginate other_objects using other_objects_page %} {# <-- a new querystring key #}
+    {% for object in other_objects %}
+        {# your code to show the entry #}
+    {% endfor %}
+    {% show_pages %}
+    
+The *using* argument of the *paginate* template tag allows you to choose the 
+name of the querystring key used to track the page number.
+If not specified the system falls back to *settings.ENDLESS_PAGINATION_PAGE_LABEL*.
+In the example above, the url *http://example.com?page=2&other_objects_page=3* 
+requests the second page of *objects* and the third page of *other_objects*.
+    
+You can use any style of pagination: *show_pages*, *get_pages*, *show_more* etc...
+
+Adding ajax for multiple pagination
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Obviously each pagination needs a template for the page content.
+Remember to box each page in a div with a class called *endless_page_template*.
+
+*myapp/entry_index.html*::
+
+    {% block js %}
+        {{ block.super }}
+        <script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/path/to/endless.js" type="text/javascript" charset="utf-8"></script>
+    {% endblock %}
+
+    <h2>Entries:</h2>
+    <div class="endless_page_template">
+        {% include "myapp/entries_page.html" %}
+    </div>
+    
+    <h2>Other entries:</h2>
+    <div class="endless_page_template">
+        {% include "myapp/other_entries_page.html" %}
+    </div>
+
+*myapp/entries_page.html*::
+
+    {% load endless %}
+
+    {% paginate objects %}
+    {% for object in objects %}
+        {# your code to show the entry #}
+    {% endfor %}
+    {% show_pages %}
+    
+*myapp/other_entries_page.html*::
+
+    {% load endless %}
+
+    {% paginate other_objects using other_objects_page %}
+    {% for object in other_objects %}
+        {# your code to show the entry #}
+    {% endfor %}
+    {% show_pages %}
+
+Again the decorator *page_template* simplifies the management of ajax requests 
+in views. You must, however, map different paginations to different page templates.
+You can chain decorator's calls relating a template with the associated 
+querystring key, e.g.::
+
+    from endless_pagination.decorators import page_template
+    
+    @page_template("myapp/entries_page.html")
+    @page_template("myapp/other_entries_page.html", key="other_objects_page")
+    def entry_index(request, template="myapp/entry_index.html", 
+        extra_context=None):
+        context = {
+            'objects': Entry.objects.all(),
+            'other_objects': OtherEntry.objects.all(),
+        }
+        if extra_context is not None:
+            context.update(extra_context)
+        return render_to_response(template, context, 
+            context_instance=RequestContext(request))
+            
+As seen in previous examples, if you do not specify the *key* kwarg in the 
+decorator, then the page template is associated to the querystring key
+defined in the settings.
+
+You can use the *page_templates* (note the trailing *s*) decorator in 
+substitution of a decorator chain when you need multiple ajax pagination.
+The previous example can be written::
+
+    from endless_pagination.decorators import page_templates
+
+    @page_templates({
+        "myapp/entries_page.html": None, 
+        "myapp/other_entries_page.html": "other_objects_page",
+    })
+    def entry_index() ...
     
 
 Templatetags reference
@@ -290,7 +409,28 @@ Of course you can mix it all::
 
     {% paginate 20 objects as paginated_objects %}
     
-You must use this tag before calling ``{% show_more %}`` or ``{% show_pages %}``.
+By default, the first page is displayed the first time you load the page,
+but you can easily change this, e.g.::
+
+    {% paginate objects starting from page 3 %}
+    
+This can be also achieved using a template variable you passed in the
+context, e.g.::
+
+    {% paginate objects starting from page page_number %}
+    
+If the passed page number does not exist then first page is displayed.
+
+If you have multiple paginations in the same page, you can change the
+querydict key for the single pagination, e.g.::
+
+    {% paginate objects using article_page %}
+
+Again, you can mix it all (the order of arguments is important)::
+
+    {% paginate 20 objects starting from page 3 using page_key as paginated_objects %}
+
+You must use this tag before calling the {% show_more %} one.
 
 show_more
 ~~~~~~~~~
@@ -410,6 +550,34 @@ generating a digg-style pagination.
 
 Must be called after ``{% paginate objects %}``.
 
+show_current_number
+~~~~~~~~~~~~~~~~~~~
+
+Just show current page number (useful in page titles).
+Usage::
+
+    {% show_current_number %}
+    
+If you use multiple paginations in the same page you can get the page
+number for a specific pagination using the querystring key, e.g.::
+
+    {% show_current_number using mykey %}
+    
+Default page when no querystring is specified is 1. If you changed in the 
+*paginate* template tag, you have to call  *show_current_number* 
+according to your choice, e.g.::
+    
+    {% show_current_number starting from page 3 %}
+
+This can be also achieved using a template variable you passed in the
+context, e.g.::
+
+    {% show_current_number starting from page page_number %}
+    
+Of course, you can mix it all (the order of arguments is important)::
+
+    {% show_current_number starting from page 3 using mykey %}
+
 
 Customization
 =============
@@ -442,6 +610,10 @@ You can customize the application using ``settings.py``.
 - *ENDLESS_PAGINATION_PREVIOUS_LABEL* (default=u"&lt;&lt;") and *NEXT_LABEL* (default=u"&gt;&gt;"):
   Labels for previous and next page links.
   
+- *ENDLESS_PAGINATION_ADD_NOFOLLOW* (default=False):  # 
+  Set to True if your seo alchemist wants search engines not to follow 
+  pagination links.
+  
 - *ENDLESS_PAGINATION_PAGE_LIST_CALLABLE* (default=None):
   Callable that returns pages to be displayed.
   If None a default callable is used (that produces digg-style pagination).
@@ -451,6 +623,9 @@ You can customize the application using ``settings.py``.
   
 - *ENDLESS_PAGINATION_DEFAULT_CALLABLE_EXTREMES* (default=3)
 - *ENDLESS_PAGINATION_DEFAULT_CALLABLE_AROUNDS* (default=2)
+
+- *ENDLESS_PAGINATION_TEMPLATE_VARNAME* (default="template"):
+  Template variable name used by *page_template* decorator.
      
 Template and css
 ~~~~~~~~~~~~~~~~
@@ -462,6 +637,7 @@ some rules:
 - the container (most external html element) class is *endless_container*
 - the *more* link and the loader hidden element live inside the container
 - the *more* link class is *endless_more*
+- the *more* link rel attribute is *{{ querystring_key }}*
 - the loader hidden element class is *endless_loading*
 
 Application comes with English and Italian i18n.

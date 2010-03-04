@@ -311,18 +311,23 @@ ul.auto-toc {
 <li><a class="reference internal" href="#adding-ajax" id="id11">4.1   Adding ajax</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#templatetags-reference" id="id12">5   Templatetags reference</a><ul class="auto-toc">
-<li><a class="reference internal" href="#paginate" id="id13">5.1   paginate</a></li>
-<li><a class="reference internal" href="#show-more" id="id14">5.2   show_more</a></li>
-<li><a class="reference internal" href="#get-pages" id="id15">5.3   get_pages</a></li>
-<li><a class="reference internal" href="#show-pages" id="id16">5.4   show_pages</a></li>
+<li><a class="reference internal" href="#multiple-pagination-in-the-same-page" id="id12">5   Multiple pagination in the same page</a><ul class="auto-toc">
+<li><a class="reference internal" href="#adding-ajax-for-multiple-pagination" id="id13">5.1   Adding ajax for multiple pagination</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#customization" id="id17">6   Customization</a><ul class="auto-toc">
-<li><a class="reference internal" href="#template-and-css" id="id18">6.1   Template and css</a></li>
+<li><a class="reference internal" href="#templatetags-reference" id="id14">6   Templatetags reference</a><ul class="auto-toc">
+<li><a class="reference internal" href="#paginate" id="id15">6.1   paginate</a></li>
+<li><a class="reference internal" href="#show-more" id="id16">6.2   show_more</a></li>
+<li><a class="reference internal" href="#get-pages" id="id17">6.3   get_pages</a></li>
+<li><a class="reference internal" href="#show-pages" id="id18">6.4   show_pages</a></li>
+<li><a class="reference internal" href="#show-current-number" id="id19">6.5   show_current_number</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#related-projects" id="id19">7   Related projects</a></li>
+<li><a class="reference internal" href="#customization" id="id20">7   Customization</a><ul class="auto-toc">
+<li><a class="reference internal" href="#template-and-css" id="id21">7.1   Template and css</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#related-projects" id="id22">8   Related projects</a></li>
 </ul>
 </div>
 <div class="section" id="introduction">
@@ -335,9 +340,9 @@ the excellent tool <em>django-pagination</em>
 </div>
 <div class="section" id="installation">
 <h1>2   Installation</h1>
-<p>The <tt class="docutils literal"><span class="pre">endless_pagination</span></tt> package, included in the distribution, should be
+<p>The <tt class="docutils literal">endless_pagination</tt> package, included in the distribution, should be
 placed on the <em>Python path</em>.</p>
-<p>Or just <tt class="docutils literal"><span class="pre">easy_install</span> <span class="pre">django-endless-pagination</span></tt>.</p>
+<p>Or just <tt class="docutils literal">easy_install <span class="pre">django-endless-pagination</span></tt>.</p>
 <div class="section" id="requirements">
 <h2>2.1   Requirements</h2>
 <ul class="simple">
@@ -358,7 +363,7 @@ TEMPLATE_CONTEXT_PROCESSORS += (
      'django.core.context_processors.request',
 )
 </pre>
-<p>Add <tt class="docutils literal"><span class="pre">'endless_pagination'</span></tt> to the <tt class="docutils literal"><span class="pre">INSTALLED_APPS</span></tt> in your <em>settings.py</em>.</p>
+<p>Add <tt class="docutils literal">'endless_pagination'</tt> to the <tt class="docutils literal">INSTALLED_APPS</tt> in your <em>settings.py</em>.</p>
 <p>See <em>Customization</em> section in this documentation for other settings options.</p>
 </div>
 <div class="section" id="let-s-start">
@@ -458,7 +463,7 @@ def entry_index(request, template=&quot;myapp/entry_index.html&quot;,
 <h2>3.5   Pagination</h2>
 <p>Nothing remains but to change the page template, loading endless templatetags,
 the jQuery library and the javascript file <em>endless.js</em> included
-in the distribution under <tt class="docutils literal"><span class="pre">/media/js/</span></tt>.</p>
+in the distribution under <tt class="docutils literal">/media/js/</tt>.</p>
 <p><em>myapp/entry_index.html</em> becomes:</p>
 <pre class="literal-block">
 {% block js %}
@@ -558,10 +563,123 @@ page template is needed too, and must have a class named <em>endless_page_templa
 <p>Done.</p>
 </div>
 </div>
+<div class="section" id="multiple-pagination-in-the-same-page">
+<h1>5   Multiple pagination in the same page</h1>
+<p><strong>New in version 0.4</strong></p>
+<p>Sometimes it is necessary to show different types of paginated objects in the
+same page. In this case we have to associate to every pagination a different
+querystring key.
+Normally, the key used is the one specified in <em>ENDLESS_PAGINATION_PAGE_LABEL</em>,
+but in the case of multiple pagination the application provides a simple way to
+override the settings.
+If you do not need ajax, the only file you need to edit
+is the template. Here is a usecase example with 2 different paginations
+(<em>objects</em> and <em>other_objects</em>) in the same page, but there is no limit to the
+number of different paginations in a page:</p>
+<pre class="literal-block">
+{% load endless %}
+
+{% paginate objects %}
+{% for object in objects %}
+    {# your code to show the entry #}
+{% endfor %}
+{% show_pages %}
+
+{% paginate other_objects using other_objects_page %} {# &lt;-- a new querystring key #}
+{% for object in other_objects %}
+    {# your code to show the entry #}
+{% endfor %}
+{% show_pages %}
+</pre>
+<p>The <em>using</em> argument of the <em>paginate</em> template tag allows you to choose the
+name of the querystring key used to track the page number.
+If not specified the system falls back to <em>settings.ENDLESS_PAGINATION_PAGE_LABEL</em>.
+In the example above, the url <em>http://example.com?page=2&amp;other_objects_page=3</em>
+requests the second page of <em>objects</em> and the third page of <em>other_objects</em>.</p>
+<p>You can use any style of pagination: <em>show_pages</em>, <em>get_pages</em>, <em>show_more</em> etc...</p>
+<div class="section" id="adding-ajax-for-multiple-pagination">
+<h2>5.1   Adding ajax for multiple pagination</h2>
+<p>Obviously each pagination needs a template for the page content.
+Remember to box each page in a div with a class called <em>endless_page_template</em>.</p>
+<p><em>myapp/entry_index.html</em>:</p>
+<pre class="literal-block">
+{% block js %}
+    {{ block.super }}
+    &lt;script src=&quot;/path/to/jquery.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;/path/to/endless.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+{% endblock %}
+
+&lt;h2&gt;Entries:&lt;/h2&gt;
+&lt;div class=&quot;endless_page_template&quot;&gt;
+    {% include &quot;myapp/entries_page.html&quot; %}
+&lt;/div&gt;
+
+&lt;h2&gt;Other entries:&lt;/h2&gt;
+&lt;div class=&quot;endless_page_template&quot;&gt;
+    {% include &quot;myapp/other_entries_page.html&quot; %}
+&lt;/div&gt;
+</pre>
+<p><em>myapp/entries_page.html</em>:</p>
+<pre class="literal-block">
+{% load endless %}
+
+{% paginate objects %}
+{% for object in objects %}
+    {# your code to show the entry #}
+{% endfor %}
+{% show_pages %}
+</pre>
+<p><em>myapp/other_entries_page.html</em>:</p>
+<pre class="literal-block">
+{% load endless %}
+
+{% paginate other_objects using other_objects_page %}
+{% for object in other_objects %}
+    {# your code to show the entry #}
+{% endfor %}
+{% show_pages %}
+</pre>
+<p>Again the decorator <em>page_template</em> simplifies the management of ajax requests
+in views. You must, however, map different paginations to different page templates.
+You can chain decorator's calls relating a template with the associated
+querystring key, e.g.:</p>
+<pre class="literal-block">
+from endless_pagination.decorators import page_template
+
+&#64;page_template(&quot;myapp/entries_page.html&quot;)
+&#64;page_template(&quot;myapp/other_entries_page.html&quot;, key=&quot;other_objects_page&quot;)
+def entry_index(request, template=&quot;myapp/entry_index.html&quot;,
+    extra_context=None):
+    context = {
+        'objects': Entry.objects.all(),
+        'other_objects': OtherEntry.objects.all(),
+    }
+    if extra_context is not None:
+        context.update(extra_context)
+    return render_to_response(template, context,
+        context_instance=RequestContext(request))
+</pre>
+<p>As seen in previous examples, if you do not specify the <em>key</em> kwarg in the
+decorator, then the page template is associated to the querystring key
+defined in the settings.</p>
+<p>You can use the <em>page_templates</em> (note the trailing <em>s</em>) decorator in
+substitution of a decorator chain when you need multiple ajax pagination.
+The previous example can be written:</p>
+<pre class="literal-block">
+from endless_pagination.decorators import page_templates
+
+&#64;page_templates({
+    &quot;myapp/entries_page.html&quot;: None,
+    &quot;myapp/other_entries_page.html&quot;: &quot;other_objects_page&quot;,
+})
+def entry_index() ...
+</pre>
+</div>
+</div>
 <div class="section" id="templatetags-reference">
-<h1>5   Templatetags reference</h1>
+<h1>6   Templatetags reference</h1>
 <div class="section" id="paginate">
-<h2>5.1   paginate</h2>
+<h2>6.1   paginate</h2>
 <p>Usage:</p>
 <pre class="literal-block">
 {% paginate objects %}
@@ -583,19 +701,39 @@ override the default, e.g.:</p>
 <pre class="literal-block">
 {% paginate 20 objects as paginated_objects %}
 </pre>
-<p>You must use this tag before calling <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">show_more</span> <span class="pre">%}</span></tt> or <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">show_pages</span> <span class="pre">%}</span></tt>.</p>
+<p>By default, the first page is displayed the first time you load the page,
+but you can easily change this, e.g.:</p>
+<pre class="literal-block">
+{% paginate objects starting from page 3 %}
+</pre>
+<p>This can be also achieved using a template variable you passed in the
+context, e.g.:</p>
+<pre class="literal-block">
+{% paginate objects starting from page page_number %}
+</pre>
+<p>If the passed page number does not exist then first page is displayed.</p>
+<p>If you have multiple paginations in the same page, you can change the
+querydict key for the single pagination, e.g.:</p>
+<pre class="literal-block">
+{% paginate objects using article_page %}
+</pre>
+<p>Again, you can mix it all (the order of arguments is important):</p>
+<pre class="literal-block">
+{% paginate 20 objects starting from page 3 using page_key as paginated_objects %}
+</pre>
+<p>You must use this tag before calling the {% show_more %} one.</p>
 </div>
 <div class="section" id="show-more">
-<h2>5.2   show_more</h2>
+<h2>6.2   show_more</h2>
 <p>Show the link to get the next page in a Twitter-like pagination.
 Usage:</p>
 <pre class="literal-block">
 {% show_more %}
 </pre>
-<p>Must be called after <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">paginate</span> <span class="pre">objects</span> <span class="pre">%}</span></tt>.</p>
+<p>Must be called after <tt class="docutils literal">{% paginate objects %}</tt>.</p>
 </div>
 <div class="section" id="get-pages">
-<h2>5.3   get_pages</h2>
+<h2>6.3   get_pages</h2>
 <p>Usage:</p>
 <pre class="literal-block">
 {% get_pages %}
@@ -664,10 +802,10 @@ of page links. You can use <em>pages</em> in different ways:</p>
 <pre class="literal-block">
 {% get_pages as page_links %}
 </pre>
-<p>Must be called after <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">paginate</span> <span class="pre">objects</span> <span class="pre">%}</span></tt>.</p>
+<p>Must be called after <tt class="docutils literal">{% paginate objects %}</tt>.</p>
 </div>
 <div class="section" id="show-pages">
-<h2>5.4   show_pages</h2>
+<h2>6.4   show_pages</h2>
 <p>Show page links.
 Usage:</p>
 <pre class="literal-block">
@@ -698,12 +836,40 @@ def get_page_numbers(current_page, num_pages):
 </pre>
 <p>If <em>ENDLESS_PAGE_LIST_CALLABLE</em> is <em>None</em> an internal callable is used,
 generating a digg-style pagination.</p>
-<p>Must be called after <tt class="docutils literal"><span class="pre">{%</span> <span class="pre">paginate</span> <span class="pre">objects</span> <span class="pre">%}</span></tt>.</p>
+<p>Must be called after <tt class="docutils literal">{% paginate objects %}</tt>.</p>
+</div>
+<div class="section" id="show-current-number">
+<h2>6.5   show_current_number</h2>
+<p>Just show current page number (useful in page titles).
+Usage:</p>
+<pre class="literal-block">
+{% show_current_number %}
+</pre>
+<p>If you use multiple paginations in the same page you can get the page
+number for a specific pagination using the querystring key, e.g.:</p>
+<pre class="literal-block">
+{% show_current_number using mykey %}
+</pre>
+<p>Default page when no querystring is specified is 1. If you changed in the
+<em>paginate</em> template tag, you have to call  <em>show_current_number</em>
+according to your choice, e.g.:</p>
+<pre class="literal-block">
+{% show_current_number starting from page 3 %}
+</pre>
+<p>This can be also achieved using a template variable you passed in the
+context, e.g.:</p>
+<pre class="literal-block">
+{% show_current_number starting from page page_number %}
+</pre>
+<p>Of course, you can mix it all (the order of arguments is important):</p>
+<pre class="literal-block">
+{% show_current_number starting from page 3 using mykey %}
+</pre>
 </div>
 </div>
 <div class="section" id="customization">
-<h1>6   Customization</h1>
-<p>You can customize the application using <tt class="docutils literal"><span class="pre">settings.py</span></tt>.</p>
+<h1>7   Customization</h1>
+<p>You can customize the application using <tt class="docutils literal">settings.py</tt>.</p>
 <ul class="simple">
 <li><em>ENDLESS_PAGINATION_PER_PAGE</em> (default=10):
 How many objects are normally displayed in a page (overwriteable by templatetag).</li>
@@ -725,6 +891,10 @@ ENDLESS_PAGINATION_LOADING = &quot;&quot;&quot;
 <li><p class="first"><em>ENDLESS_PAGINATION_PREVIOUS_LABEL</em> (default=u&quot;&amp;lt;&amp;lt;&quot;) and <em>NEXT_LABEL</em> (default=u&quot;&amp;gt;&amp;gt;&quot;):
 Labels for previous and next page links.</p>
 </li>
+<li><p class="first"><em>ENDLESS_PAGINATION_ADD_NOFOLLOW</em> (default=False):  #
+Set to True if your seo alchemist wants search engines not to follow
+pagination links.</p>
+</li>
 <li><p class="first"><em>ENDLESS_PAGINATION_PAGE_LIST_CALLABLE</em> (default=None):
 Callable that returns pages to be displayed.
 If None a default callable is used (that produces digg-style pagination).</p>
@@ -735,23 +905,27 @@ on the settings below:</p>
 </li>
 <li><p class="first"><em>ENDLESS_PAGINATION_DEFAULT_CALLABLE_AROUNDS</em> (default=2)</p>
 </li>
+<li><p class="first"><em>ENDLESS_PAGINATION_TEMPLATE_VARNAME</em> (default=&quot;template&quot;):
+Template variable name used by <em>page_template</em> decorator.</p>
+</li>
 </ul>
 <div class="section" id="template-and-css">
-<h2>6.1   Template and css</h2>
+<h2>7.1   Template and css</h2>
 <p>You can override the default template for <em>show_more</em> templatetag following
 some rules:</p>
 <ul class="simple">
-<li><em>more</em> link is showed only if variable <tt class="docutils literal"><span class="pre">querystring</span></tt> is not False</li>
+<li><em>more</em> link is showed only if variable <tt class="docutils literal">querystring</tt> is not False</li>
 <li>the container (most external html element) class is <em>endless_container</em></li>
 <li>the <em>more</em> link and the loader hidden element live inside the container</li>
 <li>the <em>more</em> link class is <em>endless_more</em></li>
+<li>the <em>more</em> link rel attribute is <em>{{ querystring_key }}</em></li>
 <li>the loader hidden element class is <em>endless_loading</em></li>
 </ul>
 <p>Application comes with English and Italian i18n.</p>
 </div>
 </div>
 <div class="section" id="related-projects">
-<h1>7   Related projects</h1>
+<h1>8   Related projects</h1>
 <p>Try out <a class="reference external" href="http://code.google.com/p/django-yafinder/">http://code.google.com/p/django-yafinder/</a> if you need to add filter
 and sort capabilities to your index page.</p>
 </div>

@@ -33,6 +33,27 @@ def paginate(parser, token):
     
         {% paginate 20 objects as paginated_objects %}
         
+    By default, the first page is displayed the first time you load the page,
+    but you can easily change this, e.g.::
+    
+        {% paginate objects starting from page 3 %}
+        
+    This can be also achieved using a template variable you passed in the
+    context, e.g.::
+    
+        {% paginate objects starting from page page_number %}
+        
+    If the passed page number does not exist then first page is displayed.
+    
+    If you have multiple paginations in the same page, you can change the
+    querydict key for the single pagination, e.g.::
+    
+        {% paginate objects using article_page %}
+    
+    Again, you can mix it all (the order of arguments is important)::
+    
+        {% paginate 20 objects starting from page 3 using page_key as paginated_objects %}
+    
     You must use this tag before calling the {% show_more %} one.
     """
     # args validation
@@ -43,7 +64,7 @@ def paginate(parser, token):
         raise template.TemplateSyntaxError, message
         
     # use regexp to catch args    
-    p = r'^\s*((?P<per_page>\d+)\s+)?(?P<objects>\w+)(\s+as\s+(?P<var_name>\w+))?\s*$'
+    p = r'^((?P<per_page>\d+)\s+)?(?P<objects>\w+)(\s+starting\s+from\s+page\s+(?P<number>\w+))?(\s+using\s+(?P<key>\w+))?(\s+as\s+(?P<var_name>\w+))?$'
     e = re.compile(p)
     
     match = e.match(args)
@@ -63,16 +84,36 @@ class PaginateNode(template.Node):
     Insert into context the objects of the current page and
     the django paginator's *page* object.
     """
-    def __init__(self, objects, per_page=None, var_name=None):
+    def __init__(self, objects, per_page=None, var_name=None, number=None, key=None):
         self.objects = template.Variable(objects)
         # if var_name is not passed then will be queryset name
         self.var_name = objects if var_name is None else var_name
         # if per_page is not passed then is taken from settings
         self.per_page = settings.PER_PAGE if per_page is None else int(per_page)
+        # manage page number when is not specified in querystring
+        self.page_number_variable = None
+        if number is None:
+            self.page_number = 1
+        elif number.isdigit():
+            self.page_number = int(number)
+        else:
+            self.page_number_variable = template.Variable(number)
+        # set the querystring key attribute
+        self.querystring_key = key
     
     def render(self, context):
+        # get page number to use if it is not specified in querystring
+        if self.page_number_variable is None:
+            default_number = self.page_number
+        else:
+            default_number = int(self.page_number_variable.resolve(context))
+        
+        # user can override settings querystring key in the template
+        querystring_key = self.querystring_key or settings.PAGE_LABEL
+            
         # request is used to get requested page number
-        page_number = utils.get_page_number_from_request(context["request"])
+        page_number = utils.get_page_number_from_request(context["request"],
+            querystring_key, default=default_number)
         
         objects = self.objects.resolve(context)
         paginator = Paginator(objects, self.per_page, orphans=settings.ORPHANS)
@@ -84,6 +125,8 @@ class PaginateNode(template.Node):
             page = paginator.page(1)
         
         # populate context with new data
+        context["endless_default_number"] = default_number
+        context["endless_querystring_key"] = querystring_key
         context["endless_page"] = page
         context[self.var_name] = page.object_list
         return ""
@@ -107,9 +150,12 @@ def show_more(context):
         request = context["request"]
         page_number = page.next_page_number()
         # querystring
-        querystring = utils.get_querystring_for_page(request, page_number)
+        querystring_key = context["endless_querystring_key"]
+        querystring = utils.get_querystring_for_page(request, page_number,
+            querystring_key, default_number=context["endless_default_number"])
         return {
             'path': request.path,
+            'querystring_key': querystring_key,
             'querystring': querystring,
             'loading': settings.LOADING,
         }
@@ -218,8 +264,12 @@ class GetPagesNode(template.Node):
         # this can raise a PaginationError 
         # (you have to call paginate before including the get pages template)
         page = utils.get_page_from_context(context)
+        default_number = context.get("endless_default_number")
+        
         # put the PageList instance in the context
-        context[self.var_name] = models.PageList(context["request"], page)
+        context[self.var_name] = models.PageList(context["request"], page,
+            context["endless_querystring_key"],
+            default_number=context["endless_default_number"])
         return ""
         
         
@@ -273,4 +323,82 @@ class ShowPagesNode(template.Node):
         # (you have to call paginate before including the get pages template)
         page = utils.get_page_from_context(context)
         # unicode representation of the sequence of pages
-        return unicode(models.PageList(context["request"], page))
+        pages = models.PageList(context["request"], page, 
+            context["endless_querystring_key"],
+            default_number=context["endless_default_number"])
+        return unicode(pages)
+        
+        
+@register.tag
+def show_current_number(parser, token):
+    """
+    Just show current page number (useful in page titles).
+    Usage::
+    
+        {% show_current_number %}
+        
+    If you use multiple paginations in the same page you can get the page
+    number for a specific pagination using the querystring key, e.g.::
+    
+        {% show_current_number using mykey %}
+        
+    Default page when no querystring is specified is 1. If you changed in the 
+    *paginate* template tag, you have to call  *show_current_number* 
+    according to your choice, e.g.::
+        
+        {% show_current_number starting from page 3 %}
+    
+    This can be also achieved using a template variable you passed in the
+    context, e.g.::
+    
+        {% show_current_number starting from page page_number %}
+        
+    Of course, you can mix it all (the order of arguments is important)::
+    
+        {% show_current_number starting from page 3 using mykey %}
+    """
+    # args validation
+    try:
+        tag_name, args = token.contents.split(None, 1)
+    except ValueError:
+        tag_name = token.contents[0]
+        number = None
+        key = None
+    else:
+        # use regexp to catch args    
+        p = r'^(starting\s+from\s+page\s+(?P<number>\w+))?\s*(using\s+(?P<key>\w+))?$'
+        e = re.compile(p)
+        match = e.match(args)
+        if match is None:
+            message = "Invalid arguments for %r tag" % tag_name
+            raise template.TemplateSyntaxError, message    
+        # get objects
+        groupdict = match.groupdict()
+        number = groupdict["number"]
+        key = groupdict["key"]
+    # call the node
+    return ShowCurrentNumberNode(number, key)
+    
+class ShowCurrentNumberNode(template.Node):
+    """
+    Show the page number taken from context.
+    """
+    def __init__(self, number, key):
+        self.page_number_variable = None
+        if number is None:
+            self.page_number = 1
+        elif number.isdigit():
+            self.page_number = int(number)
+        else:
+            self.page_number_variable = template.Variable(number)
+
+        self.querystring_key = key or settings.PAGE_LABEL
+    
+    def render(self, context):
+        if self.page_number_variable is None:
+            default_number = self.page_number
+        else:
+            default_number = int(self.page_number_variable.resolve(context))
+        page_number = utils.get_page_number_from_request(context["request"],
+            self.querystring_key, default=default_number)
+        return unicode(page_number)

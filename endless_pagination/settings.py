@@ -21,6 +21,10 @@ LOADING = getattr(settings,
 PREVIOUS_LABEL = getattr(settings, "ENDLESS_PAGINATION_PREVIOUS_LABEL", u"&lt;&lt;")
 NEXT_LABEL = getattr(settings, "ENDLESS_PAGINATION_NEXT_LABEL", u"&gt;&gt;")
 
+# Set to True if your seo alchemist wants all the links in digg-style
+# pagination to be nofollow.
+ADD_NOFOLLOW = getattr(settings, "ENDLESS_PAGINATION_ADD_NOFOLLOW", False)
+
 # Callable that returns pages to be displayed.
 # If None a default callable is used (that produces digg-style pagination).
 PAGE_LIST_CALLABLE = getattr(settings, "ENDLESS_PAGINATION_PAGE_LIST_CALLABLE", None)
@@ -31,3 +35,6 @@ DEFAULT_CALLABLE_EXTREMES = getattr(settings,
     "ENDLESS_PAGINATION_DEFAULT_CALLABLE_EXTREMES", 3)
 DEFAULT_CALLABLE_AROUNDS = getattr(settings, 
     "ENDLESS_PAGINATION_DEFAULT_CALLABLE_AROUNDS", 2)
+    
+# Template variable name for *page_template* decorator.
+TEMPLATE_VARNAME = getattr(settings, "ENDLESS_PAGINATION_TEMPLATE_VARNAME", "template")

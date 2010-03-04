@@ -1,17 +1,16 @@
-from endless_pagination.settings import (PAGE_LABEL, 
-    DEFAULT_CALLABLE_EXTREMES, DEFAULT_CALLABLE_AROUNDS)
+from endless_pagination.settings import DEFAULT_CALLABLE_EXTREMES, DEFAULT_CALLABLE_AROUNDS
 from endless_pagination import exceptions
 
-def get_page_number_from_request(request, page_label=PAGE_LABEL):
+def get_page_number_from_request(request, querystring_key, default=1):
     """
     Get page number from *GET* or *POST* data.
-    If the page dows not exists in *request*, or is not a number
-    then 1 is returned.
+    If the page does not exists in *request*, or is not a number
+    then *default* number is returned.
     """
     try:
-        return int(request.REQUEST[PAGE_LABEL])
+        return int(request.REQUEST[querystring_key])
     except (KeyError, TypeError, ValueError):
-        return 1
+        return default
         
 def get_page_from_context(context):
     """
@@ -23,17 +22,18 @@ def get_page_from_context(context):
         return context["endless_page"]
     except KeyError:
         raise exceptions.PaginationError("Cannot find endless page in context.")
-
-def get_querystring_for_page(request, page_number, prefix="?"):
+        
+def get_querystring_for_page(request, page_number, querystring_key,
+    default_number=1, prefix="?"):
     """
     Return a querystring pointing to *page_number*.
     The querystring is prefixed by *prefix* (e.g.: "?page=2").
     """
     querydict = request.GET.copy()
-    querydict[PAGE_LABEL] = page_number
+    querydict[querystring_key] = page_number
     # for page number 1 there is no need for querystring
-    if page_number == 1:
-        del querydict[PAGE_LABEL]
+    if page_number == default_number:
+        del querydict[querystring_key]
     if querydict:
         return "%s%s" % (prefix, querydict.urlencode())
     return ""

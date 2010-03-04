@@ -19,22 +19,29 @@ class EndlessPage(object):
         - *self.is_first*: return True if page is the first page
         - *self.is_last*:  return True if page is the last page
     """
-    def __init__(self, request, number, current_number, total_number, label=None):
+    def __init__(self, request, number, current_number, total_number, 
+        querystring_key, label=None, default_number=1):
         self.number = number
         self.label = unicode(number) if label is None else label
+        self.querystring_key = querystring_key
         
         self.is_current = number == current_number
         self.is_first = number == 1
         self.is_last = number == total_number
         
-        self.url = utils.get_querystring_for_page(request, number)
+        self.url = utils.get_querystring_for_page(request, number, 
+            self.querystring_key, default_number=default_number)
         self.path = "%s%s" % (request.path, self.url)
 
     def __unicode__(self):
         """
         Render the page as a link.
         """
-        context_instance = Context({'page': self})
+        context_instance = Context({
+            'page': self, 
+            'add_nofollow': settings.ADD_NOFOLLOW,
+            'querystring_key': self.querystring_key,
+        })
         template = CURRENT_TEMPLATE if self.is_current else PAGE_TEMPLATE
         return template.render(context_instance)
                 
@@ -43,9 +50,20 @@ class PageList(object):
     """
     A sequence of endless pages.
     """
-    def __init__(self, request, page):
+    def __init__(self, request, page, querystring_key, default_number=None):
         self._request = request
         self._page = page
+        self._default_number = 1 if default_number is None else int(default_number)
+        self._querystring_key = querystring_key
+        
+    def _endless_page(self, number, label=None):
+        """
+        Factory function that returns a EndlessPage instance.
+        It works just like a partial constructor.
+        """
+        return EndlessPage(self._request, number, self._page.number, len(self), 
+            self._querystring_key, label=label, 
+            default_number=self._default_number)
     
     def __getitem__(self, value):
         # type conversion is needed beacuse in templates django performs a 
@@ -56,8 +74,8 @@ class PageList(object):
         except (TypeError, ValueError):
             # a TypeError says to django to continue with an attribute lookup
             raise TypeError
-        if 1 <= value <= len(self): 
-            return EndlessPage(self._request, value, self._page.number, len(self))
+        if 1 <= value <= len(self):
+            return self._endless_page(value)
         raise IndexError("page list index out of range")
         
     def __len__(self):
@@ -134,8 +152,8 @@ class PageList(object):
         Return previous page or an empty string if current page is the first.
         """
         if self._page.has_previous():
-            return EndlessPage(self._request, self._page.previous_page_number(), 
-                self._page.number, len(self), label=settings.PREVIOUS_LABEL)
+            return self._endless_page(self._page.previous_page_number(), 
+                label=settings.PREVIOUS_LABEL)
         return u""
         
     def next(self):
@@ -143,6 +161,6 @@ class PageList(object):
         Return next page or an empty string if current page is the last.
         """
         if self._page.has_next():
-            return EndlessPage(self._request, self._page.next_page_number(), 
-                self._page.number, len(self), label=settings.NEXT_LABEL)
+            return self._endless_page(self._page.next_page_number(), 
+                label=settings.NEXT_LABEL)
         return u""
