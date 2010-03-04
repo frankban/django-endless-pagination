@@ -27,7 +27,6 @@ setup(name='django-endless-pagination',
     packages=[
         'endless_pagination', 
         'endless_pagination.templatetags',
-        'endless_pagination.media',
     ],
     package_data={'endless_pagination': data_files},
     classifiers=[
