@@ -640,7 +640,7 @@ some rules:
 - the *more* link rel attribute is *{{ querystring_key }}*
 - the loader hidden element class is *endless_loading*
 
-Application comes with English and Italian i18n.
+Application comes with English, Italian and German i18n.
 
 
 Related projects

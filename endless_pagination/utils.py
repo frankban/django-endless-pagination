@@ -34,6 +34,8 @@ def get_querystring_for_page(request, page_number, querystring_key,
     # for page number 1 there is no need for querystring
     if page_number == default_number:
         del querydict[querystring_key]
+    if "querystring_key" in querydict:
+        del querydict["querystring_key"]
     if querydict:
         return "%s%s" % (prefix, querydict.urlencode())
     return ""

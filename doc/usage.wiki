@@ -693,7 +693,7 @@ You can override the default template for _show_more_ templatetag following some
   * the _more_ link rel attribute is _{{ querystring_key }}_
   * the loader hidden element class is _endless_loading_
 
-Application comes with English and Italian i18n.
+Application comes with English, Italian and German i18n.
 
 = 8 Related projects =
 
