@@ -58,7 +58,7 @@ def paginate(parser, token):
     """
     # args validation
     try:
-        tag_name, args = token.contents.split(None, 1)
+        tag_name, tag_args = token.contents.split(None, 1)
     except ValueError:
         message = "%r tag requires arguments" % token.contents.split()[0]
         raise template.TemplateSyntaxError, message
@@ -66,8 +66,7 @@ def paginate(parser, token):
     # use regexp to catch args    
     p = r'^((?P<per_page>\d+)\s+)?(?P<objects>\w+)(\s+starting\s+from\s+page\s+(?P<number>\w+))?(\s+using\s+(?P<key>\w+))?(\s+as\s+(?P<var_name>\w+))?$'
     e = re.compile(p)
-    
-    match = e.match(args)
+    match = e.match(tag_args)
     if match is None:
         message = "Invalid arguments for %r tag" % token.contents.split()[0]
         raise template.TemplateSyntaxError, message
