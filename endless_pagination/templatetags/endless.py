@@ -54,6 +54,10 @@ def paginate(parser, token):
     
         {% paginate 20 objects starting from page 3 using page_key as paginated_objects %}
     
+    Additionally you can pass a path to be used for the pagination::
+
+        {% paginate 20 objects using page_key with pagination_url as paginated_objects %}
+
     You must use this tag before calling the {% show_more %} one.
     """
     # args validation
@@ -64,7 +68,7 @@ def paginate(parser, token):
         raise template.TemplateSyntaxError, message
         
     # use regexp to catch args    
-    p = r'^((?P<per_page>\d+)\s+)?(?P<objects>\w+)(\s+starting\s+from\s+page\s+(?P<number>\w+))?(\s+using\s+(?P<key>\w+))?(\s+as\s+(?P<var_name>\w+))?$'
+    p = r'^((?P<per_page>\w+)\s+)?(?P<objects>\w+)(\s+starting\s+from\s+page\s+(?P<number>\w+))?(\s+using\s+(?P<key>\w+))?(\s+with\s+(?P<override_path>\w+))?(\s+as\s+(?P<var_name>\w+))?$'
     e = re.compile(p)
     match = e.match(tag_args)
     if match is None:
@@ -83,7 +87,8 @@ class PaginateNode(template.Node):
     Insert into context the objects of the current page and
     the django paginator's *page* object.
     """
-    def __init__(self, objects, per_page=None, var_name=None, number=None, key=None):
+    def __init__(self, objects, per_page=None, var_name=None, number=None,
+            key=None, override_path=None):
         self.objects = template.Variable(objects)
         # if var_name is not passed then will be queryset name
         self.var_name = objects if var_name is None else var_name
@@ -109,6 +114,11 @@ class PaginateNode(template.Node):
             self.querystring_key = settings.PAGE_LABEL
         else:
             self.querystring_key_variable = template.Variable(key)
+        self.override_path_variable = None
+        if override_path is None:
+            self.override_path = None
+        else:
+            self.override_path_variable = template.Variable(override_path)
     
     def render(self, context):
         # get page number to use if it is not specified in querystring
@@ -128,6 +138,12 @@ class PaginateNode(template.Node):
             querystring_key = self.querystring_key
         else:
             querystring_key = self.querystring_key_variable.resolve(context)
+        
+        if self.override_path_variable is None:
+            override_path = self.override_path
+        else:
+            override_path = self.override_path_variable.resolve(context)
+        
         # request is used to get requested page number
         page_number = utils.get_page_number_from_request(context["request"],
             querystring_key, default=default_number)
@@ -146,6 +162,7 @@ class PaginateNode(template.Node):
         context["endless_querystring_key"] = querystring_key
         context["endless_page"] = page
         context[self.var_name] = page.object_list
+        context["endless_override_path"] = override_path
         return ""
 
     
@@ -171,7 +188,7 @@ def show_more(context):
         querystring = utils.get_querystring_for_page(request, page_number,
             querystring_key, default_number=context["endless_default_number"])
         return {
-            'path': request.path,
+            'path': context.get("endless_override_path", request.path),
             'querystring_key': querystring_key,
             'querystring': querystring,
             'loading': settings.LOADING,
@@ -286,7 +303,8 @@ class GetPagesNode(template.Node):
         # put the PageList instance in the context
         context[self.var_name] = models.PageList(context["request"], page,
             context["endless_querystring_key"],
-            default_number=context["endless_default_number"])
+            default_number=context["endless_default_number"],
+            override_path=context["endless_override_path"])
         return ""
         
         
@@ -342,7 +360,8 @@ class ShowPagesNode(template.Node):
         # unicode representation of the sequence of pages
         pages = models.PageList(context["request"], page, 
             context["endless_querystring_key"],
-            default_number=context["endless_default_number"])
+            default_number=context["endless_default_number"],
+            override_path=context["endless_override_path"])
         return unicode(pages)
         
         

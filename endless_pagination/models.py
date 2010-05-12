@@ -20,7 +20,7 @@ class EndlessPage(object):
         - *self.is_last*:  return True if page is the last page
     """
     def __init__(self, request, number, current_number, total_number, 
-        querystring_key, label=None, default_number=1):
+        querystring_key, label=None, default_number=1, override_path=None):
         self.number = number
         self.label = unicode(number) if label is None else label
         self.querystring_key = querystring_key
@@ -31,7 +31,7 @@ class EndlessPage(object):
         
         self.url = utils.get_querystring_for_page(request, number, 
             self.querystring_key, default_number=default_number)
-        self.path = "%s%s" % (request.path, self.url)
+        self.path = "%s%s" % (override_path or request.path, self.url)
 
     def __unicode__(self):
         """
@@ -50,11 +50,12 @@ class PageList(object):
     """
     A sequence of endless pages.
     """
-    def __init__(self, request, page, querystring_key, default_number=None):
+    def __init__(self, request, page, querystring_key, default_number=None, override_path=None):
         self._request = request
         self._page = page
         self._default_number = 1 if default_number is None else int(default_number)
         self._querystring_key = querystring_key
+        self._override_path = override_path
         
     def _endless_page(self, number, label=None):
         """
@@ -63,7 +64,8 @@ class PageList(object):
         """
         return EndlessPage(self._request, number, self._page.number, len(self), 
             self._querystring_key, label=label, 
-            default_number=self._default_number)
+            default_number=self._default_number,
+            override_path=self._override_path)
     
     def __getitem__(self, value):
         # type conversion is needed beacuse in templates django performs a 
