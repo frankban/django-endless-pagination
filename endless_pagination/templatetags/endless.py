@@ -104,7 +104,11 @@ class PaginateNode(template.Node):
         else:
             self.page_number_variable = template.Variable(number)
         # set the querystring key attribute
-        self.querystring_key = key
+        self.querystring_key_variable = None
+        if key is None:
+            self.querystring_key = settings.PAGE_LABEL
+        else:
+            self.querystring_key_variable = template.Variable(key)
     
     def render(self, context):
         # get page number to use if it is not specified in querystring
@@ -118,9 +122,12 @@ class PaginateNode(template.Node):
             per_page = self.per_page
         else:
             per_page = int(self.per_page_variable.resolve(context))
+        
         # user can override settings querystring key in the template
-        querystring_key = self.querystring_key or settings.PAGE_LABEL
-            
+        if self.querystring_key_variable is None:
+            querystring_key = self.querystring_key
+        else:
+            querystring_key = self.querystring_key_variable.resolve(context)
         # request is used to get requested page number
         page_number = utils.get_page_number_from_request(context["request"],
             querystring_key, default=default_number)
