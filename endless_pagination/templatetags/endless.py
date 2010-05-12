@@ -88,7 +88,13 @@ class PaginateNode(template.Node):
         # if var_name is not passed then will be queryset name
         self.var_name = objects if var_name is None else var_name
         # if per_page is not passed then is taken from settings
-        self.per_page = settings.PER_PAGE if per_page is None else int(per_page)
+        self.per_page = None
+        if per_page is None:
+            self.per_page = settings.PER_PAGE
+        elif per_page.isdigit():
+            self.per_page = int(per_page)
+        else:
+            self.per_page_variable = template.Variable(per_page)
         # manage page number when is not specified in querystring
         self.page_number_variable = None
         if number is None:
@@ -107,6 +113,11 @@ class PaginateNode(template.Node):
         else:
             default_number = int(self.page_number_variable.resolve(context))
         
+        # get number of items to show on each page
+        if self.per_page_variable is None:
+            per_page = self.per_page
+        else:
+            per_page = int(self.per_page_variable.resolve(context))
         # user can override settings querystring key in the template
         querystring_key = self.querystring_key or settings.PAGE_LABEL
             
@@ -115,7 +126,7 @@ class PaginateNode(template.Node):
             querystring_key, default=default_number)
         
         objects = self.objects.resolve(context)
-        paginator = Paginator(objects, self.per_page, orphans=settings.ORPHANS)
+        paginator = Paginator(objects, per_page, orphans=settings.ORPHANS)
         
         # get the page, user in settings can manage the case it is empty
         try:
