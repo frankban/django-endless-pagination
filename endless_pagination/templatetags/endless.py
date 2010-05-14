@@ -167,13 +167,18 @@ class PaginateNode(template.Node):
 
     
 @register.inclusion_tag("endless/show_more.html", takes_context=True)
-def show_more(context):
+def show_more(context, label=None):
     """
     Show the link to get the next page in a Twitter-like pagination.
     Usage::
     
         {% show_more %}
-        
+    
+    Alternatively you can override the label passed to the
+    default template::
+    
+        {% show_more "even more" %}
+    
     Must be called after {% paginate objects %}.
     """
     # this can raise a PaginationError 
@@ -192,6 +197,7 @@ def show_more(context):
             'querystring_key': querystring_key,
             'querystring': querystring,
             'loading': settings.LOADING,
+            'label': label,
         }
     # no next page, nothing to see
     return {}
