@@ -194,7 +194,7 @@ def show_more(context, label=None):
         querystring = utils.get_querystring_for_page(request, page_number,
             querystring_key, default_number=context["endless_default_number"])
         return {
-            'path': context.get("endless_override_path", request.path),
+            'path': context["endless_override_path"] or request.path,
             'querystring_key': querystring_key,
             'querystring': querystring,
             'loading': settings.LOADING,
