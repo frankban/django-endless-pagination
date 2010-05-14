@@ -94,6 +94,7 @@ class PaginateNode(template.Node):
         self.var_name = objects if var_name is None else var_name
         # if per_page is not passed then is taken from settings
         self.per_page = None
+        self.per_page_variable = None
         if per_page is None:
             self.per_page = settings.PER_PAGE
         elif per_page.isdigit():
