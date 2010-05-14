@@ -23,7 +23,6 @@ setup(name='django-endless-pagination',
     author='Francesco Banconi',
     author_email='francesco.banconi@gmail.com',
     url='http://code.google.com/p/django-endless-pagination/',
-    package_dir={'endless_pagination': 'endless_pagination'},
     packages=[
         'endless_pagination', 
         'endless_pagination.templatetags',
