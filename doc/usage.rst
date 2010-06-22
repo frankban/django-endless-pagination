@@ -180,6 +180,15 @@ in the distribution under ``/media/js/``.
     {% endfor %}
     {% show_more %}
 
+**New in version 0.6**
+If you want new items to load when the user scroll down the browser page
+you can user the **pagination on scroll** feature: just load 
+the *endless_on_scroll.js* javascript after the *endless.js* one in your template::
+
+    <script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/path/to/endless.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/path/to/endless_on_scroll.js" type="text/javascript" charset="utf-8"></script>
+
 That's all. Read the next section of the documentation to improve the use of 
 included templatetags.
 
