@@ -1,1 +1,1 @@
-VERSION = (0, "6a2")
+VERSION = (0, "6a3")

@@ -26,7 +26,7 @@ Installation
 The ``endless_pagination`` package, included in the distribution, should be
 placed on the *Python path*.
 
-Or just ``easy_install django-endless-pagination``.
+Or just ``easy_install -Z django-endless-pagination``.
 
 Requirements
 ~~~~~~~~~~~~
@@ -430,10 +430,19 @@ If you have multiple paginations in the same page, you can change the
 querydict key for the single pagination, e.g.::
 
     {% paginate objects using article_page %}
+    
+In this case *article_page* is intended to be a context variable, but you can
+hardcode the key using quotes, e.g.::
+
+    {% paginate objects using 'articles_at_page' %}
 
 Again, you can mix it all (the order of arguments is important)::
 
     {% paginate 20 objects starting from page 3 using page_key as paginated_objects %}
+    
+Additionally you can pass a path to be used for the pagination::
+
+    {% paginate 20 objects using page_key with pagination_url as paginated_objects %}
 
 You must use this tag before calling the {% show_more %} one.
 
@@ -444,6 +453,10 @@ Show the link to get the next page in a Twitter-like pagination.
 Usage::
 
     {% show_more %}
+    
+Alternatively you can override the label passed to the default template::
+
+    {% show_more "even more" %}
     
 Must be called after ``{% paginate objects %}``.
 
