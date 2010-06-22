@@ -68,7 +68,7 @@ def paginate(parser, token):
         raise template.TemplateSyntaxError, message
         
     # use regexp to catch args    
-    p = r'^((?P<per_page>\w+)\s+)?(?P<objects>\w+)(\s+starting\s+from\s+page\s+(?P<number>\w+))?(\s+using\s+(?P<key>\w+))?(\s+with\s+(?P<override_path>\w+))?(\s+as\s+(?P<var_name>\w+))?$'
+    p = r'^((?P<per_page>\w+)\s+)?(?P<objects>\w+)(\s+starting\s+from\s+page\s+(?P<number>\w+))?(\s+using\s+(?P<key>[\"\'\w]+))?(\s+with\s+(?P<override_path>\w+))?(\s+as\s+(?P<var_name>\w+))?$'
     e = re.compile(p)
     match = e.match(tag_args)
     if match is None:
@@ -113,6 +113,8 @@ class PaginateNode(template.Node):
         self.querystring_key_variable = None
         if key is None:
             self.querystring_key = settings.PAGE_LABEL
+        elif key[0] in ('"', "'") and key[-1] == key[0]:
+            self.querystring_key = key[1:-1]
         else:
             self.querystring_key_variable = template.Variable(key)
         self.override_path_variable = None

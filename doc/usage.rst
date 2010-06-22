@@ -286,7 +286,7 @@ number of different paginations in a page::
     {% endfor %}
     {% show_pages %}
     
-    {% paginate other_objects using other_objects_page %} {# <-- a new querystring key #}
+    {% paginate other_objects using "other_objects_page" %} {# <-- a new querystring key #}
     {% for object in other_objects %}
         {# your code to show the entry #}
     {% endfor %}
@@ -297,6 +297,11 @@ name of the querystring key used to track the page number.
 If not specified the system falls back to *settings.ENDLESS_PAGINATION_PAGE_LABEL*.
 In the example above, the url *http://example.com?page=2&other_objects_page=3* 
 requests the second page of *objects* and the third page of *other_objects*.
+
+The name of the querystring key can also be dinamically passed in the template
+context, e.g.::
+
+    {% paginate other_objects using page_variable %} {# <-- page_variable is not surrounded by quotes #}
     
 You can use any style of pagination: *show_pages*, *get_pages*, *show_more* etc...
 
