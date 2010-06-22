@@ -280,8 +280,6 @@ Done.
 
 = 5 Multiple pagination in the same page =
 
-*New in version 0.4*
-
 Sometimes it is necessary to show different types of paginated objects in the same page. In this case we have to associate to every pagination a different querystring key. Normally, the key used is the one specified in _ENDLESS_PAGINATION_PAGE_LABEL_, but in the case of multiple pagination the application provides a simple way to override the settings. If you do not need ajax, the only file you need to edit is the template. Here is a usecase example with 2 different paginations (_objects_ and _other_objects_) in the same page, but there is no limit to the number of different paginations in a page:
 
 {{{
@@ -294,7 +292,7 @@ Sometimes it is necessary to show different types of paginated objects in the sa
 {% endfor %}
 {% show_pages %}
 
-{% paginate other_objects using other_objects_page %} {# <-- a new querystring key #}
+{% paginate other_objects using "other_objects_page" %} {# <-- a new querystring key #}
 {% for object in other_objects %}
     {# your code to show the entry #}
 {% endfor %}
@@ -303,6 +301,14 @@ Sometimes it is necessary to show different types of paginated objects in the sa
 }}}
 
 The _using_ argument of the _paginate_ template tag allows you to choose the name of the querystring key used to track the page number. If not specified the system falls back to _settings.ENDLESS_PAGINATION_PAGE_LABEL_. In the example above, the url _http://example.com?page=2&other_objects_page=3_ requests the second page of _objects_ and the third page of _other_objects_.
+
+The name of the querystring key can also be dinamically passed in the template context, e.g.:
+
+{{{
+
+{% paginate other_objects using page_variable %} {# <-- page_variable is not surrounded by quotes #}
+
+}}}
 
 You can use any style of pagination: _show_pages_, _get_pages_, _show_more_ etc...
 
@@ -397,9 +403,31 @@ def entry_index() ...
 
 }}}
 
-= 6 Templatetags reference =
+= 6 Lazy pagination =
 
-== 6.1 paginate ==
+*New in version 0.6*
+
+Usually pagination requires to hit the database to get the total number of items to display. Lazy pagination avoids this _select count_ and results in a faster page load, with a disadvantage: you can't know the total number of pages. For this reason it is better to use lazy pagination in conjunction with twitter-style pagination (e.g. using the _show_more_ template tag).
+
+To switch to lazy pagination all you have to do is to use the _{% lazy_paginate %}_ template tag instead of the _{% paginate %}_ one, e.g.:
+
+{{{
+
+{% load endless %}
+
+{% lazy_paginate objects %}
+{% for object in objects %}
+    {# your code to show the entry #}
+{% endfor %}
+{% show_more %}
+
+}}}
+
+The _lazy_paginate_ tag can take all the args of _paginate_ (see below the templatetags reference).
+
+= 7 Templatetags reference =
+
+== 7.1 paginate ==
 
 Usage:
 
@@ -453,11 +481,19 @@ This can be also achieved using a template variable you passed in the context, e
 
 If the passed page number does not exist then first page is displayed.
 
-If you have multiple paginations in the same page, you can change the querydict key for the single pagination, e.g.:
+*New in version 0.6* If you have multiple paginations in the same page, you can change the querydict key for the single pagination, e.g.:
 
 {{{
 
 {% paginate objects using article_page %}
+
+}}}
+
+In this case _article_page_ is intended to be a context variable, but you can hardcode the key using quotes, e.g.:
+
+{{{
+
+{% paginate objects using 'articles_at_page' %}
 
 }}}
 
@@ -469,9 +505,23 @@ Again, you can mix it all (the order of arguments is important):
 
 }}}
 
+*New in version 0.6* Additionally you can pass a path to be used for the pagination:
+
+{{{
+
+{% paginate 20 objects using page_key with pagination_url as paginated_objects %}
+
+}}}
+
 You must use this tag before calling the {% show_more %} one.
 
-== 6.2 show_more ==
+== 7.2 lazy_paginate ==
+
+*New in version 0.6* Paginate objects without hitting the database with a _select count_ query.
+
+Use this the same way as _paginate_ tag when you are not interested in the total number of pages.
+
+== 7.3 show_more ==
 
 Show the link to get the next page in a Twitter-like pagination. Usage:
 
@@ -481,9 +531,17 @@ Show the link to get the next page in a Twitter-like pagination. Usage:
 
 }}}
 
+*New in version 0.6* Alternatively you can override the label passed to the default template:
+
+{{{
+
+{% show_more "even more" %}
+
+}}}
+
 Must be called after `{% paginate objects %}`.
 
-== 6.3 get_pages ==
+== 7.4 get_pages ==
 
 Usage:
 
@@ -578,7 +636,7 @@ You can change the variable name, e.g.:
 
 Must be called after `{% paginate objects %}`.
 
-== 6.4 show_pages ==
+== 7.5 show_pages ==
 
 Show page links. Usage:
 
@@ -616,7 +674,7 @@ If _ENDLESS_PAGE_LIST_CALLABLE_ is _None_ an internal callable is used, generati
 
 Must be called after `{% paginate objects %}`.
 
-== 6.5 show_current_number ==
+== 7.6 show_current_number ==
 
 Just show current page number (useful in page titles). Usage:
 
@@ -658,7 +716,7 @@ Of course, you can mix it all (the order of arguments is important):
 
 }}}
 
-= 7 Customization =
+= 8 Customization =
 
 You can customize the application using `settings.py`.
 
@@ -682,7 +740,7 @@ ENDLESS_PAGINATION_LOADING = """
   * _ENDLESS_PAGINATION_DEFAULT_CALLABLE_AROUNDS_ (default=2)
   * _ENDLESS_PAGINATION_TEMPLATE_VARNAME_ (default="template"): Template variable name used by _page_template_ decorator.
 
-== 7.1 Template and css ==
+== 8.1 Template and css ==
 
 You can override the default template for _show_more_ templatetag following some rules:
 
@@ -695,6 +753,6 @@ You can override the default template for _show_more_ templatetag following some
 
 Application comes with English, Italian and German i18n.
 
-= 8 Related projects =
+= 9 Related projects =
 
 Try out http://code.google.com/p/django-yafinder/ if you need to add filter and sort capabilities to your index page.

@@ -315,19 +315,21 @@ ul.auto-toc {
 <li><a class="reference internal" href="#adding-ajax-for-multiple-pagination" id="id13">5.1   Adding ajax for multiple pagination</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#templatetags-reference" id="id14">6   Templatetags reference</a><ul class="auto-toc">
-<li><a class="reference internal" href="#paginate" id="id15">6.1   paginate</a></li>
-<li><a class="reference internal" href="#show-more" id="id16">6.2   show_more</a></li>
-<li><a class="reference internal" href="#get-pages" id="id17">6.3   get_pages</a></li>
-<li><a class="reference internal" href="#show-pages" id="id18">6.4   show_pages</a></li>
-<li><a class="reference internal" href="#show-current-number" id="id19">6.5   show_current_number</a></li>
+<li><a class="reference internal" href="#lazy-pagination" id="id14">6   Lazy pagination</a></li>
+<li><a class="reference internal" href="#templatetags-reference" id="id15">7   Templatetags reference</a><ul class="auto-toc">
+<li><a class="reference internal" href="#paginate" id="id16">7.1   paginate</a></li>
+<li><a class="reference internal" href="#lazy-paginate" id="id17">7.2   lazy_paginate</a></li>
+<li><a class="reference internal" href="#show-more" id="id18">7.3   show_more</a></li>
+<li><a class="reference internal" href="#get-pages" id="id19">7.4   get_pages</a></li>
+<li><a class="reference internal" href="#show-pages" id="id20">7.5   show_pages</a></li>
+<li><a class="reference internal" href="#show-current-number" id="id21">7.6   show_current_number</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#customization" id="id20">7   Customization</a><ul class="auto-toc">
-<li><a class="reference internal" href="#template-and-css" id="id21">7.1   Template and css</a></li>
+<li><a class="reference internal" href="#customization" id="id22">8   Customization</a><ul class="auto-toc">
+<li><a class="reference internal" href="#template-and-css" id="id23">8.1   Template and css</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#related-projects" id="id22">8   Related projects</a></li>
+<li><a class="reference internal" href="#related-projects" id="id24">9   Related projects</a></li>
 </ul>
 </div>
 <div class="section" id="introduction">
@@ -565,7 +567,6 @@ page template is needed too, and must have a class named <em>endless_page_templa
 </div>
 <div class="section" id="multiple-pagination-in-the-same-page">
 <h1>5   Multiple pagination in the same page</h1>
-<p><strong>New in version 0.4</strong></p>
 <p>Sometimes it is necessary to show different types of paginated objects in the
 same page. In this case we have to associate to every pagination a different
 querystring key.
@@ -585,7 +586,7 @@ number of different paginations in a page:</p>
 {% endfor %}
 {% show_pages %}
 
-{% paginate other_objects using other_objects_page %} {# &lt;-- a new querystring key #}
+{% paginate other_objects using &quot;other_objects_page&quot; %} {# &lt;-- a new querystring key #}
 {% for object in other_objects %}
     {# your code to show the entry #}
 {% endfor %}
@@ -596,6 +597,11 @@ name of the querystring key used to track the page number.
 If not specified the system falls back to <em>settings.ENDLESS_PAGINATION_PAGE_LABEL</em>.
 In the example above, the url <em>http://example.com?page=2&amp;other_objects_page=3</em>
 requests the second page of <em>objects</em> and the third page of <em>other_objects</em>.</p>
+<p>The name of the querystring key can also be dinamically passed in the template
+context, e.g.:</p>
+<pre class="literal-block">
+{% paginate other_objects using page_variable %} {# &lt;-- page_variable is not surrounded by quotes #}
+</pre>
 <p>You can use any style of pagination: <em>show_pages</em>, <em>get_pages</em>, <em>show_more</em> etc...</p>
 <div class="section" id="adding-ajax-for-multiple-pagination">
 <h2>5.1   Adding ajax for multiple pagination</h2>
@@ -676,10 +682,32 @@ def entry_index() ...
 </pre>
 </div>
 </div>
+<div class="section" id="lazy-pagination">
+<h1>6   Lazy pagination</h1>
+<p><strong>New in version 0.6</strong></p>
+<p>Usually pagination requires to hit the database to get the total number of items
+to display. Lazy pagination avoids this <em>select count</em> and results in a faster
+page load, with a disadvantage: you can't know the total number of pages.
+For this reason it is better to use lazy pagination in conjunction with
+twitter-style pagination (e.g. using the <em>show_more</em> template tag).</p>
+<p>To switch to lazy pagination all you have to do is to use the
+<em>{% lazy_paginate %}</em> template tag instead of the <em>{% paginate %}</em> one, e.g.:</p>
+<pre class="literal-block">
+{% load endless %}
+
+{% lazy_paginate objects %}
+{% for object in objects %}
+    {# your code to show the entry #}
+{% endfor %}
+{% show_more %}
+</pre>
+<p>The <em>lazy_paginate</em> tag can take all the args of <em>paginate</em>
+(see below the templatetags reference).</p>
+</div>
 <div class="section" id="templatetags-reference">
-<h1>6   Templatetags reference</h1>
+<h1>7   Templatetags reference</h1>
 <div class="section" id="paginate">
-<h2>6.1   paginate</h2>
+<h2>7.1   paginate</h2>
 <p>Usage:</p>
 <pre class="literal-block">
 {% paginate objects %}
@@ -712,28 +740,51 @@ context, e.g.:</p>
 {% paginate objects starting from page page_number %}
 </pre>
 <p>If the passed page number does not exist then first page is displayed.</p>
-<p>If you have multiple paginations in the same page, you can change the
+<p><strong>New in version 0.6</strong>
+If you have multiple paginations in the same page, you can change the
 querydict key for the single pagination, e.g.:</p>
 <pre class="literal-block">
 {% paginate objects using article_page %}
+</pre>
+<p>In this case <em>article_page</em> is intended to be a context variable, but you can
+hardcode the key using quotes, e.g.:</p>
+<pre class="literal-block">
+{% paginate objects using 'articles_at_page' %}
 </pre>
 <p>Again, you can mix it all (the order of arguments is important):</p>
 <pre class="literal-block">
 {% paginate 20 objects starting from page 3 using page_key as paginated_objects %}
 </pre>
+<p><strong>New in version 0.6</strong>
+Additionally you can pass a path to be used for the pagination:</p>
+<pre class="literal-block">
+{% paginate 20 objects using page_key with pagination_url as paginated_objects %}
+</pre>
 <p>You must use this tag before calling the {% show_more %} one.</p>
 </div>
+<div class="section" id="lazy-paginate">
+<h2>7.2   lazy_paginate</h2>
+<p><strong>New in version 0.6</strong>
+Paginate objects without hitting the database with a <em>select count</em> query.</p>
+<p>Use this the same way as <em>paginate</em> tag when you are not interested
+in the total number of pages.</p>
+</div>
 <div class="section" id="show-more">
-<h2>6.2   show_more</h2>
+<h2>7.3   show_more</h2>
 <p>Show the link to get the next page in a Twitter-like pagination.
 Usage:</p>
 <pre class="literal-block">
 {% show_more %}
 </pre>
+<p><strong>New in version 0.6</strong>
+Alternatively you can override the label passed to the default template:</p>
+<pre class="literal-block">
+{% show_more &quot;even more&quot; %}
+</pre>
 <p>Must be called after <tt class="docutils literal">{% paginate objects %}</tt>.</p>
 </div>
 <div class="section" id="get-pages">
-<h2>6.3   get_pages</h2>
+<h2>7.4   get_pages</h2>
 <p>Usage:</p>
 <pre class="literal-block">
 {% get_pages %}
@@ -805,7 +856,7 @@ of page links. You can use <em>pages</em> in different ways:</p>
 <p>Must be called after <tt class="docutils literal">{% paginate objects %}</tt>.</p>
 </div>
 <div class="section" id="show-pages">
-<h2>6.4   show_pages</h2>
+<h2>7.5   show_pages</h2>
 <p>Show page links.
 Usage:</p>
 <pre class="literal-block">
@@ -839,7 +890,7 @@ generating a digg-style pagination.</p>
 <p>Must be called after <tt class="docutils literal">{% paginate objects %}</tt>.</p>
 </div>
 <div class="section" id="show-current-number">
-<h2>6.5   show_current_number</h2>
+<h2>7.6   show_current_number</h2>
 <p>Just show current page number (useful in page titles).
 Usage:</p>
 <pre class="literal-block">
@@ -868,7 +919,7 @@ context, e.g.:</p>
 </div>
 </div>
 <div class="section" id="customization">
-<h1>7   Customization</h1>
+<h1>8   Customization</h1>
 <p>You can customize the application using <tt class="docutils literal">settings.py</tt>.</p>
 <ul class="simple">
 <li><em>ENDLESS_PAGINATION_PER_PAGE</em> (default=10):
@@ -910,7 +961,7 @@ Template variable name used by <em>page_template</em> decorator.</p>
 </li>
 </ul>
 <div class="section" id="template-and-css">
-<h2>7.1   Template and css</h2>
+<h2>8.1   Template and css</h2>
 <p>You can override the default template for <em>show_more</em> templatetag following
 some rules:</p>
 <ul class="simple">
@@ -925,7 +976,7 @@ some rules:</p>
 </div>
 </div>
 <div class="section" id="related-projects">
-<h1>8   Related projects</h1>
+<h1>9   Related projects</h1>
 <p>Try out <a class="reference external" href="http://code.google.com/p/django-yafinder/">http://code.google.com/p/django-yafinder/</a> if you need to add filter
 and sort capabilities to your index page.</p>
 </div>
