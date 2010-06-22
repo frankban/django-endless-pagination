@@ -26,7 +26,7 @@ Installation
 The ``endless_pagination`` package, included in the distribution, should be
 placed on the *Python path*.
 
-Or just ``easy_install -Z django-endless-pagination``.
+Or just ``easy_install django-endless-pagination``.
 
 Requirements
 ~~~~~~~~~~~~
@@ -265,8 +265,6 @@ Done.
 Multiple pagination in the same page
 ====================================
 
-**New in version 0.4**
-
 Sometimes it is necessary to show different types of paginated objects in the 
 same page. In this case we have to associate to every pagination a different 
 querystring key. 
@@ -385,6 +383,32 @@ The previous example can be written::
     })
     def entry_index() ...
     
+    
+Lazy pagination
+===============
+
+**New in version 0.6**
+
+Usually pagination requires to hit the database to get the total number of items 
+to display. Lazy pagination avoids this *select count* and results in a faster
+page load, with a disadvantage: you can't know the total number of pages.
+For this reason it is better to use lazy pagination in conjunction with 
+twitter-style pagination (e.g. using the *show_more* template tag).
+
+To switch to lazy pagination all you have to do is to use the 
+*{% lazy_paginate %}* template tag instead of the *{% paginate %}* one, e.g.::
+    
+    {% load endless %}
+    
+    {% lazy_paginate objects %}
+    {% for object in objects %}
+        {# your code to show the entry #}
+    {% endfor %}
+    {% show_more %}
+
+The *lazy_paginate* tag can take all the args of *paginate* 
+(see below the templatetags reference).
+
 
 Templatetags reference
 ======================
@@ -426,6 +450,7 @@ context, e.g.::
     
 If the passed page number does not exist then first page is displayed.
 
+**New in version 0.6**
 If you have multiple paginations in the same page, you can change the
 querydict key for the single pagination, e.g.::
 
@@ -439,12 +464,22 @@ hardcode the key using quotes, e.g.::
 Again, you can mix it all (the order of arguments is important)::
 
     {% paginate 20 objects starting from page 3 using page_key as paginated_objects %}
-    
+
+**New in version 0.6**
 Additionally you can pass a path to be used for the pagination::
 
     {% paginate 20 objects using page_key with pagination_url as paginated_objects %}
 
 You must use this tag before calling the {% show_more %} one.
+
+lazy_paginate
+~~~~~~~~~~~~~
+
+**New in version 0.6**
+Paginate objects without hitting the database with a *select count* query.
+
+Use this the same way as *paginate* tag when you are not interested
+in the total number of pages.
 
 show_more
 ~~~~~~~~~
@@ -453,7 +488,8 @@ Show the link to get the next page in a Twitter-like pagination.
 Usage::
 
     {% show_more %}
-    
+  
+**New in version 0.6** 
 Alternatively you can override the label passed to the default template::
 
     {% show_more "even more" %}

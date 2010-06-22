@@ -91,7 +91,7 @@ def paginate(parser, token, paginator_class=None):
 @register.tag
 def lazy_paginate(parser, token):
     """
-    Paginate objects without hitting the database with a select count query.
+    Paginate objects without hitting the database with a *select count* query.
 
     Use this the same way as *paginate* tag when you are not interested
     in the total number of pages.
