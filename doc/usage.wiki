@@ -768,3 +768,5 @@ Try out http://code.google.com/p/django-yafinder/ if you need to add filter and 
 = 10 Thanks =
 
 This application was initially inspired by the excellent tool _django-pagination_ (see http://github.com/ericflo/django-pagination/tree/master).
+
+Thanks to Jannis Leidel for his contributions in improving the application with some new features.
