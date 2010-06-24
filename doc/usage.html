@@ -330,15 +330,15 @@ ul.auto-toc {
 </ul>
 </li>
 <li><a class="reference internal" href="#related-projects" id="id24">9   Related projects</a></li>
+<li><a class="reference internal" href="#thanks" id="id25">10   Thanks</a></li>
 </ul>
 </div>
 <div class="section" id="introduction">
 <h1>1   Introduction</h1>
-<p>This app can be used to provide ajaxed Twitter-style or Digg-style pagination.</p>
-<p>The initial idea, which has guided the development of this application,
-is to allow ajax pagination of web contents in very few steps, as done by
-the excellent tool <em>django-pagination</em>
-(see <a class="reference external" href="http://github.com/ericflo/django-pagination/tree/master">http://github.com/ericflo/django-pagination/tree/master</a>).</p>
+<p>This app can be used to provide Twitter-style or Digg-style pagination, with
+optional ajax support and other features like multiple or lazy poagination.
+The initial idea, which has guided the development of this application,
+is to allow pagination of web contents in very few steps.</p>
 </div>
 <div class="section" id="installation">
 <h1>2   Installation</h1>
@@ -486,6 +486,15 @@ in the distribution under <tt class="docutils literal">/media/js/</tt>.</p>
     {# your code to show the entry #}
 {% endfor %}
 {% show_more %}
+</pre>
+<p><strong>New in version 0.6</strong>
+If you want new items to load when the user scroll down the browser page
+you can use the <strong>pagination on scroll</strong> feature: just load
+the <em>endless_on_scroll.js</em> javascript after the <em>endless.js</em> one in your template:</p>
+<pre class="literal-block">
+&lt;script src=&quot;/path/to/jquery.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/path/to/endless.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/path/to/endless_on_scroll.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
 </pre>
 <p>That's all. Read the next section of the documentation to improve the use of
 included templatetags.</p>
@@ -686,8 +695,8 @@ def entry_index() ...
 <h1>6   Lazy pagination</h1>
 <p><strong>New in version 0.6</strong></p>
 <p>Usually pagination requires to hit the database to get the total number of items
-to display. Lazy pagination avoids this <em>select count</em> and results in a faster
-page load, with a disadvantage: you can't know the total number of pages.
+to display. Lazy pagination avoids this <em>select count</em> query and results in a
+faster page load, with a disadvantage: you can't know the total number of pages.
 For this reason it is better to use lazy pagination in conjunction with
 twitter-style pagination (e.g. using the <em>show_more</em> template tag).</p>
 <p>To switch to lazy pagination all you have to do is to use the
@@ -740,13 +749,13 @@ context, e.g.:</p>
 {% paginate objects starting from page page_number %}
 </pre>
 <p>If the passed page number does not exist then first page is displayed.</p>
-<p><strong>New in version 0.6</strong>
-If you have multiple paginations in the same page, you can change the
+<p>If you have multiple paginations in the same page, you can change the
 querydict key for the single pagination, e.g.:</p>
 <pre class="literal-block">
 {% paginate objects using article_page %}
 </pre>
-<p>In this case <em>article_page</em> is intended to be a context variable, but you can
+<p><strong>New in version 0.6</strong>
+In this case <em>article_page</em> is intended to be a context variable, but you can
 hardcode the key using quotes, e.g.:</p>
 <pre class="literal-block">
 {% paginate objects using 'articles_at_page' %}
@@ -978,7 +987,12 @@ some rules:</p>
 <div class="section" id="related-projects">
 <h1>9   Related projects</h1>
 <p>Try out <a class="reference external" href="http://code.google.com/p/django-yafinder/">http://code.google.com/p/django-yafinder/</a> if you need to add filter
-and sort capabilities to your index page.</p>
+and sort capabilities to your index pages.</p>
+</div>
+<div class="section" id="thanks">
+<h1>10   Thanks</h1>
+<p>This application was initially inspired by the excellent tool <em>django-pagination</em>
+(see <a class="reference external" href="http://github.com/ericflo/django-pagination/tree/master">http://github.com/ericflo/django-pagination/tree/master</a>).</p>
 </div>
 </div>
 </body>

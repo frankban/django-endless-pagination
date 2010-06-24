@@ -12,12 +12,10 @@ Endless Pagination
 Introduction
 ============
 
-This app can be used to provide ajaxed Twitter-style or Digg-style pagination.
-
+This app can be used to provide Twitter-style or Digg-style pagination, with
+optional ajax support and other features like multiple or lazy poagination.
 The initial idea, which has guided the development of this application, 
-is to allow ajax pagination of web contents in very few steps, as done by 
-the excellent tool *django-pagination* 
-(see http://github.com/ericflo/django-pagination/tree/master).
+is to allow pagination of web contents in very few steps.
 
 
 Installation
@@ -182,7 +180,7 @@ in the distribution under ``/media/js/``.
 
 **New in version 0.6**
 If you want new items to load when the user scroll down the browser page
-you can user the **pagination on scroll** feature: just load 
+you can use the **pagination on scroll** feature: just load 
 the *endless_on_scroll.js* javascript after the *endless.js* one in your template::
 
     <script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
@@ -399,8 +397,8 @@ Lazy pagination
 **New in version 0.6**
 
 Usually pagination requires to hit the database to get the total number of items 
-to display. Lazy pagination avoids this *select count* and results in a faster
-page load, with a disadvantage: you can't know the total number of pages.
+to display. Lazy pagination avoids this *select count* query and results in a 
+faster page load, with a disadvantage: you can't know the total number of pages.
 For this reason it is better to use lazy pagination in conjunction with 
 twitter-style pagination (e.g. using the *show_more* template tag).
 
@@ -459,12 +457,12 @@ context, e.g.::
     
 If the passed page number does not exist then first page is displayed.
 
-**New in version 0.6**
 If you have multiple paginations in the same page, you can change the
 querydict key for the single pagination, e.g.::
 
     {% paginate objects using article_page %}
-    
+
+**New in version 0.6**
 In this case *article_page* is intended to be a context variable, but you can
 hardcode the key using quotes, e.g.::
 
@@ -710,5 +708,11 @@ Related projects
 ================
 
 Try out http://code.google.com/p/django-yafinder/ if you need to add filter
-and sort capabilities to your index page.
+and sort capabilities to your index pages.
 
+
+Thanks
+======
+
+This application was initially inspired by the excellent tool *django-pagination* 
+(see http://github.com/ericflo/django-pagination/tree/master).

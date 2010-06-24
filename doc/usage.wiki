@@ -5,9 +5,7 @@
 
 = 1 Introduction =
 
-This app can be used to provide ajaxed Twitter-style or Digg-style pagination.
-
-The initial idea, which has guided the development of this application, is to allow ajax pagination of web contents in very few steps, as done by the excellent tool _django-pagination_ (see http://github.com/ericflo/django-pagination/tree/master).
+This app can be used to provide Twitter-style or Digg-style pagination, with optional ajax support and other features like multiple or lazy poagination. The initial idea, which has guided the development of this application, is to allow pagination of web contents in very few steps.
 
 = 2 Installation =
 
@@ -184,6 +182,16 @@ _myapp/entry_index_page.html_ becomes:
     {# your code to show the entry #}
 {% endfor %}
 {% show_more %}
+
+}}}
+
+*New in version 0.6* If you want new items to load when the user scroll down the browser page you can use the *pagination on scroll* feature: just load the _endless_on_scroll.js_ javascript after the _endless.js_ one in your template:
+
+{{{
+
+<script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
+<script src="/path/to/endless.js" type="text/javascript" charset="utf-8"></script>
+<script src="/path/to/endless_on_scroll.js" type="text/javascript" charset="utf-8"></script>
 
 }}}
 
@@ -407,7 +415,7 @@ def entry_index() ...
 
 *New in version 0.6*
 
-Usually pagination requires to hit the database to get the total number of items to display. Lazy pagination avoids this _select count_ and results in a faster page load, with a disadvantage: you can't know the total number of pages. For this reason it is better to use lazy pagination in conjunction with twitter-style pagination (e.g. using the _show_more_ template tag).
+Usually pagination requires to hit the database to get the total number of items to display. Lazy pagination avoids this _select count_ query and results in a faster page load, with a disadvantage: you can't know the total number of pages. For this reason it is better to use lazy pagination in conjunction with twitter-style pagination (e.g. using the _show_more_ template tag).
 
 To switch to lazy pagination all you have to do is to use the _{% lazy_paginate %}_ template tag instead of the _{% paginate %}_ one, e.g.:
 
@@ -481,7 +489,7 @@ This can be also achieved using a template variable you passed in the context, e
 
 If the passed page number does not exist then first page is displayed.
 
-*New in version 0.6* If you have multiple paginations in the same page, you can change the querydict key for the single pagination, e.g.:
+If you have multiple paginations in the same page, you can change the querydict key for the single pagination, e.g.:
 
 {{{
 
@@ -489,7 +497,7 @@ If the passed page number does not exist then first page is displayed.
 
 }}}
 
-In this case _article_page_ is intended to be a context variable, but you can hardcode the key using quotes, e.g.:
+*New in version 0.6* In this case _article_page_ is intended to be a context variable, but you can hardcode the key using quotes, e.g.:
 
 {{{
 
@@ -755,4 +763,8 @@ Application comes with English, Italian and German i18n.
 
 = 9 Related projects =
 
-Try out http://code.google.com/p/django-yafinder/ if you need to add filter and sort capabilities to your index page.
+Try out http://code.google.com/p/django-yafinder/ if you need to add filter and sort capabilities to your index pages.
+
+= 10 Thanks =
+
+This application was initially inspired by the excellent tool _django-pagination_ (see http://github.com/ericflo/django-pagination/tree/master).
