@@ -1,11 +1,9 @@
 import re
 
 from django import template
-from django.core.paginator import Paginator, EmptyPage
-from django.http import Http404
 
 from endless_pagination import settings, models, utils
-from endless_pagination.paginator import LazyPaginator
+from endless_pagination.paginator import DefaultPaginator, LazyPaginator, EmptyPage
 
 register = template.Library()
 
@@ -74,7 +72,7 @@ def paginate(parser, token, paginator_class=None):
         raise template.TemplateSyntaxError, message
         
     # use regexp to catch args    
-    p = r'^((?P<per_page>\w+)\s+)?(?P<objects>\w+)(\s+starting\s+from\s+page\s+(?P<number>\w+))?(\s+using\s+(?P<key>[\"\'\w]+))?(\s+with\s+(?P<override_path>\w+))?(\s+as\s+(?P<var_name>\w+))?$'
+    p = r'^(((?P<first_page>\w+)\:)?(?P<per_page>\w+)\s+)?(?P<objects>\w+)(\s+starting\s+from\s+page\s+(?P<number>\w+))?(\s+using\s+(?P<key>[\"\'\w]+))?(\s+with\s+(?P<override_path>\w+))?(\s+as\s+(?P<var_name>\w+))?$'
     e = re.compile(p)
     match = e.match(tag_args)
     if match is None:
@@ -103,14 +101,13 @@ class PaginateNode(template.Node):
     Insert into context the objects of the current page and
     the django paginator's *page* object.
     """
-    def __init__(self, paginator_class, objects, per_page=None, var_name=None, 
-        number=None, key=None, override_path=None):
-        self.paginator = paginator_class or Paginator
+    def __init__(self, paginator_class, objects, first_page=None, per_page=None, 
+        var_name=None, number=None, key=None, override_path=None):
+        self.paginator = paginator_class or DefaultPaginator
         self.objects = template.Variable(objects)
         # if var_name is not passed then will be queryset name
         self.var_name = objects if var_name is None else var_name
         # if per_page is not passed then is taken from settings
-        self.per_page = None
         self.per_page_variable = None
         if per_page is None:
             self.per_page = settings.PER_PAGE
@@ -118,6 +115,14 @@ class PaginateNode(template.Node):
             self.per_page = int(per_page)
         else:
             self.per_page_variable = template.Variable(per_page)
+        # manage first page: if it is not passed then *per_page* is used
+        self.first_page_variable = None
+        if first_page is None:
+            self.first_page = None
+        elif first_page.isdigit():
+            self.first_page = int(first_page)
+        else: 
+            self.first_page_variable = template.Variable(first_page)
         # manage page number when is not specified in querystring
         self.page_number_variable = None
         if number is None:
@@ -152,6 +157,12 @@ class PaginateNode(template.Node):
             per_page = self.per_page
         else:
             per_page = int(self.per_page_variable.resolve(context))
+    
+        # get number of items to show in the first page
+        if self.first_page_variable is None:
+            first_page = self.first_page or per_page
+        else:
+            first_page = int(self.first_page_variable.resolve(context))
         
         # user can override settings querystring key in the template
         if self.querystring_key_variable is None:
@@ -169,7 +180,8 @@ class PaginateNode(template.Node):
             querystring_key, default=default_number)
         
         objects = self.objects.resolve(context)
-        paginator = self.paginator(objects, per_page, orphans=settings.ORPHANS)
+        paginator = self.paginator(objects, per_page, first_page=first_page,
+            orphans=settings.ORPHANS)
         
         # get the page, user in settings can manage the case it is empty
         try:
