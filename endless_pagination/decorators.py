@@ -17,7 +17,7 @@ def page_template(template, key=PAGE_LABEL):
             extra_context = kwargs.setdefault("extra_context", {})
             extra_context['page_template'] = template
             # switch template on ajax requests
-            querystring_key = request.REQUEST.get("querystring_key")
+            querystring_key = request.REQUEST.get("querystring_key", key)
             if request.is_ajax() and querystring_key == key:
                 kwargs[TEMPLATE_VARNAME] = template
             return view(request, *args, **kwargs)
@@ -46,7 +46,7 @@ def page_templates(mapping):
         def decorated(request, *args, **kwargs):
             # trust the developer: he wrote context.update(extra_context) in his view
             extra_context = kwargs.setdefault("extra_context", {})
-            querystring_key = request.REQUEST.get("querystring_key")
+            querystring_key = request.REQUEST.get("querystring_key", PAGE_LABEL)
             template = templates.get(querystring_key)
             extra_context['page_template'] = template
             # switch template on ajax requests
