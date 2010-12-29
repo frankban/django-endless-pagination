@@ -64,22 +64,24 @@ def get_page_numbers(current_page, num_pages,
     current = page_range[current_start:current_end]
     
     # mix first with current pages
-    diff = current[0] - first[-1]
     to_add = current
-    if diff > 1:
-        pages.append(None)
-    elif diff < 1:
-        to_add = current[abs(diff)+1:]
+    if extremes:
+        diff = current[0] - first[-1]
+        if diff > 1:
+            pages.append(None)
+        elif diff < 1:
+            to_add = current[abs(diff)+1:]
     pages.extend(to_add)
-    
+
     # mix current with last pages
-    diff = last[0] - current[-1]
-    to_add = last
-    if diff > 1:
-        pages.append(None)
-    elif diff < 1:
-        to_add = last[abs(diff)+1:]
-    pages.extend(to_add)
+    if extremes:
+        diff = last[0] - current[-1]
+        to_add = last
+        if diff > 1:
+            pages.append(None)
+        elif diff < 1:
+            to_add = last[abs(diff)+1:]
+        pages.extend(to_add)
     
     pages.append("next")
     return pages

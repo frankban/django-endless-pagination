@@ -32,7 +32,7 @@ class BasePaginator(Paginator):
 class DefaultPaginator(BasePaginator):    
     def page(self, number):
         number = self.validate_number(number)
-        bottom = max((number-2)*self.per_page + self.first_page, 0)
+        bottom = 0 if number == 1 else ((number-2)*self.per_page + self.first_page)
         top = bottom + self.get_current_per_page(number)
         if top + self.orphans >= self.count:
             top = self.count
@@ -62,15 +62,18 @@ class LazyPaginator(BasePaginator):
     def page(self, number):
         number = self.validate_number(number)
         current_per_page = self.get_current_per_page(number)
-        bottom = max((number-2)*self.per_page + self.first_page, 0)
+        bottom = 0 if number == 1 else ((number-2)*self.per_page + self.first_page)
         top = bottom + current_per_page
         # get more objects to see if there is a next page
         objects = list(self.object_list[bottom:top + self.orphans + 1])
-        if len(objects) > (current_per_page + self.orphans):
+        objects_count = len(objects)
+        if objects_count > (current_per_page + self.orphans):
             # if there is a next page increase the total number of pages
             self._num_pages = number + 1
             # but return only objects for this page
             objects = objects[:current_per_page]
+        elif objects_count <= self.orphans:
+            raise EmptyPage('That page contains no results')
         else:
             # this is the last page
             self._num_pages = number

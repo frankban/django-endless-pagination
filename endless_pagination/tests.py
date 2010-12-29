@@ -20,6 +20,10 @@ LOW LEVEL TESTS: PAGINATORS
 4
 >>> p.count
 30
+>>> p.page(5).object_list
+Traceback (most recent call last):
+EmptyPage: That page contains no results
+
 
 >>> p = paginator.LazyPaginator(range(30), 7, orphans=2)
 >>> p.page(2).object_list
@@ -31,13 +35,79 @@ LOW LEVEL TESTS: PAGINATORS
 ... 
 >>> p.num_pages
 3
->>> try:
-...     p.count
-... except NotImplementedError:
-...     pass
-...
+>>> p.count
+Traceback (most recent call last):
+NotImplementedError
 >>> p.page(4).object_list
 [21, 22, 23, 24, 25, 26, 27, 28, 29]
+>>> p.page_range
+Traceback (most recent call last):
+NotImplementedError
+>>> p.page(5).object_list
+Traceback (most recent call last):
+EmptyPage: That page contains no results
+>>> p.page(0)
+Traceback (most recent call last):
+EmptyPage: That page number is less than 1
+
+
+LOW LEVEL TESTS: PAGINATORS WITH DIFFERENT NUMBER OF ITEMS ON THE FIRST PAGE
+
+>>> p = paginator.DefaultPaginator(range(30), 7, first_page=3, orphans=2)
+>>> p.page(1).object_list
+[0, 1, 2]
+>>> p.page(2).object_list
+[3, 4, 5, 6, 7, 8, 9]
+>>> p.page(5).object_list
+[24, 25, 26, 27, 28, 29]
+>>> p.num_pages
+5
+>>> p.page(6).object_list
+Traceback (most recent call last):
+EmptyPage: That page contains no results
+
+>>> p = paginator.DefaultPaginator(range(30), 7, first_page=15, orphans=2)
+>>> p.page_range
+[1, 2, 3]
+>>> p.page(1).object_list
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+>>> p.page(2).object_list
+[15, 16, 17, 18, 19, 20, 21]
+>>> p.page(3).object_list
+[22, 23, 24, 25, 26, 27, 28, 29]
+>>> p.page(4)
+Traceback (most recent call last):
+EmptyPage: That page contains no results
+>>> p.page(-2)
+Traceback (most recent call last):
+EmptyPage: That page number is less than 1
+
+>>> p = paginator.LazyPaginator(range(30), 7, first_page=3, orphans=2)
+>>> p.num_pages
+>>> p.page(1).object_list
+[0, 1, 2]
+>>> p.num_pages
+2
+>>> p.page(5).object_list
+[24, 25, 26, 27, 28, 29]
+>>> p.page(6).object_list
+Traceback (most recent call last):
+EmptyPage: That page contains no results
+
+>>> p = paginator.LazyPaginator(range(30), 7, first_page=15, orphans=2)
+>>> p.page(1).object_list
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+>>> p.page(2).object_list
+[15, 16, 17, 18, 19, 20, 21]
+>>> p.num_pages
+3
+>>> p.page(3).object_list
+[22, 23, 24, 25, 26, 27, 28, 29]
+>>> p.num_pages
+3
+>>> p.page(4)
+Traceback (most recent call last):
+EmptyPage: That page contains no results
 
 
 LOW LEVEL TESTS: PAGE LIST
@@ -57,7 +127,7 @@ True
 [u'<a class="endless_page_link" href="/" rel="page">1</a>', u'<span class="endless_page_current"><strong>2</strong></span>', u'<a class="endless_page_link" href="/?page=3" rel="page">3</a>', u'<a class="endless_page_link" href="/?page=4" rel="page">4</a>']
 
 
-LOW LEVEL TEST: DECORATORS
+LOW LEVEL TESTS: DECORATORS
 
 >>> def view(request, extra_context=None, template="default.html"):
 ...     context = {}
@@ -90,7 +160,7 @@ LOW LEVEL TEST: DECORATORS
 >>> decorated_mypage(request_querystring)
 ('default.html', {'page_template': 'mypage.html'})
 >>> decorated_mypage(ajax_request)
-('mypage.html', {'page_template': 'mypage.html'})
+('default.html', {'page_template': 'mypage.html'})
 >>> decorated_mypage(ajax_request_querystring)
 ('default.html', {'page_template': 'mypage.html'})
 >>> decorated_mypage(ajax_request_querystring_mypage)
@@ -133,9 +203,19 @@ LOW LEVEL TESTS: UTILS
 ['previous', 1, None, 5, None, 20, 'next']
 >>> utils.get_page_numbers(10, 20, extremes=2, arounds=3)
 ['previous', 1, 2, None, 7, 8, 9, 10, 11, 12, 13, None, 19, 20, 'next']
+>>> utils.get_page_numbers(4, 20, extremes=1, arounds=2)
+['previous', 1, 2, 3, 4, 5, 6, None, 20, 'next']
+>>> utils.get_page_numbers(5, 20, extremes=1, arounds=2)
+['previous', 1, None, 3, 4, 5, 6, 7, None, 20, 'next']
+>>> utils.get_page_numbers(5, 20, extremes=0, arounds=2)
+['previous', 3, 4, 5, 6, 7, 'next']
+>>> utils.get_page_numbers(5, 20, extremes=0, arounds=0)
+['previous', 5, 'next']
+>>> utils.get_page_numbers(5, 20, extremes=0, arounds=10)
+['previous', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 'next']
 
 
-TEMPLATETAG TESTS: SIMPLE USAGE.
+TEMPLATETAG TESTS: SIMPLE USAGE
 
 >>> t = Template("{% load endless %}{% paginate objects %}{{ objects }}{% show_pages %}")
 >>> request = WSGIRequest({'REQUEST_METHOD': "get"})
@@ -161,7 +241,7 @@ False
 [u'[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]', u'<span class="endless_page_current"><strong>1</strong></span>', u'<a class="endless_page_link" href="/?page=2" rel="page">2</a>', u'<a class="endless_page_link" href="/?page=3" rel="page">3</a>', u'<a class="endless_page_link" href="/?page=2" rel="page">&gt;&gt;</a>']
 
 
-TEMPLATETAG TESTS: USING ALL ARGUMENTS.
+TEMPLATETAG TESTS: USING ALL ARGUMENTS
 
 >>> t = Template("{% load endless %}{% paginate 5 objects starting from page 3 using key with url as paginated_objects %}{{ objects }}{% get_pages %}")
 >>> request = WSGIRequest({'REQUEST_METHOD': "get"})
@@ -279,6 +359,51 @@ TEMPLATETAG TESTS: MULTIPLE PAGINATION
 3
 >>> [i.strip() for i in html.split('\\n') if i.strip()]
 [u'[6, 7, 8, 9, 10, 11]', u'<div class="endless_container">', u'<a class="endless_more" href="/?page=3&amp;mypage=3" rel="page">more</a>', u'<div class="endless_loading" style="display: none;">loading</div>', u'</div>', u'[&#39;u&#39;, &#39;v&#39;, &#39;w&#39;, &#39;x&#39;, &#39;y&#39;, &#39;z&#39;]', u'<a class="endless_page_link" href="/?page=2&amp;mypage=2" rel="mypage">&lt;&lt;</a>', u'<a class="endless_page_link" href="/?page=2" rel="mypage">1</a>', u'<a class="endless_page_link" href="/?page=2&amp;mypage=2" rel="mypage">2</a>', u'<span class="endless_page_current"><strong>3</strong></span>']
+
+
+TEMPLATETAG TESTS: DIFFERENT NUMBER OF ITEMS IN THE FIRST PAGE
+
+>>> t = Template("{% load endless %}{% lazy_paginate 2,6 objects %}{{ objects }}{% get_pages %}")
+>>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=1"})
+>>> context = Context({'objects': range(30), 'request': request})
+>>> html = t.render(context)
+>>> context["objects"]
+[0, 1]
+>>> len(context["pages"])
+2
+
+>>> t = Template("{% load endless %}{% paginate 2,6 objects %}{{ objects }}{% get_pages %}")
+>>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=3"})
+>>> context = Context({'objects': range(30), 'request': request})
+>>> html = t.render(context)
+>>> context["objects"]
+[8, 9, 10, 11, 12, 13]
+>>> len(context["pages"])
+6
+>>> context["pages"].previous().number
+2
+
+>>> t = Template("{% load endless %}{% paginate 15,6 objects starting from page 2 %}{{ objects }}{% get_pages %}")
+>>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=1"})
+>>> context = Context({'objects': range(30), 'request': request})
+>>> html = t.render(context)
+>>> context["objects"]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+>>> context["pages"].current().url
+'?page=1'
+
+>>> t = Template("{% load endless %}{% paginate 15,6 objects starting from page 2 using 'mypage' %}{{ objects }}{% get_pages %}")
+>>> request = WSGIRequest({'REQUEST_METHOD': "get"})
+>>> context = Context({'objects': range(30), 'request': request})
+>>> html = t.render(context)
+>>> context["objects"]
+[15, 16, 17, 18, 19, 20]
+>>> context["pages"].previous().path
+u'/?mypage=1'
+>>> context["pages"].current().url
+''
+>>> context["pages"].last().number
+3
 
 
 TEMPLATETAG TESTS: CURRENT PAGE NUMBER

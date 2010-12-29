@@ -72,7 +72,7 @@ def paginate(parser, token, paginator_class=None):
         raise template.TemplateSyntaxError, message
         
     # use regexp to catch args    
-    p = r'^(((?P<first_page>\w+)\:)?(?P<per_page>\w+)\s+)?(?P<objects>\w+)(\s+starting\s+from\s+page\s+(?P<number>\w+))?(\s+using\s+(?P<key>[\"\'\w]+))?(\s+with\s+(?P<override_path>\w+))?(\s+as\s+(?P<var_name>\w+))?$'
+    p = r'^(((?P<first_page>\w+)\,)?(?P<per_page>\w+)\s+)?(?P<objects>\w+)(\s+starting\s+from\s+page\s+(?P<number>\w+))?(\s+using\s+(?P<key>[\"\'\w]+))?(\s+with\s+(?P<override_path>\w+))?(\s+as\s+(?P<var_name>\w+))?$'
     e = re.compile(p)
     match = e.match(tag_args)
     if match is None:
