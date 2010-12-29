@@ -178,7 +178,6 @@ in the distribution under ``/media/js/``.
     {% endfor %}
     {% show_more %}
 
-**New in version 0.6**
 If you want new items to load when the user scroll down the browser page
 you can use the **pagination on scroll** feature: just load 
 the *endless_on_scroll.js* javascript after the *endless.js* one in your template::
@@ -394,8 +393,6 @@ The previous example can be written::
 Lazy pagination
 ===============
 
-**New in version 0.6**
-
 Usually pagination requires to hit the database to get the total number of items 
 to display. Lazy pagination avoids this *select count* query and results in a 
 faster page load, with a disadvantage: you can't know the total number of pages.
@@ -462,7 +459,6 @@ querydict key for the single pagination, e.g.::
 
     {% paginate objects using article_page %}
 
-**New in version 0.6**
 In this case *article_page* is intended to be a context variable, but you can
 hardcode the key using quotes, e.g.::
 
@@ -472,17 +468,22 @@ Again, you can mix it all (the order of arguments is important)::
 
     {% paginate 20 objects starting from page 3 using page_key as paginated_objects %}
 
-**New in version 0.6**
 Additionally you can pass a path to be used for the pagination::
 
     {% paginate 20 objects using page_key with pagination_url as paginated_objects %}
+    
+**New in version 0.7**
+If you want the first page to contain a different number of items than
+subsequent pages you can separate the two values with a comma, e.g. if 
+you want 3 items on the first page and 10 on other pages::
+
+    {% paginate 3,10 objects %}
 
 You must use this tag before calling the {% show_more %} one.
 
 lazy_paginate
 ~~~~~~~~~~~~~
 
-**New in version 0.6**
 Paginate objects without hitting the database with a *select count* query.
 
 Use this the same way as *paginate* tag when you are not interested
@@ -496,10 +497,14 @@ Usage::
 
     {% show_more %}
   
-**New in version 0.6** 
 Alternatively you can override the label passed to the default template::
 
     {% show_more "even more" %}
+
+**New in version 0.7**
+You can override the loading text too::
+
+    {% show_more "even more" "working" %}
     
 Must be called after ``{% paginate objects %}``.
 
@@ -604,7 +609,7 @@ Here is an example of custom callable that displays previous page, then
 first page, then a separator, then current page, then next page::
 
     def get_page_numbers(current_page, num_pages):
-        return ("previous", 1, "...", current_page, "next")
+        return ("previous", 1, None, current_page, "next")
 
 If *ENDLESS_PAGE_LIST_CALLABLE* is *None* an internal callable is used,
 generating a digg-style pagination.

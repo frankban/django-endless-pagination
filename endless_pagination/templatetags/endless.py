@@ -61,6 +61,12 @@ def paginate(parser, token, paginator_class=None):
     Additionally you can pass a path to be used for the pagination::
 
         {% paginate 20 objects using page_key with pagination_url as paginated_objects %}
+    
+    If you want the first page to contain a different number of items than
+    subsequent pages you can separate the two values with a comma, e.g. if 
+    you want 3 items on the first page and 10 on other pages::
+
+    {% paginate 3,10 objects %}
 
     You must use this tag before calling the {% show_more %} one.
     """
@@ -199,7 +205,7 @@ class PaginateNode(template.Node):
 
     
 @register.inclusion_tag("endless/show_more.html", takes_context=True)
-def show_more(context, label=None):
+def show_more(context, label=None, loading=settings.LOADING):
     """
     Show the link to get the next page in a Twitter-like pagination.
     Usage::
@@ -210,6 +216,10 @@ def show_more(context, label=None):
     default template::
     
         {% show_more "even more" %}
+        
+    You can override the loading text too::
+    
+        {% show_more "even more" "working" %}
     
     Must be called after {% paginate objects %}.
     """
@@ -228,8 +238,9 @@ def show_more(context, label=None):
             'path': context["endless_override_path"] or request.path,
             'querystring_key': querystring_key,
             'querystring': querystring,
-            'loading': settings.LOADING,
+            'loading': loading,
             'label': label,
+            'request': request,
         }
     # no next page, nothing to see
     return {}
