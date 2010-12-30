@@ -7,8 +7,9 @@ class CustomPage(Page):
         # Special case, return zero if no items.
         if self.paginator.count == 0:
             return 0
-        return max((self.number-2)*self.paginator.per_page + self.paginator.first_page + 1, 
-            1)
+        elif self.number == 1:
+            return 1
+        return (self.number-2)*self.paginator.per_page + self.paginator.first_page + 1
 
     def end_index(self):
         # Special case for the last page because there can be orphans.
