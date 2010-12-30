@@ -28,11 +28,6 @@ EmptyPage: That page contains no results
 >>> p = paginator.LazyPaginator(range(30), 7, orphans=2)
 >>> p.page(2).object_list
 [7, 8, 9, 10, 11, 12, 13]
->>> try:
-...     p.page_range
-... except NotImplementedError:
-...     pass
-... 
 >>> p.num_pages
 3
 >>> p.count
