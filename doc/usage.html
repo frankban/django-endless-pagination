@@ -316,21 +316,22 @@ ul.auto-toc {
 </ul>
 </li>
 <li><a class="reference internal" href="#lazy-pagination" id="id14">6   Lazy pagination</a></li>
-<li><a class="reference internal" href="#templatetags-reference" id="id15">7   Templatetags reference</a><ul class="auto-toc">
-<li><a class="reference internal" href="#paginate" id="id16">7.1   paginate</a></li>
-<li><a class="reference internal" href="#lazy-paginate" id="id17">7.2   lazy_paginate</a></li>
-<li><a class="reference internal" href="#show-more" id="id18">7.3   show_more</a></li>
-<li><a class="reference internal" href="#get-pages" id="id19">7.4   get_pages</a></li>
-<li><a class="reference internal" href="#show-pages" id="id20">7.5   show_pages</a></li>
-<li><a class="reference internal" href="#show-current-number" id="id21">7.6   show_current_number</a></li>
+<li><a class="reference internal" href="#different-number-of-items-on-the-first-page" id="id15">7   Different number of items on the first page</a></li>
+<li><a class="reference internal" href="#templatetags-reference" id="id16">8   Templatetags reference</a><ul class="auto-toc">
+<li><a class="reference internal" href="#paginate" id="id17">8.1   paginate</a></li>
+<li><a class="reference internal" href="#lazy-paginate" id="id18">8.2   lazy_paginate</a></li>
+<li><a class="reference internal" href="#show-more" id="id19">8.3   show_more</a></li>
+<li><a class="reference internal" href="#get-pages" id="id20">8.4   get_pages</a></li>
+<li><a class="reference internal" href="#show-pages" id="id21">8.5   show_pages</a></li>
+<li><a class="reference internal" href="#show-current-number" id="id22">8.6   show_current_number</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#customization" id="id22">8   Customization</a><ul class="auto-toc">
-<li><a class="reference internal" href="#template-and-css" id="id23">8.1   Template and css</a></li>
+<li><a class="reference internal" href="#customization" id="id23">9   Customization</a><ul class="auto-toc">
+<li><a class="reference internal" href="#template-and-css" id="id24">9.1   Template and css</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#related-projects" id="id24">9   Related projects</a></li>
-<li><a class="reference internal" href="#thanks" id="id25">10   Thanks</a></li>
+<li><a class="reference internal" href="#related-projects" id="id25">10   Related projects</a></li>
+<li><a class="reference internal" href="#thanks" id="id26">11   Thanks</a></li>
 </ul>
 </div>
 <div class="section" id="introduction">
@@ -487,8 +488,7 @@ in the distribution under <tt class="docutils literal">/media/js/</tt>.</p>
 {% endfor %}
 {% show_more %}
 </pre>
-<p><strong>New in version 0.6</strong>
-If you want new items to load when the user scroll down the browser page
+<p>If you want new items to load when the user scroll down the browser page
 you can use the <strong>pagination on scroll</strong> feature: just load
 the <em>endless_on_scroll.js</em> javascript after the <em>endless.js</em> one in your template:</p>
 <pre class="literal-block">
@@ -693,7 +693,6 @@ def entry_index() ...
 </div>
 <div class="section" id="lazy-pagination">
 <h1>6   Lazy pagination</h1>
-<p><strong>New in version 0.6</strong></p>
 <p>Usually pagination requires to hit the database to get the total number of items
 to display. Lazy pagination avoids this <em>select count</em> query and results in a
 faster page load, with a disadvantage: you can't know the total number of pages.
@@ -713,10 +712,30 @@ twitter-style pagination (e.g. using the <em>show_more</em> template tag).</p>
 <p>The <em>lazy_paginate</em> tag can take all the args of <em>paginate</em>
 (see below the templatetags reference).</p>
 </div>
+<div class="section" id="different-number-of-items-on-the-first-page">
+<h1>7   Different number of items on the first page</h1>
+<p><strong>New in version 0.7</strong>
+Sometimes you might want to show on the first page a different number of
+items than subsequent pages (e.g. in a movie detail page you want to show
+4 images of the movie as a reminder, letting the user click to see other 20
+images, and so on). This is easy to achieve using comma separated first page
+and per page arguments, e.g.:</p>
+<pre class="literal-block">
+{% load endless %}
+
+{% lazy_paginate 4,20 objects %}
+{% for object in objects %}
+    {# your code to show the entry #}
+{% endfor %}
+{% show_more %}
+</pre>
+<p>This code will display 4 objects on the first page and 20 objects on the other
+pages.</p>
+</div>
 <div class="section" id="templatetags-reference">
-<h1>7   Templatetags reference</h1>
+<h1>8   Templatetags reference</h1>
 <div class="section" id="paginate">
-<h2>7.1   paginate</h2>
+<h2>8.1   paginate</h2>
 <p>Usage:</p>
 <pre class="literal-block">
 {% paginate objects %}
@@ -754,8 +773,7 @@ querydict key for the single pagination, e.g.:</p>
 <pre class="literal-block">
 {% paginate objects using article_page %}
 </pre>
-<p><strong>New in version 0.6</strong>
-In this case <em>article_page</em> is intended to be a context variable, but you can
+<p>In this case <em>article_page</em> is intended to be a context variable, but you can
 hardcode the key using quotes, e.g.:</p>
 <pre class="literal-block">
 {% paginate objects using 'articles_at_page' %}
@@ -764,36 +782,45 @@ hardcode the key using quotes, e.g.:</p>
 <pre class="literal-block">
 {% paginate 20 objects starting from page 3 using page_key as paginated_objects %}
 </pre>
-<p><strong>New in version 0.6</strong>
-Additionally you can pass a path to be used for the pagination:</p>
+<p>Additionally you can pass a path to be used for the pagination:</p>
 <pre class="literal-block">
 {% paginate 20 objects using page_key with pagination_url as paginated_objects %}
+</pre>
+<p><strong>New in version 0.7</strong>
+If you want the first page to contain a different number of items than
+subsequent pages you can separate the two values with a comma, e.g. if
+you want 3 items on the first page and 10 on other pages:</p>
+<pre class="literal-block">
+{% paginate 3,10 objects %}
 </pre>
 <p>You must use this tag before calling the {% show_more %} one.</p>
 </div>
 <div class="section" id="lazy-paginate">
-<h2>7.2   lazy_paginate</h2>
-<p><strong>New in version 0.6</strong>
-Paginate objects without hitting the database with a <em>select count</em> query.</p>
+<h2>8.2   lazy_paginate</h2>
+<p>Paginate objects without hitting the database with a <em>select count</em> query.</p>
 <p>Use this the same way as <em>paginate</em> tag when you are not interested
 in the total number of pages.</p>
 </div>
 <div class="section" id="show-more">
-<h2>7.3   show_more</h2>
+<h2>8.3   show_more</h2>
 <p>Show the link to get the next page in a Twitter-like pagination.
 Usage:</p>
 <pre class="literal-block">
 {% show_more %}
 </pre>
-<p><strong>New in version 0.6</strong>
-Alternatively you can override the label passed to the default template:</p>
+<p>Alternatively you can override the label passed to the default template:</p>
 <pre class="literal-block">
 {% show_more &quot;even more&quot; %}
+</pre>
+<p><strong>New in version 0.7</strong>
+You can override the loading text too:</p>
+<pre class="literal-block">
+{% show_more &quot;even more&quot; &quot;working&quot; %}
 </pre>
 <p>Must be called after <tt class="docutils literal">{% paginate objects %}</tt>.</p>
 </div>
 <div class="section" id="get-pages">
-<h2>7.4   get_pages</h2>
+<h2>8.4   get_pages</h2>
 <p>Usage:</p>
 <pre class="literal-block">
 {% get_pages %}
@@ -865,7 +892,7 @@ of page links. You can use <em>pages</em> in different ways:</p>
 <p>Must be called after <tt class="docutils literal">{% paginate objects %}</tt>.</p>
 </div>
 <div class="section" id="show-pages">
-<h2>7.5   show_pages</h2>
+<h2>8.5   show_pages</h2>
 <p>Show page links.
 Usage:</p>
 <pre class="literal-block">
@@ -892,14 +919,14 @@ The sequence can contain other values:</p>
 first page, then a separator, then current page, then next page:</p>
 <pre class="literal-block">
 def get_page_numbers(current_page, num_pages):
-    return (&quot;previous&quot;, 1, &quot;...&quot;, current_page, &quot;next&quot;)
+    return (&quot;previous&quot;, 1, None, current_page, &quot;next&quot;)
 </pre>
 <p>If <em>ENDLESS_PAGE_LIST_CALLABLE</em> is <em>None</em> an internal callable is used,
 generating a digg-style pagination.</p>
 <p>Must be called after <tt class="docutils literal">{% paginate objects %}</tt>.</p>
 </div>
 <div class="section" id="show-current-number">
-<h2>7.6   show_current_number</h2>
+<h2>8.6   show_current_number</h2>
 <p>Just show current page number (useful in page titles).
 Usage:</p>
 <pre class="literal-block">
@@ -928,7 +955,7 @@ context, e.g.:</p>
 </div>
 </div>
 <div class="section" id="customization">
-<h1>8   Customization</h1>
+<h1>9   Customization</h1>
 <p>You can customize the application using <tt class="docutils literal">settings.py</tt>.</p>
 <ul class="simple">
 <li><em>ENDLESS_PAGINATION_PER_PAGE</em> (default=10):
@@ -970,7 +997,7 @@ Template variable name used by <em>page_template</em> decorator.</p>
 </li>
 </ul>
 <div class="section" id="template-and-css">
-<h2>8.1   Template and css</h2>
+<h2>9.1   Template and css</h2>
 <p>You can override the default template for <em>show_more</em> templatetag following
 some rules:</p>
 <ul class="simple">
@@ -985,16 +1012,16 @@ some rules:</p>
 </div>
 </div>
 <div class="section" id="related-projects">
-<h1>9   Related projects</h1>
+<h1>10   Related projects</h1>
 <p>Try out <a class="reference external" href="http://code.google.com/p/django-yafinder/">http://code.google.com/p/django-yafinder/</a> if you need to add filter
 and sort capabilities to your index pages.</p>
 </div>
 <div class="section" id="thanks">
-<h1>10   Thanks</h1>
+<h1>11   Thanks</h1>
 <p>This application was initially inspired by the excellent tool <em>django-pagination</em>
 (see <a class="reference external" href="http://github.com/ericflo/django-pagination/tree/master">http://github.com/ericflo/django-pagination/tree/master</a>).</p>
-<p>Thanks to Jannis Leidel for his contributions in improving the application with some new features.</p>
-
+<p>Thanks to Jannis Leidel for his contributions in improving
+the application with some new features.</p>
 </div>
 </div>
 </body>

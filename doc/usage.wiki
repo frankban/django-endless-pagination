@@ -185,7 +185,7 @@ _myapp/entry_index_page.html_ becomes:
 
 }}}
 
-*New in version 0.6* If you want new items to load when the user scroll down the browser page you can use the *pagination on scroll* feature: just load the _endless_on_scroll.js_ javascript after the _endless.js_ one in your template:
+If you want new items to load when the user scroll down the browser page you can use the *pagination on scroll* feature: just load the _endless_on_scroll.js_ javascript after the _endless.js_ one in your template:
 
 {{{
 
@@ -413,8 +413,6 @@ def entry_index() ...
 
 = 6 Lazy pagination =
 
-*New in version 0.6*
-
 Usually pagination requires to hit the database to get the total number of items to display. Lazy pagination avoids this _select count_ query and results in a faster page load, with a disadvantage: you can't know the total number of pages. For this reason it is better to use lazy pagination in conjunction with twitter-style pagination (e.g. using the _show_more_ template tag).
 
 To switch to lazy pagination all you have to do is to use the _{% lazy_paginate %}_ template tag instead of the _{% paginate %}_ one, e.g.:
@@ -433,9 +431,27 @@ To switch to lazy pagination all you have to do is to use the _{% lazy_paginate 
 
 The _lazy_paginate_ tag can take all the args of _paginate_ (see below the templatetags reference).
 
-= 7 Templatetags reference =
+= 7 Different number of items on the first page =
 
-== 7.1 paginate ==
+*New in version 0.7* Sometimes you might want to show on the first page a different number of items than subsequent pages (e.g. in a movie detail page you want to show 4 images of the movie as a reminder, letting the user click to see other 20 images, and so on). This is easy to achieve using comma separated first page and per page arguments, e.g.:
+
+{{{
+
+{% load endless %}
+
+{% lazy_paginate 4,20 objects %}
+{% for object in objects %}
+    {# your code to show the entry #}
+{% endfor %}
+{% show_more %}
+
+}}}
+
+This code will display 4 objects on the first page and 20 objects on the other pages.
+
+= 8 Templatetags reference =
+
+== 8.1 paginate ==
 
 Usage:
 
@@ -497,7 +513,7 @@ If you have multiple paginations in the same page, you can change the querydict 
 
 }}}
 
-*New in version 0.6* In this case _article_page_ is intended to be a context variable, but you can hardcode the key using quotes, e.g.:
+In this case _article_page_ is intended to be a context variable, but you can hardcode the key using quotes, e.g.:
 
 {{{
 
@@ -513,7 +529,7 @@ Again, you can mix it all (the order of arguments is important):
 
 }}}
 
-*New in version 0.6* Additionally you can pass a path to be used for the pagination:
+Additionally you can pass a path to be used for the pagination:
 
 {{{
 
@@ -521,15 +537,23 @@ Again, you can mix it all (the order of arguments is important):
 
 }}}
 
+*New in version 0.7* If you want the first page to contain a different number of items than subsequent pages you can separate the two values with a comma, e.g. if you want 3 items on the first page and 10 on other pages:
+
+{{{
+
+{% paginate 3,10 objects %}
+
+}}}
+
 You must use this tag before calling the {% show_more %} one.
 
-== 7.2 lazy_paginate ==
+== 8.2 lazy_paginate ==
 
-*New in version 0.6* Paginate objects without hitting the database with a _select count_ query.
+Paginate objects without hitting the database with a _select count_ query.
 
 Use this the same way as _paginate_ tag when you are not interested in the total number of pages.
 
-== 7.3 show_more ==
+== 8.3 show_more ==
 
 Show the link to get the next page in a Twitter-like pagination. Usage:
 
@@ -539,7 +563,7 @@ Show the link to get the next page in a Twitter-like pagination. Usage:
 
 }}}
 
-*New in version 0.6* Alternatively you can override the label passed to the default template:
+Alternatively you can override the label passed to the default template:
 
 {{{
 
@@ -547,9 +571,17 @@ Show the link to get the next page in a Twitter-like pagination. Usage:
 
 }}}
 
+*New in version 0.7* You can override the loading text too:
+
+{{{
+
+{% show_more "even more" "working" %}
+
+}}}
+
 Must be called after `{% paginate objects %}`.
 
-== 7.4 get_pages ==
+== 8.4 get_pages ==
 
 Usage:
 
@@ -644,7 +676,7 @@ You can change the variable name, e.g.:
 
 Must be called after `{% paginate objects %}`.
 
-== 7.5 show_pages ==
+== 8.5 show_pages ==
 
 Show page links. Usage:
 
@@ -674,7 +706,7 @@ Here is an example of custom callable that displays previous page, then first pa
 {{{
 
 def get_page_numbers(current_page, num_pages):
-    return ("previous", 1, "...", current_page, "next")
+    return ("previous", 1, None, current_page, "next")
 
 }}}
 
@@ -682,7 +714,7 @@ If _ENDLESS_PAGE_LIST_CALLABLE_ is _None_ an internal callable is used, generati
 
 Must be called after `{% paginate objects %}`.
 
-== 7.6 show_current_number ==
+== 8.6 show_current_number ==
 
 Just show current page number (useful in page titles). Usage:
 
@@ -724,7 +756,7 @@ Of course, you can mix it all (the order of arguments is important):
 
 }}}
 
-= 8 Customization =
+= 9 Customization =
 
 You can customize the application using `settings.py`.
 
@@ -748,7 +780,7 @@ ENDLESS_PAGINATION_LOADING = """
   * _ENDLESS_PAGINATION_DEFAULT_CALLABLE_AROUNDS_ (default=2)
   * _ENDLESS_PAGINATION_TEMPLATE_VARNAME_ (default="template"): Template variable name used by _page_template_ decorator.
 
-== 8.1 Template and css ==
+== 9.1 Template and css ==
 
 You can override the default template for _show_more_ templatetag following some rules:
 
@@ -761,11 +793,11 @@ You can override the default template for _show_more_ templatetag following some
 
 Application comes with English, Italian and German i18n.
 
-= 9 Related projects =
+= 10 Related projects =
 
 Try out http://code.google.com/p/django-yafinder/ if you need to add filter and sort capabilities to your index pages.
 
-= 10 Thanks =
+= 11 Thanks =
 
 This application was initially inspired by the excellent tool _django-pagination_ (see http://github.com/ericflo/django-pagination/tree/master).
 
