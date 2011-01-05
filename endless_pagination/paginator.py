@@ -73,7 +73,7 @@ class LazyPaginator(BasePaginator):
             self._num_pages = number + 1
             # but return only objects for this page
             objects = objects[:current_per_page]
-        elif objects_count <= self.orphans:
+        elif( number != 1) and (objects_count <= self.orphans):
             raise EmptyPage('That page contains no results')
         else:
             # this is the last page
