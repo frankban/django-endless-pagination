@@ -9,6 +9,7 @@ __test__ = {"doctest": """
 >>> from endless_pagination import decorators
 >>> from endless_pagination import utils
 
+
 LOW LEVEL TESTS: PAGINATORS
 
 >>> p = paginator.DefaultPaginator(range(30), 7, orphans=2)
@@ -23,7 +24,21 @@ LOW LEVEL TESTS: PAGINATORS
 >>> p.page(5).object_list
 Traceback (most recent call last):
 EmptyPage: That page contains no results
+>>> p.page(2).start_index()
+8
+>>> p.page(2).end_index()
+14
 
+>>> p = paginator.DefaultPaginator(range(9), 7, orphans=2)
+>>> p.num_pages
+1
+>>> p.page(2)
+Traceback (most recent call last):
+EmptyPage: That page contains no results
+>>> p.page(1).start_index()
+1
+>>> p.page(1).end_index()
+9
 
 >>> p = paginator.LazyPaginator(range(30), 7, orphans=2)
 >>> p.page(2).object_list
@@ -44,6 +59,20 @@ EmptyPage: That page contains no results
 >>> p.page(0)
 Traceback (most recent call last):
 EmptyPage: That page number is less than 1
+
+>>> p = paginator.LazyPaginator(range(11), 8, orphans=2)
+>>> p.num_pages
+>>> p.page(1).object_list
+[0, 1, 2, 3, 4, 5, 6, 7]
+>>> p.page(2).object_list
+[8, 9, 10]
+
+>>> p = paginator.LazyPaginator(range(10), 8, orphans=3)
+>>> p.page(2)
+Traceback (most recent call last):
+EmptyPage: That page contains no results
+>>> p.page(1).object_list
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
 LOW LEVEL TESTS: PAGINATORS WITH DIFFERENT NUMBER OF ITEMS ON THE FIRST PAGE
@@ -77,6 +106,19 @@ EmptyPage: That page contains no results
 Traceback (most recent call last):
 EmptyPage: That page number is less than 1
 
+>>> p = paginator.DefaultPaginator(range(6), 7, first_page=3, orphans=3)
+>>> p.num_pages
+1
+>>> p.page(2).object_list
+Traceback (most recent call last):
+EmptyPage: That page contains no results
+>>> p.page(1).object_list
+[0, 1, 2, 3, 4, 5]
+>>> p.page(1).start_index()
+1
+>>> p.page(1).end_index()
+6
+
 >>> p = paginator.LazyPaginator(range(30), 7, first_page=3, orphans=2)
 >>> p.num_pages
 >>> p.page(1).object_list
@@ -103,6 +145,15 @@ EmptyPage: That page contains no results
 >>> p.page(4)
 Traceback (most recent call last):
 EmptyPage: That page contains no results
+
+>>> p = paginator.LazyPaginator(range(10), 1, first_page=8, orphans=2)
+>>> p.page(2)
+Traceback (most recent call last):
+EmptyPage: That page contains no results
+>>> p.page(1).object_list
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+>>> p.num_pages
+1
 
 
 LOW LEVEL TESTS: PAGE LIST
