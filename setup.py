@@ -19,7 +19,7 @@ version = "%s.%s" % __import__('endless_pagination').VERSION[:2]
 
 setup(name='django-endless-pagination',
     version=version,
-    description='Ajax pagination tools for Django.',
+    description='Django pagination tools supporting ajax, multiple and lazy pagination, Twitter-style and Digg-style pagination.',
     author='Francesco Banconi',
     author_email='francesco.banconi@gmail.com',
     url='http://code.google.com/p/django-endless-pagination/',
