@@ -1,7 +1,8 @@
-from endless_pagination.settings import DEFAULT_CALLABLE_EXTREMES, DEFAULT_CALLABLE_AROUNDS
+from endless_pagination.settings import (DEFAULT_CALLABLE_EXTREMES, 
+    DEFAULT_CALLABLE_AROUNDS, PAGE_LABEL)
 from endless_pagination import exceptions
 
-def get_page_number_from_request(request, querystring_key, default=1):
+def get_page_number_from_request(request, querystring_key=PAGE_LABEL, default=1):
     """
     Get page number from *GET* or *POST* data.
     If the page does not exists in *request*, or is not a number
