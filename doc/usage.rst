@@ -439,7 +439,6 @@ The *lazy_paginate* tag can take all the args of *paginate*
 Different number of items on the first page
 ===========================================
 
-**New in version 0.7**
 Sometimes you might want to show on the first page a different number of
 items than subsequent pages (e.g. in a movie detail page you want to show
 4 images of the movie as a reminder, letting the user click to see other 20
@@ -538,7 +537,6 @@ Additionally you can pass a path to be used for the pagination::
 
     {% paginate 20 objects using page_key with pagination_url as paginated_objects %}
     
-**New in version 0.7**
 If you want the first page to contain a different number of items than
 subsequent pages you can separate the two values with a comma, e.g. if 
 you want 3 items on the first page and 10 on other pages::
@@ -567,7 +565,6 @@ Alternatively you can override the label passed to the default template::
 
     {% show_more "even more" %}
 
-**New in version 0.7**
 You can override the loading text too::
 
     {% show_more "even more" "working" %}
