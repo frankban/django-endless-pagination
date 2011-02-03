@@ -24,7 +24,7 @@ Installation
 The ``endless_pagination`` package, included in the distribution, should be
 placed on the *Python path*.
 
-Or just ``easy_install django-endless-pagination``.
+Or just ``easy_install -Z django-endless-pagination``.
 
 Requirements
 ~~~~~~~~~~~~
@@ -51,10 +51,32 @@ Add ``'endless_pagination'`` to the ``INSTALLED_APPS`` in your *settings.py*.
 
 See *Customization* section in this documentation for other settings options.
 
-Let's start
-~~~~~~~~~~~
+Quickstart
+~~~~~~~~~~
 
-As creative example, the developer wants pagination of entries of a blog post.
+Having a template like this::
+
+    {% for object in objects %}
+        {# your code to show the entry #}
+    {% endfor %}
+    
+You can use Digg-style pagination to display objects just adding::
+
+    {% load endless %}
+    
+    {% paginate objects %}
+    {% for object in objects %}
+        {# your code to show the entry #}
+    {% endfor %}
+    {% show_pages %}
+    
+Done.
+
+A more complex example
+~~~~~~~~~~~~~~~~~~~~~~
+
+As creative example, the developer wants Twitter-style pagination of 
+entries of a blog post.
 
 In *views.py* we have::
 
@@ -80,7 +102,7 @@ but only the portion of the page to update or add.
 So it is convenient to extrapolate from the template the part containing entries 
 and use the new one to render the context if the request is AJAX.
 The main template will include the other, so it is convenient to put
-the page template in the context.
+the page template name in the context.
 
 *views.py* becomes::
     
@@ -224,7 +246,7 @@ of previous and next pages.
 Adding ajax
 ~~~~~~~~~~~
 
-The view is exactly the same as in *show_more* twitter-style pagination::
+The view is exactly the same as in *show_more* Twitter-style pagination::
 
     from endless_pagination.decorators import page_template
     
@@ -434,6 +456,28 @@ and per page arguments, e.g.::
     
 This code will display 4 objects on the first page and 20 objects on the other
 pages.
+
+
+Getting current page number in the view
+=======================================
+
+If you need to get the current page number in the view, you can use an utility
+function called *get_page_number_from_request*, e.g.::
+
+    from endless_pagination import utils
+    
+    page = utils.get_page_number_from_request(request)
+    
+If you are using multiple pagination or you have changed the default
+querystring for pagination, you can pass the querystring key as 
+an optional argument::
+
+    page = utils.get_page_number_from_request(request, querystring_key=mykey)
+    
+If the page number is not present in the request, by default *1* is returned.
+You can change this behaviour using::
+
+    page = utils.get_page_number_from_request(request, default=3)
 
 
 Templatetags reference
