@@ -472,4 +472,40 @@ u'5'
 >>> t.render(context)
 u'12'
 
+>>> t = Template("{% load endless %}{% show_current_number as page_number %}")
+>>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001"})
+>>> context = Context({'request': request})
+>>> t.render(context)
+u''
+
+>>> t = Template("{% load endless %}{% show_current_number as page_number %}{{ page_number }}")
+>>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001"})
+>>> context = Context({'request': request})
+>>> t.render(context)
+u'2001'
+
+>>> t = Template("{% load endless %}{% show_current_number starting from page mypage as page_number %}")
+>>> request = WSGIRequest({'REQUEST_METHOD': "get"})
+>>> context = Context({'request': request, 'mypage': 12})
+>>> t.render(context)
+u''
+
+>>> t = Template("{% load endless %}{% show_current_number starting from page mypage as page_number %}{{ page_number }}")
+>>> request = WSGIRequest({'REQUEST_METHOD': "get"})
+>>> context = Context({'request': request, 'mypage': 12})
+>>> t.render(context)
+u'12'
+
+>>> t = Template("{% load endless %}{% show_current_number using mykey %}{{ page_number }}")
+>>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001&mypage=9"})
+>>> context = Context({'request': request, 'mykey': "mypage"})
+>>> t.render(context)
+u'9'
+
+>>> t = Template("{% load endless %}{% show_current_number using 'another_key' %}{{ page_number }}")
+>>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001&mypage=9"})
+>>> context = Context({'request': request, 'mykey': "mypage"})
+>>> t.render(context)
+u'1'
+
 """}

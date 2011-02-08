@@ -417,8 +417,10 @@ class ShowPagesNode(template.Node):
 @register.tag
 def show_current_number(parser, token):
     """
-    Just show current page number (useful in page titles).
-    Usage::
+    Show (or insert in the context) the current page number.
+    This tag can be useful for example to change page title according to
+    current page number.
+    To just show current page number::
     
         {% show_current_number %}
         
@@ -427,8 +429,8 @@ def show_current_number(parser, token):
     
         {% show_current_number using mykey %}
         
-    Default page when no querystring is specified is 1. If you changed in the 
-    *paginate* template tag, you have to call  *show_current_number* 
+    Default page when no querystring is specified is 1. If you changed it in 
+    the *paginate* template tag, you have to call  *show_current_number* 
     according to your choice, e.g.::
         
         {% show_current_number starting from page 3 %}
@@ -441,6 +443,12 @@ def show_current_number(parser, token):
     Of course, you can mix it all (the order of arguments is important)::
     
         {% show_current_number starting from page 3 using mykey %}
+        
+    If you want to insert the current page number in the context, without
+    actually displaying it in the template, use the *as* argument, i.e.::
+    
+        {% show_current_number as page_number %}
+        {% show_current_number starting from page 3 using mykey as page_number %}
     """
     # args validation
     try:
@@ -449,9 +457,10 @@ def show_current_number(parser, token):
         tag_name = token.contents[0]
         number = None
         key = None
+        var_name = None
     else:
         # use regexp to catch args    
-        p = r'^(starting\s+from\s+page\s+(?P<number>\w+))?\s*(using\s+(?P<key>[\"\'\w]+))?$'
+        p = r'^(starting\s+from\s+page\s+(?P<number>\w+))?\s*(using\s+(?P<key>[\"\'\w]+))?\s*(as\s+(?P<var_name>\w+))?$'
         e = re.compile(p)
         match = e.match(args)
         if match is None:
@@ -461,14 +470,16 @@ def show_current_number(parser, token):
         groupdict = match.groupdict()
         number = groupdict["number"]
         key = groupdict["key"]
+        var_name = groupdict["var_name"]
     # call the node
-    return ShowCurrentNumberNode(number, key)
+    return ShowCurrentNumberNode(number, key, var_name)
     
 class ShowCurrentNumberNode(template.Node):
     """
     Show the page number taken from context.
     """
-    def __init__(self, number, key):
+    def __init__(self, number, key, var_name):
+        # page number
         self.page_number_variable = None
         if number is None:
             self.page_number = 1
@@ -477,6 +488,7 @@ class ShowCurrentNumberNode(template.Node):
         else:
             self.page_number_variable = template.Variable(number)
         
+        # querystring key
         self.querystring_key_variable = None
         if key is None:
             self.querystring_key = settings.PAGE_LABEL
@@ -484,6 +496,9 @@ class ShowCurrentNumberNode(template.Node):
             self.querystring_key = key[1:-1]
         else:
             self.querystring_key_variable = template.Variable(key)
+            
+        # var name
+        self.var_name = var_name
     
     def render(self, context):
         # get page number to use if it is not specified in querystring
@@ -500,4 +515,7 @@ class ShowCurrentNumberNode(template.Node):
         
         page_number = utils.get_page_number_from_request(context["request"],
             querystring_key, default=default_number)
-        return unicode(page_number)
+        if self.var_name is None:
+            return unicode(page_number)
+        context[self.var_name] = page_number
+        return u''
