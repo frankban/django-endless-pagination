@@ -12,7 +12,7 @@ ORPHANS = getattr(settings, "ENDLESS_PAGINATION_ORPHANS", 0)
 # the content of the loader hidden element
 # Html is safe here, e.g. you can show your pretty animated gif:
 #    ENDLESS_PAGINATION_LOADING = """
-#        <img src="/site_media/img/loader.gif" alt="loading" />
+#        <img src="/static/img/loader.gif" alt="loading" />
 #    """
 LOADING = getattr(settings, 
     "ENDLESS_PAGINATION_LOADING", "loading")

@@ -109,7 +109,7 @@ Paginating objects
 
 Nothing remains but to change the page template, loading endless templatetags,
 the jQuery library and the javascript file *endless.js* included 
-in the distribution under ``/media/js/``.
+in the distribution under ``/static/endless_pagination/js/``.
 
 *myapp/entry_index.html* becomes:
 

@@ -21,7 +21,7 @@ Name                                                 Default       Description
                                                                    here you can customize the content of the 
                                                                    loader hidden element. Html is safe here, 
                                                                    e.g. you can show your pretty animated gif
-                                                                   ``ENDLESS_PAGINATION_LOADING = """<img src="/site_media/img/loader.gif" alt="loading" />"""``.
+                                                                   ``ENDLESS_PAGINATION_LOADING = """<img src="/static/img/loader.gif" alt="loading" />"""``.
 ---------------------------------------------------- ------------- --------------------------------
 ``ENDLESS_PAGINATION_PREVIOUS_LABEL``                '&lt;&lt;'    Default label for *previous* page link.
 ---------------------------------------------------- ------------- --------------------------------

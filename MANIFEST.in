@@ -4,6 +4,6 @@ include LICENSE
 include MANIFEST.in
 recursive-include doc *
 recursive-include tests *
-recursive-include endless_pagination/media *
+recursive-include endless_pagination/static *
 recursive-include endless_pagination/locale *
 recursive-include endless_pagination/templates *
