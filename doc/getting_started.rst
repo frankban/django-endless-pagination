@@ -1,6 +1,15 @@
 Getting started
 ===============
 
+Requirements
+~~~~~~~~~~~~
+
+======  ======
+Python  >= 2.5
+Django  >= 1.0
+jQuery  >= 1.3
+======  ======
+
 Installation
 ~~~~~~~~~~~~
 
@@ -12,15 +21,6 @@ The ``endless_pagination`` package, included in the distribution, should be
 placed on the ``PYTHONPATH``.
 
 Otherwise you can just ``easy_install -Z django-endless-pagination``.
-
-Requirements
-~~~~~~~~~~~~
-
-======  ======
-Python  >= 2.5
-Django  >= 1.0
-jQuery  >= 1.3
-======  ======
 
 Settings
 ~~~~~~~~
