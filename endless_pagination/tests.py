@@ -1,8 +1,20 @@
+import string
+
+from django.template import Template, Context
+from django.core.handlers.wsgi import WSGIRequest
+
+class Request(WSGIRequest):
+    """
+    WSGIRequest wrapper.
+    """
+    def __init__(self, environ):
+        if 'wsgi.input' not in environ:
+            environ['wsgi.input'] = None
+        super(Request, self).__init__(environ)
+        
+
 __test__ = {"doctest": """
 
->>> import string
->>> from django.template import Template, Context
->>> from django.core.handlers.wsgi import WSGIRequest
 >>> from endless_pagination import settings
 >>> from endless_pagination import models
 >>> from endless_pagination import paginator
@@ -159,7 +171,7 @@ EmptyPage: That page contains no results
 LOW LEVEL TESTS: PAGE LIST
 
 >>> p = paginator.Paginator(range(30), 7, orphans=2)
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2"})
 >>> pages = models.PageList(request, p.page(2), 'page')
 >>> len(pages)
 4
@@ -181,11 +193,11 @@ LOW LEVEL TESTS: DECORATORS
 ...         context.update(extra_context)
 ...     return template, context
 ... 
->>> request = WSGIRequest({'REQUEST_METHOD': "get"})
->>> request_querystring = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2&mypage=10&querystring_key=page"})
->>> ajax_request = WSGIRequest({'REQUEST_METHOD': "get", 'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
->>> ajax_request_querystring = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2&mypage=10&querystring_key=page", 'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
->>> ajax_request_querystring_mypage = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2&mypage=10&querystring_key=mypage", 'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
+>>> request = Request({'REQUEST_METHOD': "get"})
+>>> request_querystring = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2&mypage=10&querystring_key=page"})
+>>> ajax_request = Request({'REQUEST_METHOD': "get", 'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
+>>> ajax_request_querystring = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2&mypage=10&querystring_key=page", 'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
+>>> ajax_request_querystring_mypage = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2&mypage=10&querystring_key=mypage", 'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
 >>> decorated = decorators.page_template("page.html")(view)
 >>> decorated_mypage = decorators.page_template("mypage.html", key="mypage")(view)
 >>> decorated_multiple = decorators.page_templates({"page.html": None, "mypage.html": "mypage"})(view)
@@ -264,7 +276,7 @@ LOW LEVEL TESTS: UTILS
 TEMPLATETAG TESTS: SIMPLE USAGE
 
 >>> t = Template("{% load endless %}{% paginate objects %}{{ objects }}{% show_pages %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get"})
+>>> request = Request({'REQUEST_METHOD': "get"})
 >>> context = Context({'objects': range(30), 'request': request})
 >>> html = t.render(context)
 
@@ -290,7 +302,7 @@ False
 TEMPLATETAG TESTS: USING ALL ARGUMENTS
 
 >>> t = Template("{% load endless %}{% paginate 5 objects starting from page 3 using key with url as paginated_objects %}{{ objects }}{% get_pages %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get"})
+>>> request = Request({'REQUEST_METHOD': "get"})
 >>> context = Context({'objects': range(30), 'request': request, 'url':"/myurl/", 'key': 'mykey'})
 >>> html = t.render(context)
 
@@ -333,7 +345,7 @@ False
 TEMPLATETAG TESTS: GETTING A DIFFERENT PAGE
 
 >>> t = Template("{% load endless %}{% paginate 7 objects %}{{ objects }}{% get_pages as mypages %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2"})
 >>> context = Context({'objects': range(30), 'request': request})
 >>> html = t.render(context)
 
@@ -347,7 +359,7 @@ TEMPLATETAG TESTS: GETTING A DIFFERENT PAGE
 TEMPLATETAG TESTS: GETTING AN INVALID PAGE
 
 >>> t = Template("{% load endless %}{% paginate 7 objects %}{{ objects }}{% get_pages as mypages %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=6"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=6"})
 >>> context = Context({'objects': range(30), 'request': request})
 >>> html = t.render(context)
 
@@ -361,7 +373,7 @@ TEMPLATETAG TESTS: ORPHANS
 
 >>> settings.ORPHANS = 3
 >>> t = Template("{% load endless %}{% paginate 7 objects %}{{ objects }}{% get_pages %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=4"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=4"})
 >>> context = Context({'objects': range(30), 'request': request})
 >>> html = t.render(context)
 
@@ -376,7 +388,7 @@ True
 TEMPLATETAG TESTS: LAZY PAGINATION
 
 >>> t = Template("{% load endless %}{% lazy_paginate 6 objects %}{{ objects }}{% get_pages %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2"})
 >>> context = Context({'objects': range(30), 'request': request})
 >>> html = t.render(context)
 
@@ -391,7 +403,7 @@ True
 TEMPLATETAG TESTS: MULTIPLE PAGINATION
 
 >>> t = Template("{% load endless %}{% lazy_paginate 6 objects as myobjects %}{{ myobjects }}{% get_pages as mypages %}{% show_more %}{% paginate other_objects using 'mypage' %}{{ other_objects }}{% get_pages %}{{ pages }}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2&mypage=3"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2&mypage=3"})
 >>> context = Context({'objects': range(30), 'other_objects': list(string.lowercase), 'request': request})
 >>> html = t.render(context)
 
@@ -410,7 +422,7 @@ TEMPLATETAG TESTS: MULTIPLE PAGINATION
 TEMPLATETAG TESTS: DIFFERENT NUMBER OF ITEMS IN THE FIRST PAGE
 
 >>> t = Template("{% load endless %}{% lazy_paginate 2,6 objects %}{{ objects }}{% get_pages %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=1"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=1"})
 >>> context = Context({'objects': range(30), 'request': request})
 >>> html = t.render(context)
 >>> context["objects"]
@@ -419,7 +431,7 @@ TEMPLATETAG TESTS: DIFFERENT NUMBER OF ITEMS IN THE FIRST PAGE
 2
 
 >>> t = Template("{% load endless %}{% paginate 2,6 objects %}{{ objects }}{% get_pages %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=3"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=3"})
 >>> context = Context({'objects': range(30), 'request': request})
 >>> html = t.render(context)
 >>> context["objects"]
@@ -430,7 +442,7 @@ TEMPLATETAG TESTS: DIFFERENT NUMBER OF ITEMS IN THE FIRST PAGE
 2
 
 >>> t = Template("{% load endless %}{% paginate 15,6 objects starting from page 2 %}{{ objects }}{% get_pages %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=1"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=1"})
 >>> context = Context({'objects': range(30), 'request': request})
 >>> html = t.render(context)
 >>> context["objects"]
@@ -439,7 +451,7 @@ TEMPLATETAG TESTS: DIFFERENT NUMBER OF ITEMS IN THE FIRST PAGE
 '?page=1'
 
 >>> t = Template("{% load endless %}{% paginate 15,6 objects starting from page 2 using 'mypage' %}{{ objects }}{% get_pages %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get"})
+>>> request = Request({'REQUEST_METHOD': "get"})
 >>> context = Context({'objects': range(30), 'request': request})
 >>> html = t.render(context)
 >>> context["objects"]
@@ -455,55 +467,55 @@ u'/?mypage=1'
 TEMPLATETAG TESTS: CURRENT PAGE NUMBER
 
 >>> t = Template("{% load endless %}{% show_current_number %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001"})
 >>> context = Context({'request': request})
 >>> t.render(context)
 u'2001'
 
 >>> t = Template("{% load endless %}{% show_current_number using mykey %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001&mypage=5"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001&mypage=5"})
 >>> context = Context({'request': request, 'mykey': "mypage"})
 >>> t.render(context)
 u'5'
 
 >>> t = Template("{% load endless %}{% show_current_number starting from page mypage %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get"})
+>>> request = Request({'REQUEST_METHOD': "get"})
 >>> context = Context({'request': request, 'mypage': 12})
 >>> t.render(context)
 u'12'
 
 >>> t = Template("{% load endless %}{% show_current_number as page_number %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001"})
 >>> context = Context({'request': request})
 >>> t.render(context)
 u''
 
 >>> t = Template("{% load endless %}{% show_current_number as page_number %}{{ page_number }}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001"})
 >>> context = Context({'request': request})
 >>> t.render(context)
 u'2001'
 
 >>> t = Template("{% load endless %}{% show_current_number starting from page mypage as page_number %}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get"})
+>>> request = Request({'REQUEST_METHOD': "get"})
 >>> context = Context({'request': request, 'mypage': 12})
 >>> t.render(context)
 u''
 
 >>> t = Template("{% load endless %}{% show_current_number starting from page mypage as page_number %}{{ page_number }}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get"})
+>>> request = Request({'REQUEST_METHOD': "get"})
 >>> context = Context({'request': request, 'mypage': 12})
 >>> t.render(context)
 u'12'
 
 >>> t = Template("{% load endless %}{% show_current_number using mykey %}{{ page_number }}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001&mypage=9"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001&mypage=9"})
 >>> context = Context({'request': request, 'mykey': "mypage"})
 >>> t.render(context)
 u'9'
 
 >>> t = Template("{% load endless %}{% show_current_number using 'another_key' %}{{ page_number }}")
->>> request = WSGIRequest({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001&mypage=9"})
+>>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2001&mypage=9"})
 >>> context = Context({'request': request, 'mykey': "mypage"})
 >>> t.render(context)
 u'1'
