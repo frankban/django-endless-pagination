@@ -1,3 +1,5 @@
+from functools import wraps
+
 from endless_pagination.settings import PAGE_LABEL, TEMPLATE_VARNAME
 
 def page_template(template, key=PAGE_LABEL):
@@ -11,7 +13,8 @@ def page_template(template, key=PAGE_LABEL):
     extra context.
     """
     def decorator(view):
-        # decorator with arguments wrap      
+        # decorator with arguments wrap
+        @wraps(view)      
         def decorated(request, *args, **kwargs):
             # trust the developer: he wrote context.update(extra_context) in his view
             extra_context = kwargs.setdefault("extra_context", {})
@@ -42,7 +45,8 @@ def page_templates(mapping):
     """
     templates = dict((v or PAGE_LABEL, k) for k, v in mapping.items())
     def decorator(view):
-        # decorator with arguments wrap      
+        # decorator with arguments wrap
+        @wraps(view)      
         def decorated(request, *args, **kwargs):
             # trust the developer: he wrote context.update(extra_context) in his view
             extra_context = kwargs.setdefault("extra_context", {})
