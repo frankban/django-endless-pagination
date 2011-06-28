@@ -4,19 +4,6 @@ Changelog
 Version 1.1
 ~~~~~~~~~~~
 
-**Fix**: the ``page_template`` and ``page_templates`` decorators no longer
-hide the original view name and docstring (*update_wrapper*).
-
-----
-
-**Fix**: pagination on scroll now works on Firefox >= 4.
-
-----
-
-**Fix**: tests are now compatible with Django 1.3.
-
-----
-
 **New feature**: now it is possible to set the bottom margin used for
 pagination on scroll (default is 1 pixel).
 
@@ -70,3 +57,26 @@ page container element, e.g.:
     <div class="endless_page_template endless_page_skip">
         {% include "myapp/other_entries_page.html" %}
     </div>
+
+----
+
+**New feature**: implemented a class based generic view allowing
+AJAX pagination of a list of objects (usually a queryset).
+
+Intended as a substitution of *django.views.generic.ListView*, it recreates
+the behaviour of the *page_template* decorator.
+
+For a complete explanation, see :doc:`generic_views`.
+
+----
+
+**Fix**: the ``page_template`` and ``page_templates`` decorators no longer
+hide the original view name and docstring (*update_wrapper*).
+
+----
+
+**Fix**: pagination on scroll now works on Firefox >= 4.
+
+----
+
+**Fix**: tests are now compatible with Django 1.3.

@@ -14,6 +14,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
    
+   changelog
    getting_started
    twitter_pagination
    digg_pagination
@@ -23,5 +24,6 @@ Contents:
    current_page_number
    templatetags_reference
    customization
+   generic_views
    thanks
-   changelog
+   

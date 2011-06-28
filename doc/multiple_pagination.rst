@@ -133,8 +133,8 @@ The previous example can be written::
         ...
 
 
-Avoiding AJAX
-~~~~~~~~~~~~~
+Manually select what to bind
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 What if you need AJAX pagination for *entries* but not for *other entries*?
 You will only need to add a class named ``endless_page_skip`` to the 
@@ -146,4 +146,3 @@ page container element, e.g.:
     <div class="endless_page_template endless_page_skip">
         {% include "myapp/other_entries_page.html" %}
     </div>
-

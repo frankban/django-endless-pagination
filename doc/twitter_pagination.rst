@@ -104,6 +104,10 @@ is easily achievable at this point (using a builtin decorator).
 
 This way, *endless-pagination* can be included in **generic views** too.
 
+See :doc:`generic_views` if you use Django >= 1.3 and you want to replicate
+the same behavior using a class based generic view.
+
+
 Paginating objects
 ~~~~~~~~~~~~~~~~~~
 
