@@ -3,3 +3,5 @@
 ~$
 doc/_build
 build/
+dist/
+MANIFEST
