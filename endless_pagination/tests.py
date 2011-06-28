@@ -521,3 +521,55 @@ u'9'
 u'1'
 
 """}
+
+try:
+    from endless_pagination import views
+except ImportError:
+    pass
+else:
+    __test__['doctest'] += """
+    GENERIC VIEWS: AJAX LIST
+
+    >>> from django.contrib.auth.models import User
+
+    >>> request = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2"})
+    >>> ajax_request = Request({'REQUEST_METHOD': "get", 'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
+
+    >>> invalid_view = views.AjaxListView.as_view(queryset=range(30))
+    >>> list_view = views.AjaxListView.as_view(queryset=range(30), template_name='range.html', page_template='range_page.html')
+    >>> model_view = views.AjaxListView.as_view(model=User)
+
+    >>> invalid_view(request)
+    Traceback (most recent call last):
+    ImproperlyConfigured: AjaxListView requires a page_template
+
+    >>> response = list_view(request)
+    >>> response.status_code
+    200
+    >>> response.template_name
+    ['range.html']
+    >>> response.context_data['page_template']
+    'range_page.html'
+    >>> response.context_data['object_list'] == range(30)
+    True
+
+    >>> response = list_view(ajax_request)
+    >>> response.status_code
+    200
+    >>> response.template_name
+    ['range_page.html']
+
+    >>> response = model_view(request)
+    >>> response.status_code
+    200
+    >>> response.template_name
+    ['auth/user_list.html']
+    >>> response.context_data['page_template']
+    'auth/user_list_page.html'
+
+    >>> response = model_view(ajax_request)
+    >>> response.status_code
+    200
+    >>> response.template_name
+    ['auth/user_list_page.html']
+    """
