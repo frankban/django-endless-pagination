@@ -24,3 +24,4 @@ Contents:
    templatetags_reference
    customization
    thanks
+   changelog

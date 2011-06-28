@@ -20,7 +20,8 @@ The Mercurial repository of the application can be cloned with this command::
 The ``endless_pagination`` package, included in the distribution, should be
 placed on the ``PYTHONPATH``.
 
-Otherwise you can just ``easy_install -Z django-endless-pagination``.
+Otherwise you can just ``easy_install -Z django-endless-pagination``
+or ``pip install django-endless-pagination``.
 
 Settings
 ~~~~~~~~

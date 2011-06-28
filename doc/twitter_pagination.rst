@@ -151,3 +151,20 @@ the *endless_on_scroll.js* javascript after the *endless.js* one in your templat
 
 That's all. See :doc:`templatetags_reference` to improve the use of 
 included templatetags.
+
+It is possible to set the bottom margin used for pagination on scroll 
+(default is 1 pixel).
+
+For example, if you want the pagination on scroll to be activated when
+20 pixels remain to the end of the page:
+
+.. code-block:: html+django
+
+    <script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/path/to/endless.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/path/to/endless_on_scroll.js" type="text/javascript" charset="utf-8"></script>
+    
+    {# add the lines below #}
+    <script type="text/javascript" charset="utf-8">
+        var endless_on_scroll_margin = 20;
+    </script>

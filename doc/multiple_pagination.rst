@@ -132,3 +132,18 @@ The previous example can be written::
     def entry_index():
         ...
 
+
+Avoiding AJAX
+~~~~~~~~~~~~~
+
+What if you need AJAX pagination for *entries* but not for *other entries*?
+You will only need to add a class named ``endless_page_skip`` to the 
+page container element, e.g.:
+
+.. code-block:: html+django
+
+    <h2>Other entries:</h2>
+    <div class="endless_page_template endless_page_skip">
+        {% include "myapp/other_entries_page.html" %}
+    </div>
+
