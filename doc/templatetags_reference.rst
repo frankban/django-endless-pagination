@@ -221,8 +221,8 @@ It is only a shortcut for:
     {% get_pages %}
     {{ pages }}
 
-You can set ``ENDLESS_PAGE_LIST_CALLABLE`` in your *settings.py* as a callable 
-used to customize the pages that are displayed.
+You can set ``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` in your *settings.py* 
+as a callable used to customize the pages that are displayed.
 The callable takes the current page number and the total number of pages
 and must return a sequence of page numbers that will be displayed.
 The sequence can contain other values:
@@ -237,8 +237,8 @@ first page, then a separator, then current page, then next page::
     def get_page_numbers(current_page, num_pages):
         return ("previous", 1, None, current_page, "next")
 
-If ``ENDLESS_PAGE_LIST_CALLABLE`` is *None* an internal callable is used,
-generating a Digg-style pagination.
+If ``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` is *None* an internal 
+callable is used, generating a Digg-style pagination.
 
 Must be called after `paginate`_ or `lazy_paginate`_.
 

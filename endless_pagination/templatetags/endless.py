@@ -370,8 +370,8 @@ def show_pages(parser, token):
         {% get_pages %}
         {{ pages }}
     
-    You can set *ENDLESS_PAGE_LIST_CALLABLE* in your settings.py as a callable 
-    used to customize the pages that are displayed.
+    You can set *ENDLESS_PAGINATION_PAGE_LIST_CALLABLE* in your settings.py 
+    as a callable used to customize the pages that are displayed.
     The callable takes the current page number and the total number of pages
     and must return a sequence of page numbers that will be displayed.
     The sequence can contain other values:
@@ -386,8 +386,8 @@ def show_pages(parser, token):
         def get_page_numbers(current_page, num_pages):
             return ("previous", 1, "...", current_page, "next")
     
-    If *ENDLESS_PAGE_LIST_CALLABLE* is *None* an internal callable is used,
-    generating a digg-style pagination.
+    If *ENDLESS_PAGINATION_PAGE_LIST_CALLABLE* is *None* an internal 
+    callable is used, generating a digg-style pagination.
     
     Must be called after {% paginate objects %}.
     """
