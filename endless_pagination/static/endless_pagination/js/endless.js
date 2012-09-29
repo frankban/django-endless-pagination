@@ -1,3 +1,5 @@
+'use strict';
+
 (function($) {
     $(document).ready(function(){
         $("a.endless_more").live("click", function() {
@@ -18,7 +20,7 @@
                 var data = "querystring_key=" + $(this).attr("rel").split(" ")[0];
                 page_template.load($(this).attr("href"), data);
                 return false;
-            };
-        }); 
+            }
+        });
     });
 })(jQuery);

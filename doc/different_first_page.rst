@@ -10,17 +10,17 @@ and *per page* arguments, e.g.:
 .. code-block:: html+django
 
     {% load endless %}
-    
+
     {% lazy_paginate 4,20 objects %}
     {% for object in objects %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_more %}
-    
+
 This code will display 4 objects on the first page and 20 objects on the other
 pages.
 
-Of course the *first page* and *per page* arguments can be passed 
+Of course the *first page* and *per page* arguments can be passed
 as template variables, e.g.:
 
 .. code-block:: html+django

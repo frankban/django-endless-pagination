@@ -3,6 +3,7 @@ import string
 from django.template import Template, Context
 from django.core.handlers.wsgi import WSGIRequest
 
+
 class Request(WSGIRequest):
     """
     WSGIRequest wrapper.
@@ -11,7 +12,7 @@ class Request(WSGIRequest):
         if 'wsgi.input' not in environ:
             environ['wsgi.input'] = None
         super(Request, self).__init__(environ)
-        
+
 
 __test__ = {"doctest": """
 
@@ -192,7 +193,7 @@ LOW LEVEL TESTS: DECORATORS
 ...     if extra_context is not None:
 ...         context.update(extra_context)
 ...     return template, context
-... 
+...
 >>> request = Request({'REQUEST_METHOD': "get"})
 >>> request_querystring = Request({'REQUEST_METHOD': "get", 'QUERY_STRING': "page=2&mypage=10&querystring_key=page"})
 >>> ajax_request = Request({'REQUEST_METHOD': "get", 'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})

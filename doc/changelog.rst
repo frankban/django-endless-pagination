@@ -15,18 +15,18 @@ For example, if you want the pagination on scroll to be activated when
     <script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
     <script src="/path/to/endless.js" type="text/javascript" charset="utf-8"></script>
     <script src="/path/to/endless_on_scroll.js" type="text/javascript" charset="utf-8"></script>
-    
+
     {# add the lines below #}
     <script type="text/javascript" charset="utf-8">
         var endless_on_scroll_margin = 20;
     </script>
-    
+
 ----
 
 **New feature**: added ability to avoid AJAX requests when multiple pagination
 is used.
 
-A template for multiple pagination with AJAX support may look like this 
+A template for multiple pagination with AJAX support may look like this
 (see :doc:`multiple_pagination`):
 
 .. code-block:: html+django
@@ -41,14 +41,14 @@ A template for multiple pagination with AJAX support may look like this
     <div class="endless_page_template">
         {% include "myapp/entries_page.html" %}
     </div>
-    
+
     <h2>Other entries:</h2>
     <div class="endless_page_template">
         {% include "myapp/other_entries_page.html" %}
     </div>
 
 But what if you need AJAX pagination for *entries* but not for *other entries*?
-You will only need to add a class named ``endless_page_skip`` to the 
+You will only need to add a class named ``endless_page_skip`` to the
 page container element, e.g.:
 
 .. code-block:: html+django

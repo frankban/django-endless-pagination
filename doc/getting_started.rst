@@ -27,12 +27,12 @@ Settings
 ~~~~~~~~
 
 Add the request context processor in your *settings.py*, e.g.::
-    
+
     from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
     TEMPLATE_CONTEXT_PROCESSORS += (
          'django.core.context_processors.request',
     )
-    
+
 Add ``'endless_pagination'`` to the ``INSTALLED_APPS`` in your *settings.py*.
 
 See :doc:`customization` section in this documentation for other settings options.
@@ -47,17 +47,17 @@ Having a template like this:
     {% for object in objects %}
         {# your code to show the entry #}
     {% endfor %}
-    
+
 You can use Digg-style pagination to display objects just adding:
 
 .. code-block:: html+django
 
     {% load endless %}
-    
+
     {% paginate objects %}
     {% for object in objects %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_pages %}
-    
+
 Done.
