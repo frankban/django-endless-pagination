@@ -14,4 +14,3 @@ class PageTemplateTest(TestCase):
     def test_decorated(self):
         pass
 
-
