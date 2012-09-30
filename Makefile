@@ -1,7 +1,7 @@
 pyfiles = `find ./endless_pagination -name "*.py"`
 
 clean:
-	rm -rfv .venv
+	rm -rfv .coverage .venv
 
 check: test lint pep8
 
@@ -14,7 +14,10 @@ lint:
 pep8:
 	@./tests/with_venv.sh pep8 --show-source $(pyfiles)
 
-test:
-	@./tests/with_venv.sh python ./tests/runtests.py
+shell:
+	@./tests/with_venv.sh python ./tests/manage.py shell
 
-.PHONY: clean check develop lint pep8 test
+test:
+	@./tests/with_venv.sh python ./tests/manage.py test
+
+.PHONY: clean check develop lint pep8 shell test

@@ -23,5 +23,8 @@ Run the tests and lint checks::
 
     $ make check
 
+Run the Django shell (Python interpreter)::
+
+    $ make shell
 
 Thanks for contributing, and have fun!

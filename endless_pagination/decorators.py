@@ -26,7 +26,7 @@ def page_template(template, key=PAGE_LABEL):
             # in his view.
             extra_context = kwargs.setdefault('extra_context', {})
             extra_context['page_template'] = template
-            # switch template on ajax requests
+            # Switch template on ajax requests.
             querystring_key = request.REQUEST.get(
                 'querystring_key', PAGE_LABEL)
             if request.is_ajax() and querystring_key == key:
@@ -66,7 +66,7 @@ def page_templates(mapping):
                 'querystring_key', PAGE_LABEL)
             template = templates.get(querystring_key)
             extra_context['page_template'] = template
-            # switch template on ajax requests
+            # Switch template on ajax requests.
             if request.is_ajax() and template:
                 kwargs[TEMPLATE_VARNAME] = template
             return view(request, *args, **kwargs)
