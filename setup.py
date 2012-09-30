@@ -39,6 +39,7 @@ setup(
     packages=[
         PROJECT_NAME,
         '{0}.templatetags'.format(PROJECT_NAME),
+        '{0}.tests'.format(PROJECT_NAME),
     ],
     package_data={PROJECT_NAME: data_files},
     classifiers=[
