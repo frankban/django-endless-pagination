@@ -45,7 +45,7 @@ class EndlessPage(object):
         self.url = utils.get_querystring_for_page(
             request, number, self.querystring_key,
             default_number=default_number)
-        self.path = '{0}{1}'.fomrat(override_path or request.path, self.url)
+        self.path = '{0}{1}'.format(override_path or request.path, self.url)
 
     def __unicode__(self):
         """Render the page as a link."""
