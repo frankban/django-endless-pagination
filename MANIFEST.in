@@ -1,7 +1,10 @@
 include AUTHORS
+include HACKING
 include INSTALL
 include LICENSE
+include Makefile
 include MANIFEST.in
+include README
 recursive-include doc *
 recursive-include tests *
 recursive-include endless_pagination/static *

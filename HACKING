@@ -1,0 +1,27 @@
+Hacking Django Endless Pagination
+=================================
+
+Steps needed to set up a development and testing environment.
+
+
+Create a development environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+From the root of this branch, run the command::
+
+  $ make develop
+
+This command will create a ``.venv`` directory in the branch root, ignored
+by DVCS, containing the development virtual environment with all the
+dependencies.
+
+
+Testing and debugging
+~~~~~~~~~~~~~~~~~~~~~
+
+Run the tests and lint checks::
+
+  $ make check
+
+
+Thanks for contributing, and have fun!

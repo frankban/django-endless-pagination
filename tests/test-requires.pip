@@ -1,0 +1,8 @@
+# Django Endless Pagination test requirements.
+# Dependencies are installed by the ``make develop`` command.
+
+coverage
+django
+django-nose
+nose
+pep8
