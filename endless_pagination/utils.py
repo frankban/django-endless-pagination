@@ -10,7 +10,7 @@ from endless_pagination.settings import (
 
 def get_page_number_from_request(
         request, querystring_key=PAGE_LABEL, default=1):
-    """Retreive the current page number from *GET* or *POST* data.
+    """Retrieve the current page number from *GET* or *POST* data.
 
     If the page does not exists in *request*, or is not a number,
     then *default* number is returned.

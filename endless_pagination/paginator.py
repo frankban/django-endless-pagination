@@ -96,7 +96,7 @@ class LazyPaginator(BasePaginator):
         else:
             bottom = ((number - 2) * self.per_page + self.first_page)
         top = bottom + current_per_page
-        # Retreive more objects to check if there is a next page.
+        # Retrieve more objects to check if there is a next page.
         objects = list(self.object_list[bottom:top + self.orphans + 1])
         objects_count = len(objects)
         if objects_count > (current_per_page + self.orphans):
