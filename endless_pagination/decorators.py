@@ -37,6 +37,22 @@ def page_template(template, key=PAGE_LABEL):
     return decorator
 
 
+def _get_template(querystring_key, mapping):
+    """Return the template corresponding to the given ``querystring_key``."""
+    default = None
+    try:
+        template_and_keys = mapping.items()
+    except AttributeError:
+        template_and_keys = mapping
+    for template, key in template_and_keys:
+        if key == None:
+            key = PAGE_LABEL
+            default = template
+        if key == querystring_key:
+            return template
+    return default
+
+
 def page_templates(mapping):
     """Like the *page_template* decorator but manage multiple paginations.
 
@@ -54,8 +70,6 @@ def page_templates(mapping):
     (defined in settings) is used. You can use this decorator instead of
     chaining multiple *page_template* calls.
     """
-    templates = dict((v or PAGE_LABEL, k) for k, v in mapping.items())
-
     def decorator(view):
         @wraps(view)
         def decorated(request, *args, **kwargs):
@@ -64,7 +78,7 @@ def page_templates(mapping):
             extra_context = kwargs.setdefault('extra_context', {})
             querystring_key = request.REQUEST.get(
                 'querystring_key', PAGE_LABEL)
-            template = templates.get(querystring_key)
+            template = _get_template(querystring_key, mapping)
             extra_context['page_template'] = template
             # Switch template on ajax requests.
             if request.is_ajax() and template:

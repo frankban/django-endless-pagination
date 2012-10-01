@@ -1,0 +1,39 @@
+Contributing
+============
+
+Steps needed to set up a development and testing environment.
+
+
+Create a development environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+From the root of this branch, run the command::
+
+    $ make develop
+
+This command will create a ``.venv`` directory in the branch root, ignored
+by DVCS, containing the development virtual environment with all the
+dependencies.
+
+
+Testing and debugging
+~~~~~~~~~~~~~~~~~~~~~
+
+Run the tests::
+
+    $ make test
+
+Run the tests and lint checks::
+
+    $ make check
+
+Note that the last command also lint the code. To be able to do that,
+install the *pocket-lint* package, e.g.::
+
+    # apt-get install python-pocket-lint
+
+Run the Django shell (Python interpreter)::
+
+    $ make shell
+
+Thanks for contributing, and have fun!

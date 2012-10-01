@@ -30,6 +30,33 @@ def local_settings(**kwargs):
             setattr(settings, key, value)
 
 
+class LocalSettingsTest(TestCase):
+
+    def setUp(self):
+        settings._LOCAL_SETTINGS_TEST = 'original'
+
+    def tearDown(self):
+        del settings._LOCAL_SETTINGS_TEST
+
+    def test_settings_changed(self):
+        # Check that local settings are changed.
+        with local_settings(_LOCAL_SETTINGS_TEST='changed'):
+            self.assertEqual('changed', settings._LOCAL_SETTINGS_TEST)
+
+    def test_settings_restored(self):
+        # Check that local settings are restored.
+        with local_settings(_LOCAL_SETTINGS_TEST='changed'):
+            pass
+        self.assertEqual('original', settings._LOCAL_SETTINGS_TEST)
+
+    def test_restored_after_exception(self):
+        # Check that local settings are restored after an exception.
+        with self.assertRaises(RuntimeError):
+            with local_settings(_LOCAL_SETTINGS_TEST='changed'):
+                raise RuntimeError()
+            self.assertEqual('original', settings._LOCAL_SETTINGS_TEST)
+
+
 class PageListTest(TestCase):
 
     def setUp(self):

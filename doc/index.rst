@@ -25,5 +25,6 @@ Contents:
    templatetags_reference
    customization
    generic_views
+   contributing
    thanks
 

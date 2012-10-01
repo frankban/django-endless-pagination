@@ -41,16 +41,16 @@ The view is exactly the same as in ``show_more`` :doc:`twitter_pagination`::
 
     from endless_pagination.decorators import page_template
 
-    @page_template("myapp/entry_index_page.html") # just add this decorator
-    def entry_index(request, template="myapp/entry_index.html",
-        extra_context=None):
+    @page_template('myapp/entry_index_page.html')  # just add this decorator
+    def entry_index(
+            request, template='myapp/entry_index.html', extra_context=None):
         context = {
             'objects': Entry.objects.all(),
         }
         if extra_context is not None:
             context.update(extra_context)
-        return render_to_response(template, context,
-            context_instance=RequestContext(request))
+        return render_to_response(
+            template, context, context_instance=RequestContext(request))
 
 Of course you have to split templates, but this time a container for
 page template is needed too, and must have a class named *endless_page_template*.

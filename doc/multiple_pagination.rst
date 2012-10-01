@@ -102,18 +102,18 @@ querystring key, e.g.::
 
     from endless_pagination.decorators import page_template
 
-    @page_template("myapp/entries_page.html")
-    @page_template("myapp/other_entries_page.html", key="other_objects_page")
-    def entry_index(request, template="myapp/entry_index.html",
-        extra_context=None):
+    @page_template('myapp/entries_page.html')
+    @page_template('myapp/other_entries_page.html', key='other_objects_page')
+    def entry_index(
+            request, template='myapp/entry_index.html', extra_context=None):
         context = {
             'objects': Entry.objects.all(),
             'other_objects': OtherEntry.objects.all(),
         }
         if extra_context is not None:
             context.update(extra_context)
-        return render_to_response(template, context,
-            context_instance=RequestContext(request))
+        return render_to_response(
+            template, context, context_instance=RequestContext(request))
 
 As seen in previous examples, if you do not specify the *key* kwarg in the
 decorator, then the page template is associated to the querystring key
@@ -126,11 +126,27 @@ The previous example can be written::
     from endless_pagination.decorators import page_templates
 
     @page_templates({
-        "myapp/entries_page.html": None,
-        "myapp/other_entries_page.html": "other_objects_page",
+        'myapp/entries_page.html': None,
+        'myapp/other_entries_page.html': 'other_objects_page',
     })
     def entry_index():
         ...
+
+As seen, a dict object is passed to the ``page_templates`` decorator, mapping
+templates to querystring keys. Alternatively, you can also pass a sequence
+of ``(template, key)`` pairs, e.g.::
+
+    from endless_pagination.decorators import page_templates
+
+    @page_templates((
+        ('myapp/entries_page.html', None),
+        ('myapp/other_entries_page.html', 'other_objects_page'),
+    ))
+    def entry_index():
+        ...
+
+This way the use case of different paginated objects being served by the
+same template is also supported.
 
 
 Manually select what to bind

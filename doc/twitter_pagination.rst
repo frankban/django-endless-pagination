@@ -6,12 +6,12 @@ entries of a blog post.
 
 In *views.py* we have::
 
-    def entry_index(request, template="myapp/entry_index.html"):
+    def entry_index(request, template='myapp/entry_index.html'):
         context = {
             'objects': Entry.objects.all(),
         }
-        return render_to_response(template, context,
-            context_instance=RequestContext(request))
+        return render_to_response(
+            template, context, context_instance=RequestContext(request))
 
 In *myapp/entry_index.html*:
 
@@ -34,17 +34,18 @@ the page template name in the context.
 
 *views.py* becomes::
 
-    def entry_index(request,
-        template="myapp/entry_index.html",
-        page_template="myapp/entry_index_page.html"):
+    def entry_index(
+            request,
+            template='myapp/entry_index.html',
+            page_template='myapp/entry_index_page.html'):
         context = {
             'objects': Entry.objects.all(),
             'page_template': page_template,
         }
         if request.is_ajax():
             template = page_template
-        return render_to_response(template, context,
-            context_instance=RequestContext(request))
+        return render_to_response(
+            template, context, context_instance=RequestContext(request))
 
 See below how to obtain the same result **just decorating the view**
 (in a way compatible with generic views too).
@@ -74,15 +75,15 @@ with extra context injection:
 
 *views.py*::
 
-    def entry_index(request, template="myapp/entry_index.html",
-        extra_context=None):
+    def entry_index(
+            request, template='myapp/entry_index.html', extra_context=None):
         context = {
             'objects': Entry.objects.all(),
         }
         if extra_context is not None:
             context.update(extra_context)
-        return render_to_response(template, context,
-            context_instance=RequestContext(request))
+        return render_to_response(
+            template, context, context_instance=RequestContext(request))
 
 Splitting templates and putting the AJAX template name in the context
 is easily achievable at this point (using a builtin decorator).
@@ -91,16 +92,16 @@ is easily achievable at this point (using a builtin decorator).
 
     from endless_pagination.decorators import page_template
 
-    @page_template("myapp/entry_index_page.html") # just add this decorator
-    def entry_index(request, template="myapp/entry_index.html",
-        extra_context=None):
+    @page_template('myapp/entry_index_page.html')  # just add this decorator
+    def entry_index(
+            request, template='myapp/entry_index.html', extra_context=None):
         context = {
             'objects': Entry.objects.all(),
         }
         if extra_context is not None:
             context.update(extra_context)
-        return render_to_response(template, context,
-            context_instance=RequestContext(request))
+        return render_to_response(
+            template, context, context_instance=RequestContext(request))
 
 This way, *endless-pagination* can be included in **generic views** too.
 

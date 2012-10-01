@@ -1,6 +1,39 @@
 Changelog
 =========
 
+Version 1.2
+~~~~~~~~~~~
+
+**New feature**: the ``page_templates`` decorator also accepts a sequence
+of ``(template, key)`` pairs in place of a dict mapping templates and keys
+(still present), e.g.::
+
+    from endless_pagination.decorators import page_templates
+
+    @page_templates((
+        ('myapp/entries_page.html', None),
+        ('myapp/other_entries_page.html', 'other_objects_page'),
+    ))
+    def entry_index():
+        ...
+
+This way the use case of different paginated objects being served by the
+same template is also supported.
+
+----
+
+**New feature**: ability to create a development and testing environment
+(see :doc:`contributing`).
+
+----
+
+**Fix**: replaced doctests with proper unittests.
+
+----
+
+**Fix**: overall code lint and clean up.
+
+
 Version 1.1
 ~~~~~~~~~~~
 
