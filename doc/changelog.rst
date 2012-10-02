@@ -27,7 +27,8 @@ same template is also supported.
 
 ----
 
-**Fix**: replaced doctests with proper unittests.
+**Fix**: replaced doctests with proper unittests. Improved, as a consequence,
+the code coverage.
 
 ----
 

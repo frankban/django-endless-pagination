@@ -35,20 +35,17 @@ def get_page_from_context(context):
 
 
 def get_querystring_for_page(
-        request, page_number, querystring_key, default_number=1, prefix='?'):
-    """Return a querystring pointing to *page_number*.
-
-    The querystring is prefixed by *prefix* (e.g.: '?page=2').
-    """
+        request, page_number, querystring_key, default_number=1):
+    """Return a querystring pointing to *page_number*."""
     querydict = request.GET.copy()
     querydict[querystring_key] = page_number
-    # For page number 1 the querystring is not required.
+    # For the default page number (usually 1) the querystring is not required.
     if page_number == default_number:
         del querydict[querystring_key]
     if 'querystring_key' in querydict:
         del querydict['querystring_key']
     if querydict:
-        return '{0}{1}'.format(prefix, querydict.urlencode())
+        return '?' + querydict.urlencode()
     return ''
 
 
@@ -60,7 +57,7 @@ def get_page_numbers(
     Produce a digg-style pagination.
     """
     page_range = range(1, num_pages + 1)
-    pages = ['previous']
+    pages = [] if current_page == 1 else ['previous']
 
     # Get first and last pages (extremes).
     first = page_range[:extremes]
@@ -96,5 +93,6 @@ def get_page_numbers(
             to_add = last[abs(diff) + 1:]
         pages.extend(to_add)
 
-    pages.append('next')
+    if current_page != num_pages:
+        pages.append('next')
     return pages
