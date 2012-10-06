@@ -42,7 +42,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Django Endless Pagination'
-copyright = u'2011, Francesco Banconi'
+copyright = u'2011-2012, Francesco Banconi'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
