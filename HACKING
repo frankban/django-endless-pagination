@@ -36,4 +36,8 @@ Run the Django shell (Python interpreter)::
 
     $ make shell
 
+Run the Django development server for manual testing::
+
+    $ make server
+
 Thanks for contributing, and have fun!

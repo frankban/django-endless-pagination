@@ -14,10 +14,13 @@ lint:
 pep8:
 	@./tests/with_venv.sh pep8 --show-source $(pyfiles)
 
+server:
+	@./tests/with_venv.sh python ./tests/manage.py runserver
+
 shell:
 	@./tests/with_venv.sh python ./tests/manage.py shell
 
 test:
 	@./tests/with_venv.sh python ./tests/manage.py test
 
-.PHONY: clean check develop lint pep8 shell test
+.PHONY: clean check develop lint pep8 server shell test

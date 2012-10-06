@@ -1,6 +1,7 @@
 from distutils.core import setup
 import os
 
+
 PROJECT_NAME = 'endless_pagination'
 project = __import__(PROJECT_NAME)
 
@@ -20,8 +21,6 @@ for dirpath, dirnames, filenames in os.walk(PROJECT_NAME):
             data_files.append(os.path.join(
                 dirpath[len(PROJECT_NAME) + 1:], f))
 
-version = '%s.%s' % project.VERSION[:2]
-
 
 def read(filename):
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
@@ -29,7 +28,7 @@ def read(filename):
 
 setup(
     name='django-endless-pagination',
-    version=version,
+    version=project.get_version(),
     description=project.__doc__,
     long_description=read('README'),
     author='Francesco Banconi',
@@ -50,6 +49,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Topic :: Utilities'
+        'Topic :: Utilities',
     ],
 )
