@@ -3,6 +3,11 @@ import os
 
 
 PROJECT_NAME = 'endless_pagination'
+ROOT = os.path.abspath(os.path.dirname(__file__))
+VENV = os.path.join(ROOT, '.venv')
+VENV_LINK = os.path.join(VENV, 'local')
+
+
 project = __import__(PROJECT_NAME)
 
 root_dir = os.path.dirname(__file__)
@@ -23,32 +28,49 @@ for dirpath, dirnames, filenames in os.walk(PROJECT_NAME):
 
 
 def read(filename):
-    return open(os.path.join(os.path.dirname(__file__), filename)).read()
+    return open(os.path.join(ROOT, filename)).read()
 
 
-setup(
-    name='django-endless-pagination',
-    version=project.get_version(),
-    description=project.__doc__,
-    long_description=read('README'),
-    author='Francesco Banconi',
-    author_email='francesco.banconi@gmail.com',
-    url='http://code.google.com/p/django-endless-pagination/',
-    zip_safe=False,
-    packages=[
-        PROJECT_NAME,
-        '{0}.templatetags'.format(PROJECT_NAME),
-        '{0}.tests'.format(PROJECT_NAME),
-    ],
-    package_data={PROJECT_NAME: data_files},
-    classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Environment :: Web Environment',
-        'Framework :: Django',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Topic :: Utilities',
-    ],
-)
+class VenvLinkDeleted(object):
+
+    restore_link = False
+
+    def __enter__(self):
+        """Remove the link."""
+        if os.path.islink(VENV_LINK):
+            os.remove(VENV_LINK)
+            self.restore_link = True
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Restore the link."""
+        if self.restore_link:
+            os.symlink(VENV, VENV_LINK)
+
+
+with VenvLinkDeleted():
+    setup(
+        name='django-endless-pagination',
+        version=project.get_version(),
+        description=project.__doc__,
+        long_description=read('README'),
+        author='Francesco Banconi',
+        author_email='francesco.banconi@gmail.com',
+        url='http://code.google.com/p/django-endless-pagination/',
+        zip_safe=False,
+        packages=[
+            PROJECT_NAME,
+            '{0}.templatetags'.format(PROJECT_NAME),
+            '{0}.tests'.format(PROJECT_NAME),
+        ],
+        package_data={PROJECT_NAME: data_files},
+        classifiers=[
+            'Development Status :: 5 - Production/Stable',
+            'Environment :: Web Environment',
+            'Framework :: Django',
+            'Intended Audience :: Developers',
+            'License :: OSI Approved :: MIT License',
+            'Operating System :: OS Independent',
+            'Programming Language :: Python',
+            'Topic :: Utilities',
+        ],
+    )
