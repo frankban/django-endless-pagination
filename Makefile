@@ -1,5 +1,8 @@
 pyfiles = `find ./endless_pagination -name "*.py"`
 
+doc:
+	@./tests/with_venv.sh make -C doc html
+
 clean:
 	rm -rfv .coverage .venv
 
@@ -23,4 +26,4 @@ shell:
 test:
 	@./tests/with_venv.sh python ./tests/manage.py test
 
-.PHONY: clean check develop lint pep8 server shell test
+.PHONY: doc clean check develop lint pep8 server shell test

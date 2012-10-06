@@ -35,7 +35,8 @@ Add the request context processor in your *settings.py*, e.g.::
 
 Add ``'endless_pagination'`` to the ``INSTALLED_APPS`` in your *settings.py*.
 
-See :doc:`customization` section in this documentation for other settings options.
+See :doc:`customization` section in this documentation for other settings
+options.
 
 Quickstart
 ~~~~~~~~~~

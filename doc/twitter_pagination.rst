@@ -25,10 +25,10 @@ In *myapp/entry_index.html*:
 Split the template
 ~~~~~~~~~~~~~~~~~~
 
-A response to an AJAX request should not return the entire template,
+A response to an Ajax request should not return the entire template,
 but only the portion of the page to update or add.
-So it is convenient to extrapolate from the template the part containing entries
-and use the new one to render the context if the request is AJAX.
+So it is convenient to extrapolate from the template the part containing
+entries and use the new one to render the context if the request is Ajax.
 The main template will include the other, so it is convenient to put
 the page template name in the context.
 
@@ -85,7 +85,7 @@ with extra context injection:
         return render_to_response(
             template, context, context_instance=RequestContext(request))
 
-Splitting templates and putting the AJAX template name in the context
+Splitting templates and putting the Ajax template name in the context
 is easily achievable at this point (using a builtin decorator).
 
 *views.py* becomes::
@@ -122,8 +122,8 @@ in the distribution under ``/static/endless_pagination/js/``.
 
     {% block js %}
         {{ block.super }}
-        <script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
-        <script src="/path/to/endless.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
     {% endblock %}
 
     <h2>Entries:</h2>
@@ -145,14 +145,14 @@ Pagination on scroll
 ~~~~~~~~~~~~~~~~~~~~
 
 If you want new items to load when the user scroll down the browser page
-you can use the **pagination on scroll** feature: just load
-the *endless_on_scroll.js* javascript after the *endless.js* one in your template:
+you can use the **pagination on scroll** feature: just load the
+*endless_on_scroll.js* javascript after the *endless.js* one in your template:
 
 .. code-block:: html+django
 
-    <script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/path/to/endless.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/path/to/endless_on_scroll.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
+    <script src="{{ STATIC_URL }}endless_pagination/js/endless_on_scroll.js"></script>
 
 That's all. See :doc:`templatetags_reference` to improve the use of
 included templatetags.
@@ -165,9 +165,9 @@ For example, if you want the pagination on scroll to be activated when
 
 .. code-block:: html+django
 
-    <script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/path/to/endless.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/path/to/endless_on_scroll.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
+    <script src="{{ STATIC_URL }}endless_pagination/js/endless_on_scroll.js"></script>
 
     {# add the lines below #}
     <script type="text/javascript" charset="utf-8">

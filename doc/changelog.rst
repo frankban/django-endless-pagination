@@ -27,6 +27,23 @@ same template is also supported.
 
 ----
 
+**Documentation**: general clean up.
+
+----
+
+**Documentation**: added a :doc:`contributing` page. Go see that!
+
+----
+
+**Fix**: ``endless_pagination.views.AjaxListView`` no longer subclasses
+``django.views.generic.list.ListView``. Instead, the base objects and
+mixins composing the final view are now defined by this app.
+This change eliminates the ambiguity of having two separate pagination
+machineries in place: the Django Endless Pagination one and the built-in
+Django ``ListView`` one.
+
+----
+
 **Fix**: replaced doctests with proper unittests. Improved, as a consequence,
 the code coverage.
 
@@ -46,9 +63,9 @@ For example, if you want the pagination on scroll to be activated when
 
 .. code-block:: html+django
 
-    <script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/path/to/endless.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/path/to/endless_on_scroll.js" type="text/javascript" charset="utf-8"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
+    <script src="{{ STATIC_URL }}endless_pagination/js/endless_on_scroll.js"></script>
 
     {# add the lines below #}
     <script type="text/javascript" charset="utf-8">
@@ -57,18 +74,18 @@ For example, if you want the pagination on scroll to be activated when
 
 ----
 
-**New feature**: added ability to avoid AJAX requests when multiple pagination
+**New feature**: added ability to avoid Ajax requests when multiple pagination
 is used.
 
-A template for multiple pagination with AJAX support may look like this
+A template for multiple pagination with Ajax support may look like this
 (see :doc:`multiple_pagination`):
 
 .. code-block:: html+django
 
     {% block js %}
         {{ block.super }}
-        <script src="/path/to/jquery.js" type="text/javascript" charset="utf-8"></script>
-        <script src="/path/to/endless.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
     {% endblock %}
 
     <h2>Entries:</h2>
@@ -81,7 +98,7 @@ A template for multiple pagination with AJAX support may look like this
         {% include "myapp/other_entries_page.html" %}
     </div>
 
-But what if you need AJAX pagination for *entries* but not for *other entries*?
+But what if you need Ajax pagination for *entries* but not for *other entries*?
 You will only need to add a class named ``endless_page_skip`` to the
 page container element, e.g.:
 
@@ -95,7 +112,7 @@ page container element, e.g.:
 ----
 
 **New feature**: implemented a class based generic view allowing
-AJAX pagination of a list of objects (usually a queryset).
+Ajax pagination of a list of objects (usually a queryset).
 
 Intended as a substitution of *django.views.generic.ListView*, it recreates
 the behaviour of the *page_template* decorator.

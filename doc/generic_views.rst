@@ -4,8 +4,8 @@ Generic views
 Django 1.3 introduced class based generic views
 (see https://docs.djangoproject.com/en/1.3/topics/class-based-views/).
 
-This application provides a customized subclass of
-*django.views.generic.ListView* that allows AJAX pagination of a
+This application provides a customized class based view, similar to
+*django.views.generic.ListView*, that allows Ajax pagination of a
 list of objects (usually a queryset).
 
 
@@ -16,8 +16,8 @@ AjaxListView reference
 
 .. py:class:: AjaxListView(django.views.generic.ListView)
 
-    A subclass of *django.views.generic.ListView* that allows AJAX
-    pagination of a list of objects.
+    A class based view, similar to *django.views.generic.ListView*,
+    that allows Ajax pagination of a list of objects.
 
     You can use this class based view in place of *ListView* in order to
     recreate the behaviour of the *page_template* decorator.
@@ -32,8 +32,8 @@ AjaxListView reference
             (r'^publishers/$', ListView.as_view(model=Publisher)),
         )
 
-    You want to AJAX paginate publishers, so, as seen, you need to switch
-    the template if the request is AJAX and put the page template
+    You want to Ajax paginate publishers, so, as seen, you need to switch
+    the template if the request is Ajax and put the page template
     into the context as a variable named *page_template*.
 
     This is straightforward, you only need to replace the view class, e.g.::
@@ -79,7 +79,7 @@ AjaxListView reference
 
     .. py:method:: get_template_names(self)
 
-        Switch the templates for AJAX requests.
+        Switch the templates for Ajax requests.
 
     .. py:method:: get_page_template(self, **kwargs)
 

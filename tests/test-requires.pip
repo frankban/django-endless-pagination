@@ -6,3 +6,4 @@ django
 django-nose==1.1
 nose
 pep8
+sphinx
