@@ -3,3 +3,10 @@ Digg-style pagination, with optional Ajax support and other features
 like multiple or lazy pagination.
 The initial idea, which has guided the development of this application,
 is to allow pagination of web contents in very few steps.
+
+`Documentation is avaliable online
+<http://django-endless-pagination.readthedocs.org/>`_. or in the docs
+directory of the project.
+
+The source code for this app is hosted on
+http://code.google.com/p/django-endless-pagination/.

@@ -1,4 +1,4 @@
-"""Django pagination tools supporting ajax, multiple and lazy pagination,
+"""Django pagination tools supporting Ajax, multiple and lazy pagination,
 Twitter-style and Digg-style pagination.
 """
 
