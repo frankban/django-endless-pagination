@@ -4,8 +4,7 @@ like multiple or lazy pagination.
 
 The initial idea, which has guided the development of this application,
 is to allow pagination of web contents in `very few steps
-<http://django-endless-pagination.readthedocs.org\
-/en/latest/getting_started.html>`_.
+<http://django-endless-pagination.readthedocs.org/en/latest/getting_started.html>`_.
 
 `Documentation is avaliable online
 <http://django-endless-pagination.readthedocs.org/>`_, or in the docs
