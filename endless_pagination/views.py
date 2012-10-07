@@ -132,8 +132,8 @@ class AjaxMultipleObjectTemplateResponseMixin(
         querystring_key = request.REQUEST.get('querystring_key', PAGE_LABEL)
         if request.is_ajax() and querystring_key == self.key:
             return [self.page_template]
-        return super(AjaxMultipleObjectTemplateResponseMixin, self
-            ).get_template_names()
+        return super(
+            AjaxMultipleObjectTemplateResponseMixin, self).get_template_names()
 
 
 class AjaxListView(AjaxMultipleObjectTemplateResponseMixin, BaseListView):

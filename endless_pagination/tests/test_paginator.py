@@ -127,12 +127,12 @@ class LazyPaginatorTest(PaginatorTestMixin, TestCase):
 
 
 class DifferentFirstPageDefaultPaginatorTest(
-    DifferentFirstPagePaginatorTestMixin, TestCase):
+        DifferentFirstPagePaginatorTestMixin, TestCase):
 
     paginator_class = paginator.DefaultPaginator
 
 
 class DifferentFirstPageLazyPaginatorTest(
-    DifferentFirstPagePaginatorTestMixin, TestCase):
+        DifferentFirstPagePaginatorTestMixin, TestCase):
 
     paginator_class = paginator.LazyPaginator

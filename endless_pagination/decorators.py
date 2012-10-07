@@ -45,7 +45,7 @@ def _get_template(querystring_key, mapping):
     except AttributeError:
         template_and_keys = mapping
     for template, key in template_and_keys:
-        if key == None:
+        if key is None:
             key = PAGE_LABEL
             default = template
         if key == querystring_key:
