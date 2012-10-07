@@ -15,7 +15,7 @@ Contents:
    :maxdepth: 2
 
    changelog
-   getting_started
+   start
    twitter_pagination
    digg_pagination
    multiple_pagination

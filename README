@@ -4,16 +4,16 @@ like multiple or lazy pagination.
 
 The initial idea, which has guided the development of this application,
 is to allow pagination of web contents in `very few steps
-<http://django-endless-pagination.readthedocs.org/en/latest/getting_started.html>`_.
+<http://django-endless-pagination.readthedocs.org/en/latest/start.html>`_.
 
 `Documentation is avaliable online
 <http://django-endless-pagination.readthedocs.org/>`_, or in the docs
 directory of the project.
 
+To file bugs and requests, please use.
+
 The source code for this app is hosted on
 http://code.google.com/p/django-endless-pagination/.
-
-To file bugs and requests, please use.
 
 A Mercurial mirror of this project is hosted on
 https://bitbucket.org/frankban/django-endless-pagination/.
