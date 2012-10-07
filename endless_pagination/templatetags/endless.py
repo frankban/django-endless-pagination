@@ -22,7 +22,7 @@ PAGINATE_EXPRESSION = re.compile(r"""
     (?P<objects>\w+)  # Objects / queryset.
     (\s+starting\s+from\s+page\s+(?P<number>\w+))?  # Page start.
     (\s+using\s+(?P<key>[\"\'\w]+))?  # Querystring key.
-    (\s+with\s+(?P<override_path>\w+))?  # Override path.
+    (\s+with\s+(?P<override_path>[\"\'\/\w]+))?  # Override path.
     (\s+as\s+(?P<var_name>\w+))?  # Context variable name.
     $   # End of line.
 """, re.VERBOSE)
@@ -193,6 +193,10 @@ class PaginateNode(template.Node):
         self.override_path_variable = None
         if override_path is None:
             self.override_path = None
+        elif (
+                override_path[0] in ('"', "'") and
+                override_path[-1] == override_path[0]):
+            self.override_path = override_path[1:-1]
         else:
             self.override_path_variable = template.Variable(override_path)
 
@@ -230,7 +234,7 @@ class PaginateNode(template.Node):
 
         # The current request is used to get the requested page number.
         page_number = utils.get_page_number_from_request(
-            context["request"], querystring_key, default=default_number)
+            context['request'], querystring_key, default=default_number)
 
         objects = self.objects.resolve(context)
         paginator = self.paginator(
@@ -520,9 +524,9 @@ def show_current_number(parser, token):
             raise template.TemplateSyntaxError(msg)
         # Retrieve objects.
         groupdict = match.groupdict()
-        key = groupdict["key"]
-        number = groupdict["number"]
-        var_name = groupdict["var_name"]
+        key = groupdict['key']
+        number = groupdict['number']
+        var_name = groupdict['var_name']
     # Call the node.
     return ShowCurrentNumberNode(number, key, var_name)
 
