@@ -1,6 +1,7 @@
 """Endless template tags tests."""
 
 import string
+import xml.etree.ElementTree as etree
 
 from django.template import (
     Context,
@@ -10,6 +11,8 @@ from django.template import (
 from django.test import TestCase
 from django.test.client import RequestFactory
 
+from endless_pagination.exceptions import PaginationError
+from endless_pagination.models import PageList
 from endless_pagination.settings import (
     PAGE_LABEL,
     PER_PAGE,
@@ -43,6 +46,20 @@ class TemplateTagsTestMixin(object):
         if page is not None:
             querydict[PAGE_LABEL] = page
         return self.factory.get(url, querydict)
+
+
+class EtreeTemplateTagsTestMixin(TemplateTagsTestMixin):
+    """Mixin for template tags returning a rendered HTML."""
+
+    def render(self, request, contents, **kwargs):
+        """Return the etree root node of the HTML output.
+
+        Does not return the context.
+        """
+        html, _ = super(EtreeTemplateTagsTestMixin, self).render(
+            request, contents, **kwargs)
+        if html:
+            return etree.fromstring('<html>{0}</html>'.format(html))
 
 
 class PaginateTestMixin(TemplateTagsTestMixin):
@@ -223,21 +240,174 @@ class LazyPaginateTest(PaginateTestMixin, TestCase):
     tagname = 'lazy_paginate'
 
 
-class ShowMoreTest(TemplateTagsTestMixin, TestCase):
+class ShowMoreTest(EtreeTemplateTagsTestMixin, TestCase):
 
-    pass
+    def test_first_page_next_url(self):
+        # Ensure the link to the next page is correctly generated
+        # in the first page.
+        template = '{% paginate objects %}{% show_more %}'
+        tree = self.render(self.request(), template)
+        link = tree.find('.//a[@class="endless_more"]')
+        expected = '/?{0}={1}'.format(PAGE_LABEL, 2)
+        self.assertEqual(expected, link.attrib['href'])
+
+    def test_page_next_url(self):
+        # Ensure the link to the next page is correctly generated.
+        template = '{% paginate objects %}{% show_more %}'
+        tree = self.render(self.request(page=3), template)
+        link = tree.find('.//a[@class="endless_more"]')
+        expected = '/?{0}={1}'.format(PAGE_LABEL, 4)
+        self.assertEqual(expected, link.attrib['href'])
+
+    def test_last_page(self):
+        # Ensure the output for the last page is empty.
+        template = '{% paginate 40 objects %}{% show_more %}'
+        tree = self.render(self.request(page=2), template)
+        self.assertIsNone(tree)
+
+    def test_customized_label(self):
+        # Ensure the link to the next page is correctly generated.
+        template = '{% paginate objects %}{% show_more "again and again" %}'
+        tree = self.render(self.request(), template)
+        link = tree.find('.//a[@class="endless_more"]')
+        self.assertEqual('again and again', link.text)
+
+    def test_customized_loading(self):
+        # Ensure the link to the next page is correctly generated.
+        template = '{% paginate objects %}{% show_more "more" "working" %}'
+        tree = self.render(self.request(), template)
+        loading = tree.find('.//*[@class="endless_loading"]')
+        self.assertEqual('working', loading.text)
 
 
 class GetPagesTest(TemplateTagsTestMixin, TestCase):
 
-    pass
+    def test_page_list(self):
+        # Ensure the page list is correctly included in the context.
+        template = '{% paginate objects %}{% get_pages %}'
+        html, context = self.render(self.request(), template)
+        self.assertEqual('', html)
+        self.assertIn('pages', context)
+        self.assertIsInstance(context['pages'], PageList)
+
+    def test_different_varname(self):
+        # Ensure the page list is correctly included in the context when
+        # using a different variable name.
+        template = '{% paginate objects %}{% get_pages as page_list %}'
+        _, context = self.render(self.request(), template)
+        self.assertIn('page_list', context)
+        self.assertIsInstance(context['page_list'], PageList)
+
+    def test_page_numbers(self):
+        # Ensure the current page in the page list reflects the current
+        # page number.
+        template = '{% lazy_paginate objects %}{% get_pages %}'
+        for page_number in range(1, 5):
+            _, context = self.render(self.request(page=page_number), template)
+            page = context['pages'].current()
+            self.assertEqual(page_number, page.number)
+
+    def test_without_paginate_tag(self):
+        # An error is raised if this tag is used before the paginate one.
+        template = '{% get_pages %}'
+        with self.assertRaises(PaginationError):
+            self.render(self.request(), template)
 
 
-class ShowPagesTest(TemplateTagsTestMixin, TestCase):
+class ShowPagesTest(EtreeTemplateTagsTestMixin, TestCase):
 
-    pass
+    def test_current_page(self):
+        # Ensure the current page in the page list reflects the current
+        # page number.
+        template = '{% paginate objects %}{% show_pages %}'
+        for page_number in range(1, 6):
+            tree = self.render(self.request(page=page_number), template)
+            current = tree.find('.//*[@class="endless_page_current"]')
+            text = ''.join(element.text for element in current)
+            self.assertEqual(str(page_number), text)
+
+    def test_links(self):
+        # Ensure the correct number of links is always displayed.
+        template = '{% paginate objects %}{% show_pages %}'
+        for page_number in range(1, 6):
+            tree = self.render(self.request(page=page_number), template)
+            links = tree.findall('.//a')
+            expected = 5 if page_number == 1 or page_number == 5 else 6
+            self.assertEqual(expected, len(links))
+
+    def test_without_paginate_tag(self):
+        # An error is raised if this tag is used before the paginate one.
+        template = '{% show_pages %}'
+        with self.assertRaises(PaginationError):
+            self.render(self.request(), template)
 
 
 class ShowCurrentNumberTest(TemplateTagsTestMixin, TestCase):
 
-    pass
+    def test_current_number(self):
+        # Ensure the current number is correctly returned.
+        template = '{% show_current_number %}'
+        for page_number in range(1, 6):
+            html, _ = self.render(self.request(page=page_number), template)
+            self.assertEqual(page_number, int(html))
+
+    def test_starting_from_page_argument(self):
+        # Ensure the number reflects the given ``starting_from_page`` arg.
+        template = '{% show_current_number starting from page 3 %}'
+        html, _ = self.render(self.request(), template)
+        self.assertEqual(3, int(html))
+
+    def test_starting_from_page_argument_as_variable(self):
+        # Ensure the number reflects the given ``starting_from_page`` arg.
+        # In this case, the argument is provided as context variable.
+        template = '{% show_current_number starting from page mypage %}'
+        html, _ = self.render(
+            self.request(), template, entries=range(47), mypage=2)
+        self.assertEqual(2, int(html))
+
+    def test_using_argument(self):
+        # Ensure the template tag uses the given querystring key.
+        template = '{% show_current_number using "mypage" %}'
+        html, _ = self.render(
+            self.request(mypage=2), template)
+        self.assertEqual(2, int(html))
+
+    def test_using_argument_as_variable(self):
+        # Ensure the template tag uses the given querystring key.
+        # In this case, the argument is provided as context variable.
+        template = '{% show_current_number using qskey %}'
+        html, _ = self.render(
+            self.request(p=5), template, entries=range(47), qskey='p')
+        self.assertEqual(5, int(html))
+
+    def test_as_argument(self):
+        # Ensure it is possible add the page number to context.
+        template = '{% show_current_number as page_number %}'
+        html, context = self.render(self.request(page=4), template)
+        self.assertEqual('', html)
+        self.assertIn('page_number', context)
+        self.assertEqual(4, context['page_number'])
+
+    def test_complete_argument_list(self):
+        # Ensure the tag works providing all the arguments.
+        template = (
+            '{% show_current_number '
+            'starting from page 2 '
+            'using mypage '
+            'as number %}'
+        )
+        html, context = self.render(
+            self.request(), template, objects=range(47), mypage='page-number')
+        self.assertEqual(2, context['number'])
+
+    def test_invalid_arguments(self):
+        # An error is raised if invalid arguments are provided.
+        templates = (
+            '{% show_current_number starting from page %}',
+            '{% show_current_number foo bar spam eggs %}',
+            '{% show_current_number as number using key %}',
+        )
+        request = self.request()
+        for template in templates:
+            with self.assertRaises(TemplateSyntaxError):
+                self.render(request, template)
