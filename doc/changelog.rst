@@ -22,8 +22,38 @@ same template is also supported.
 
 ----
 
+**New feature**: ability to provide nested context variables in the
+*paginate* and *lazy_paginate* template tags, e.g.:
+
+.. code-block:: html+django
+
+    {% paginate objects.all as myobjects %}
+
+The code above is basically equivalent to:
+
+    .. code-block:: html+django
+
+    {% with objects.all as myobjects %}
+        {% paginate myobjects %}
+    {% endwith %}
+
+In this case, and only in this case, the `as` argument is mandatory, and a
+*TemplateSyntaxError* will be raised if the variable name is missing.
+
+----
+
 **New feature**: ability to create a development and testing environment
 (see :doc:`contributing`).
+
+----
+
+**New feature**: in addition to the ability to provide a customized pagination
+URL as a context variable, the *paginate* and *lazy_paginate* tags now
+support hardcoded pagination URL endpoints, e.g.:
+
+.. code-block:: html+django
+
+    {% paginate 20 objects with "/mypage/" %}
 
 ----
 

@@ -65,24 +65,24 @@ class PaginateTestMixin(TemplateTagsTestMixin):
     def test_per_page_argument(self):
         # Ensure the queryset reflects the given ``per_page`` argument.
         template = '{% $tagname 20 objects %}'
-        html, context = self.render(self.request(), template)
+        _, context = self.render(self.request(), template)
         self.assertSequenceEqual(range(20), context['objects'])
 
     def test_per_page_argument_as_variable(self):
         # Ensure the queryset reflects the given ``per_page`` argument.
         # In this case, the argument is provided as context variable.
         template = '{% $tagname per_page entries %}'
-        html, context = self.render(
+        _, context = self.render(
             self.request(), template, entries=range(47), per_page=5)
         self.assertSequenceEqual(range(5), context['entries'])
 
     def test_first_page_argument(self):
         # Ensure the queryset reflects the given ``first_page`` argument.
         template = '{% $tagname 10,20 objects %}'
-        html, context = self.render(self.request(), template)
+        _, context = self.render(self.request(), template)
         self.assertSequenceEqual(range(10), context['objects'])
         # Check the second page.
-        html, context = self.render(self.request(page=2), template)
+        _, context = self.render(self.request(page=2), template)
         self.assertSequenceEqual(range(10, 30), context['objects'])
 
     def test_first_page_argument_as_variable(self):
@@ -94,31 +94,31 @@ class PaginateTestMixin(TemplateTagsTestMixin):
             'first_page': 1,
             'subsequent_pages': 40,
         }
-        html, context = self.render(self.request(), template, **context_data)
+        _, context = self.render(self.request(), template, **context_data)
         self.assertSequenceEqual([0], context['entries'])
         # Check the second page.
-        html, context = self.render(
+        _, context = self.render(
             self.request(page=2), template, **context_data)
         self.assertSequenceEqual(range(1, 41), context['entries'])
 
     def test_starting_from_page_argument(self):
         # Ensure the queryset reflects the given ``starting_from_page`` arg.
         template = '{% $tagname 10 objects starting from page 3 %}'
-        html, context = self.render(self.request(), template)
+        _, context = self.render(self.request(), template)
         self.assertSequenceEqual(range(20, 30), context['objects'])
 
     def test_starting_from_page_argument_as_variable(self):
         # Ensure the queryset reflects the given ``starting_from_page`` arg.
         # In this case, the argument is provided as context variable.
         template = '{% $tagname 10 entries starting from page mypage %}'
-        html, context = self.render(
+        _, context = self.render(
             self.request(), template, entries=range(47), mypage=2)
         self.assertSequenceEqual(range(10, 20), context['entries'])
 
     def test_using_argument(self):
         # Ensure the template tag uses the given querystring key.
         template = '{% $tagname 20 objects using "mypage" %}'
-        html, context = self.render(
+        _, context = self.render(
             self.request(mypage=2), template)
         self.assertSequenceEqual(range(20, 40), context['objects'])
 
@@ -126,14 +126,14 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         # Ensure the template tag uses the given querystring key.
         # In this case, the argument is provided as context variable.
         template = '{% $tagname 20 entries using qskey %}'
-        html, context = self.render(
+        _, context = self.render(
             self.request(p=3), template, entries=range(47), qskey='p')
         self.assertSequenceEqual(range(40, 47), context['entries'])
 
     def test_with_argument(self):
         # Ensure the context contains the correct override path.
         template = '{% $tagname 10 objects with "/mypath/" %}'
-        html, context = self.render(self.request(), template)
+        _, context = self.render(self.request(), template)
         self.assertEqual('/mypath/', context['endless_override_path'])
 
     def test_with_argument_as_variable(self):
@@ -141,14 +141,14 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         # In this case, the argument is provided as context variable.
         path = '/my/path/'
         template = '{% $tagname 10 entries with path %}'
-        html, context = self.render(
+        _, context = self.render(
             self.request(), template, entries=range(47), path=path)
         self.assertEqual(path, context['endless_override_path'])
 
     def test_as_argument(self):
         # Ensure it is possible to change the resulting context variable.
         template = '{% $tagname 20 objects as object_list %}'
-        html, context = self.render(self.request(), template)
+        _, context = self.render(self.request(), template)
         self.assertSequenceEqual(range(20), context['object_list'])
         # The input queryset has not been changed.
         self.assertSequenceEqual(range(47), context['objects'])
@@ -162,7 +162,7 @@ class PaginateTestMixin(TemplateTagsTestMixin):
             'with path '
             'as paginated %}'
         )
-        html, context = self.render(
+        _, context = self.render(
             self.request(), template, objects=range(47), mypage='page-number',
             path='mypath')
         self.assertSequenceEqual(range(5, 15), context['paginated'])
@@ -179,6 +179,22 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         for template in templates:
             with self.assertRaises(TemplateSyntaxError):
                 self.render(request, template)
+
+    def test_nested_context_variable(self):
+        # Ensure nested context variables are correctly handled.
+        manager = {'all': range(47)}
+        template = '{% $tagname 5 manager.all as objects %}'
+        _, context = self.render(self.request(), template, manager=manager)
+        self.assertSequenceEqual(range(5), context['objects'])
+
+    def test_failing_nested_context_variable(self):
+        # An error is raised if a nested context variable is used but no
+        # alias is provided.
+        manager = {'all': range(47)}
+        template = '{% $tagname 5 manager.all %}'
+        with self.assertRaises(TemplateSyntaxError) as cm:
+            self.render(self.request(), template, manager=manager)
+        self.assertIn('manager.all', str(cm.exception))
 
 
 class PaginateTest(PaginateTestMixin, TestCase):
@@ -209,4 +225,3 @@ class ShowPagesTest(TestCase):
 class ShowCurrentNumberTest(TestCase):
 
     pass
-

@@ -21,6 +21,14 @@ e.g.:
 
     {% paginate objects as page_objects %}
 
+The *as* argument is also useful when a nested context variable is provided
+as queryset. In that case, and only in that case, the resulting variable
+name is mandatory, e.g.:
+
+.. code-block:: html+django
+
+    {% paginate objects.all as objects %}
+
 The number of paginated object is taken from settings, but you can
 override the default, e.g.:
 
@@ -75,6 +83,14 @@ Additionally you can pass a path to be used for the pagination:
 .. code-block:: html+django
 
     {% paginate 20 objects using page_key with pagination_url as paginated_objects %}
+
+This way you can easily create views acting as API endpoints and point your
+Ajax calls to that API. In this case *pagination_url* is considered a
+context variable, but it is also possible to hardcode the url, e.g.:
+
+.. code-block:: html+django
+
+    {% paginate 20 objects with "/mypage/" %}
 
 If you want the first page to contain a different number of items than
 subsequent pages you can separate the two values with a comma, e.g. if

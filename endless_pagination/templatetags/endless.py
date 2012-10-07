@@ -19,7 +19,7 @@ from endless_pagination.paginator import (
 PAGINATE_EXPRESSION = re.compile(r"""
     ^   # Begin of line.
     (((?P<first_page>\w+)\,)?(?P<per_page>\w+)\s+)?  # First page, per page.
-    (?P<objects>\w+)  # Objects / queryset.
+    (?P<objects>[\.\w]+)  # Objects / queryset.
     (\s+starting\s+from\s+page\s+(?P<number>\w+))?  # Page start.
     (\s+using\s+(?P<key>[\"\'\w]+))?  # Querystring key.
     (\s+with\s+(?P<override_path>[\"\'\/\w]+))?  # Override path.
@@ -54,6 +54,12 @@ def paginate(parser, token, paginator_class=None):
     e.g.::
 
         {% paginate objects as page_objects %}
+
+    The *as* argument is also useful when a nested context variable is provided
+    as queryset. In that case, and only in that case, the resulting variable
+    name is mandatory, e.g.::
+
+        {% paginate objects.all as objects %}
 
     The number of paginated object is taken from settings, but you can
     override the default, e.g.::
@@ -96,6 +102,12 @@ def paginate(parser, token, paginator_class=None):
         {% paginate 20 objects using page_key with pagination_url
             as paginated_objects %}
 
+    This way you can easily create views acting as API endpoints and point your
+    Ajax calls to that API. In this case *pagination_url* is considered a
+    context variable, but it is also possible to hardcode the url, e.g.::
+
+        {% paginate 20 objects with "/mypage/" %}
+
     If you want the first page to contain a different number of items than
     subsequent pages you can separate the two values with a comma, e.g. if
     you want 3 items on the first page and 10 on other pages::
@@ -114,12 +126,24 @@ def paginate(parser, token, paginator_class=None):
     # Use a regexp to catch args.
     match = PAGINATE_EXPRESSION.match(tag_args)
     if match is None:
-        msg = 'Invalid arguments for %r tag' % token.contents.split()[0]
+        msg = 'Invalid arguments for %r tag' % tag_name
         raise template.TemplateSyntaxError(msg)
 
     # Retrieve objects.
     kwargs = match.groupdict()
     objects = kwargs.pop('objects')
+
+    # The variable name must be present if a nested context variable is passed.
+    if '.' in objects and kwargs['var_name'] is None:
+        msg = (
+            '%(tag)r tag requires a variable name `as` argumnent if the '
+            'queryset is provided as a nested context variable (%(objects)s). '
+            'You must either pass a direct queryset (e.g. taking advantage '
+            'of the `with` template tag) or provide a new variable name to '
+            'store the resulting queryset (e.g. `%(tag)s %(objects)s as '
+            'objects`).'
+        ) % {'tag': tag_name, 'objects': objects}
+        raise template.TemplateSyntaxError(msg)
 
     # Call the node.
     return PaginateNode(paginator_class, objects, **kwargs)
