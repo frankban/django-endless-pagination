@@ -196,6 +196,22 @@ class PaginateTestMixin(TemplateTagsTestMixin):
             self.render(self.request(), template, manager=manager)
         self.assertIn('manager.all', str(cm.exception))
 
+    def test_multiple_pagination(self):
+        # Ensure multiple pagination works correctly.
+        template = (
+            '{% $tagname 10,20 objects %}'
+            '{% $tagname 1 items using items_page %}'
+            '{% $tagname 5 entries.all using "entries" as myentries %}'
+        )
+        _, context = self.render(
+            self.request(page=2, entries=3), template,
+            objects=range(47), entries={'all': string.letters},
+            items=['foo', 'bar'], items_page='p')
+        self.assertSequenceEqual(range(10, 30), context['objects'])
+        self.assertSequenceEqual(['foo'], context['items'])
+        self.assertSequenceEqual(string.letters[10:15], context['myentries'])
+        self.assertSequenceEqual(string.letters, context['entries']['all'])
+
 
 class PaginateTest(PaginateTestMixin, TestCase):
 
@@ -207,21 +223,21 @@ class LazyPaginateTest(PaginateTestMixin, TestCase):
     tagname = 'lazy_paginate'
 
 
-class ShowMoreTest(TestCase):
+class ShowMoreTest(TemplateTagsTestMixin, TestCase):
 
     pass
 
 
-class GetPagesTest(TestCase):
+class GetPagesTest(TemplateTagsTestMixin, TestCase):
 
     pass
 
 
-class ShowPagesTest(TestCase):
+class ShowPagesTest(TemplateTagsTestMixin, TestCase):
 
     pass
 
 
-class ShowCurrentNumberTest(TestCase):
+class ShowCurrentNumberTest(TemplateTagsTestMixin, TestCase):
 
     pass
