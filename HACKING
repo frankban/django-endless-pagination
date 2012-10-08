@@ -6,7 +6,20 @@ Steps needed to set up a development and testing environment.
 Create a development environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-From the root of this branch, run the command::
+The development environment is created in a virtualenv. The environment
+creation requires the *make* and *virtualenv* programs to be installed.
+
+To install *make* under Debian/Ubuntu::
+
+    $ sudo apt-get install build-essential
+
+Under MacOSX, make is available as part of XCode.
+
+To install virtualenv::
+
+    $ sudo pip install virtualenv
+
+At this point, to from the root of this branch, run the command::
 
     $ make develop
 
