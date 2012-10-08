@@ -2,7 +2,7 @@
 
 {% paginate 5 objects %}
 {% for object in objects %}
-  <div class="well">
+  <div class="well object">
     <h4>{{ object.title }}</h4>
     {{ object.contents }}
   </div>

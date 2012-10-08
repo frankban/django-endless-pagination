@@ -61,6 +61,8 @@ with VenvLinkDeleted():
             PROJECT_NAME,
             '{0}.templatetags'.format(PROJECT_NAME),
             '{0}.tests'.format(PROJECT_NAME),
+            '{0}.tests.integration'.format(PROJECT_NAME),
+            '{0}.tests.templatetags'.format(PROJECT_NAME),
         ],
         package_data={PROJECT_NAME: data_files},
         classifiers=[
