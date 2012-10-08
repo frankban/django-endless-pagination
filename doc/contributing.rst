@@ -34,6 +34,8 @@ Run the tests::
 
     $ make test
 
+The test suite requires Python >= 2.7.
+
 Run the tests and lint checks::
 
     $ make check
@@ -42,6 +44,11 @@ Note that the last command also lint the code. To be able to do that,
 install the *pocket-lint* package, e.g.::
 
     $ sudo apt-get install python-pocket-lint
+
+Integration tests are also available. They use Selenium and require Firefox
+to be installed. To run all the tests, including integration ones::
+
+    $ make testall
 
 Run the Django shell (Python interpreter)::
 

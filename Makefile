@@ -55,5 +55,8 @@ source:
 test:
 	@./tests/with_venv.sh python ./tests/manage.py test
 
+testall:
+	@USE_SELENIUM=1 ./tests/with_venv.sh python ./tests/manage.py test
+
 .PHONY: all doc clean cleanenv check develop install lint pep8 server shell \
-	source test
+	source test testall

@@ -1,25 +1,33 @@
 """Integration tests base objects definitions."""
 
 from contextlib import contextmanager
+import os
 
 from django.core.urlresolvers import reverse
 from django.test import LiveServerTestCase
+from django.utils import unittest
 from selenium.common import exceptions
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support import ui
 
 
+USE_SELENIUM = os.getenv('USE_SELENIUM', False)
+
+
+@unittest.skipUnless(USE_SELENIUM, 'env variable USE_SELENIUM is not set.')
 class SeleniumTestCase(LiveServerTestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.selenium = WebDriver()
-        cls.wait = ui.WebDriverWait(cls.selenium, 10)
+        if USE_SELENIUM:
+            cls.selenium = WebDriver()
+            cls.wait = ui.WebDriverWait(cls.selenium, 10)
         super(SeleniumTestCase, cls).setUpClass()
 
     @classmethod
     def tearDownClass(cls):
-        cls.selenium.quit()
+        if USE_SELENIUM:
+            cls.selenium.quit()
         super(SeleniumTestCase, cls).tearDownClass()
 
     def setUp(self):
