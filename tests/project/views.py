@@ -20,7 +20,7 @@ def _make_items(title, number):
 
 def base(request, extra_context=None, template=None):
     context = {
-        'objects': _make_items('Item', 100),
+        'objects': _make_items('Object', 100),
     }
     if extra_context is not None:
         context.update(extra_context)
