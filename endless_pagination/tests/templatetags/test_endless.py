@@ -197,6 +197,12 @@ class PaginateTestMixin(TemplateTagsTestMixin):
             with self.assertRaises(TemplateSyntaxError):
                 self.render(request, template)
 
+    def test_invalid_page(self):
+        # The first page is displayed if an invalid page is provided.
+        template = '{% $tagname 5 objects %}'
+        _, context = self.render(self.request(page=0), template)
+        self.assertSequenceEqual(range(5), context['objects'])
+
     def test_nested_context_variable(self):
         # Ensure nested context variables are correctly handled.
         manager = {'all': range(47)}
@@ -313,6 +319,13 @@ class GetPagesTest(TemplateTagsTestMixin, TestCase):
         with self.assertRaises(PaginationError):
             self.render(self.request(), template)
 
+    def test_invalid_arguments(self):
+        # An error is raised if invalid arguments are provided.
+        template = '{% lazy_paginate objects %}{% get_pages foo bar %}'
+        request = self.request()
+        with self.assertRaises(TemplateSyntaxError):
+            self.render(request, template)
+
 
 class ShowPagesTest(EtreeTemplateTagsTestMixin, TestCase):
 
@@ -340,6 +353,13 @@ class ShowPagesTest(EtreeTemplateTagsTestMixin, TestCase):
         template = '{% show_pages %}'
         with self.assertRaises(PaginationError):
             self.render(self.request(), template)
+
+    def test_invalid_arguments(self):
+        # An error is raised if invalid arguments are provided.
+        template = '{% lazy_paginate objects %}{% show_pages foo bar %}'
+        request = self.request()
+        with self.assertRaises(TemplateSyntaxError):
+            self.render(request, template)
 
 
 class ShowCurrentNumberTest(TemplateTagsTestMixin, TestCase):

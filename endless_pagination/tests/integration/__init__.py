@@ -7,7 +7,6 @@ from django.core.urlresolvers import reverse
 from django.http import QueryDict
 from django.test import LiveServerTestCase
 from django.utils import unittest
-from selenium.common import exceptions
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support import ui
 
@@ -30,6 +29,7 @@ def teardown_package():
 
 @unittest.skipUnless(USE_SELENIUM, 'env variable USE_SELENIUM is not set.')
 class SeleniumTestCase(LiveServerTestCase):
+    """Base test class for integration tests."""
 
     PREVIOUS = '<<'
     NEXT = '>>'
@@ -82,13 +82,6 @@ class SeleniumTestCase(LiveServerTestCase):
             #with self.handle_stale():
             elements.append(int(element.text.split()[1]))
         return elements
-
-    @contextmanager
-    def handle_stale(self):
-        try:
-            yield
-        except exceptions.StaleElementReferenceException:
-            pass
 
     def assertElements(self, class_name, elements):
         """Assert the current page contains the given *elements*."""
