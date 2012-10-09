@@ -26,5 +26,6 @@ Contents:
    customization
    generic_views
    contributing
+   contacts
    thanks
 

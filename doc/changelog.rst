@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Version 1.2
-~~~~~~~~~~~
+Version 1.2 (under development)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **New feature**: the ``page_templates`` decorator also accepts a sequence
 of ``(template, key)`` pairs in place of a dict mapping templates and keys
@@ -31,7 +31,7 @@ same template is also supported.
 
 The code above is basically equivalent to:
 
-    .. code-block:: html+django
+.. code-block:: html+django
 
     {% with objects.all as myobjects %}
         {% paginate myobjects %}
