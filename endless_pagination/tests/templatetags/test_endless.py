@@ -40,9 +40,10 @@ class TemplateTagsTestMixin(object):
         html = template.render(context)
         return html.strip(), context
 
-    def request(self, url='/', page=None, **kwargs):
+    def request(self, url='/', page=None, data=None, **kwargs):
         """Return a Django request for the given *page*."""
-        querydict = kwargs.copy()
+        querydict = {} if data is None else data
+        querydict.update(kwargs)
         if page is not None:
             querydict[PAGE_LABEL] = page
         return self.factory.get(url, querydict)
@@ -134,9 +135,9 @@ class PaginateTestMixin(TemplateTagsTestMixin):
 
     def test_using_argument(self):
         # Ensure the template tag uses the given querystring key.
-        template = '{% $tagname 20 objects using "mypage" %}'
+        template = '{% $tagname 20 objects using "my-page" %}'
         _, context = self.render(
-            self.request(mypage=2), template)
+            self.request(data={'my-page': 2}), template)
         self.assertSequenceEqual(range(20, 40), context['objects'])
 
     def test_using_argument_as_variable(self):
