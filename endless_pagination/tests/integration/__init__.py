@@ -72,6 +72,11 @@ class SeleniumTestCase(LiveServerTestCase):
         link.click()
         return link
 
+    def scroll_down(self):
+        """Scroll down to the bottom of the page."""
+        script = 'window.scrollTo(0, document.body.scrollHeight);'
+        self.selenium.execute_script(script)
+
     def get_current_elements(self, class_name, driver=None):
         """Return the range of current elements as a list of numbers."""
         elements = []
