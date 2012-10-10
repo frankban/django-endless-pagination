@@ -18,9 +18,11 @@ def _make_items(title, number):
     ]
 
 
-def base(request, extra_context=None, template=None):
+def base(request, extra_context=None, template=None, number=100):
     context = {
-        'objects': _make_items('Object', 100),
+        'objects': _make_items('Object', number),
+        'items': _make_items('Item', number),
+        'entries': _make_items('Entry', number),
     }
     if extra_context is not None:
         context.update(extra_context)

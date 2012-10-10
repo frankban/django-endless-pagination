@@ -12,6 +12,8 @@ VOICES = (
     # Name and label pairs.
     ('digg', 'Digg-style'),
     ('twitter', 'Twitter-style'),
+    ('onscroll', 'On scroll'),
+    ('multiple', 'Multiple'),
 )
 
 

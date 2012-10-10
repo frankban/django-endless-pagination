@@ -35,8 +35,10 @@
         {% block content %}{% endblock %}
       </div>
     </div>
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/bootstrap.min.js"></script>
+    {% block js %}
+      <script src="http://code.jquery.com/jquery-latest.js"></script>
+      <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/bootstrap.min.js"></script>
+    {% endblock %}
   </body>
 </html>
