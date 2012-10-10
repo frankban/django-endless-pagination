@@ -5,12 +5,13 @@ Repository and bugs
 ~~~~~~~~~~~~~~~~~~~
 
 The **source code** for this app is hosted on
-http://code.google.com/p/django-endless-pagination/.
+https://github.com/frankban/django-endless-pagination.
 
-A **Mercurial mirror** of this project is hosted on
-https://bitbucket.org/frankban/django-endless-pagination/.
+The **Mercurial repository** of this project is hosted on
+https://bitbucket.org/frankban/django-endless-pagination.
 
-To file **bugs and requests**, please use.
+To file **bugs and requests**, please use
+https://github.com/frankban/django-endless-pagination/issues.
 
 Contacts
 ~~~~~~~~

@@ -6,8 +6,11 @@ optional Ajax support and other features like multiple or lazy pagination.
 The initial idea, which has guided the development of this application,
 is to allow pagination of web contents in very few steps.
 
-The source code for this app is hosted on
-http://code.google.com/p/django-endless-pagination/.
+The **source code** for this app is hosted on
+https://github.com/frankban/django-endless-pagination.
+
+The **Mercurial repository** of this project is hosted on
+https://bitbucket.org/frankban/django-endless-pagination.
 
 Contents:
 
