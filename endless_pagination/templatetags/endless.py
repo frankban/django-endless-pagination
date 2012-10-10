@@ -271,13 +271,13 @@ class PaginateNode(template.Node):
             page = paginator.page(1)
 
         # Populate the context with required data.
-        context.update({
-            'endless_default_number': default_number,
-            'endless_override_path': override_path,
-            'endless_page': page,
-            'endless_querystring_key': querystring_key,
-            self.var_name: page.object_list,
-        })
+        data = {
+            'default_number': default_number,
+            'override_path': override_path,
+            'page': page,
+            'querystring_key': querystring_key,
+        }
+        context.update({'endless': data, self.var_name: page.object_list})
         return u''
 
 
@@ -300,21 +300,22 @@ def show_more(context, label=None, loading=settings.LOADING):
     Must be called after ``{% paginate objects %}``.
     """
     # This template tag could raise a PaginationError: you have to call
-    # ``paginate`` before including the show more template.
-    page = utils.get_page_from_context(context)
+    # *paginate* or *lazy_paginate* before including the showmore template.
+    data = utils.get_data_from_context(context)
+    page = data['page']
     # show the template only if there is a next page
     if page.has_next():
         request = context['request']
         page_number = page.next_page_number()
         # Generate the querystring.
-        querystring_key = context['endless_querystring_key']
+        querystring_key = data['querystring_key']
         querystring = utils.get_querystring_for_page(
             request, page_number, querystring_key,
-            default_number=context['endless_default_number'])
+            default_number=data['default_number'])
         return {
             'label': label,
             'loading': loading,
-            'path': context['endless_override_path'] or request.path,
+            'path': data['override_path'] or request.path,
             'querystring': querystring,
             'querystring_key': querystring_key,
             'request': request,
@@ -422,15 +423,15 @@ class GetPagesNode(template.Node):
 
     def render(self, context):
         # This template tag could raise a PaginationError: you have to call
-        # ``paginate`` before including the get pages template.
-        page = utils.get_page_from_context(context)
+        # *paginate* or *lazy_paginate* before including the getpages template.
+        data = utils.get_data_from_context(context)
         # Add the PageList instance to the context.
         context[self.var_name] = models.PageList(
             context['request'],
-            page,
-            context['endless_querystring_key'],
-            default_number=context['endless_default_number'],
-            override_path=context['endless_override_path'],
+            data['page'],
+            data['querystring_key'],
+            default_number=data['default_number'],
+            override_path=data['override_path'],
         )
         return u''
 
@@ -483,15 +484,15 @@ class ShowPagesNode(template.Node):
 
     def render(self, context):
         # This template tag could raise a PaginationError: you have to call
-        # ``paginate`` before including the get pages template.
-        page = utils.get_page_from_context(context)
+        # *paginate* or *lazy_paginate* before including the getpages template.
+        data = utils.get_data_from_context(context)
         # Return the unicode representation of the sequence of pages.
         pages = models.PageList(
             context['request'],
-            page,
-            context['endless_querystring_key'],
-            default_number=context['endless_default_number'],
-            override_path=context['endless_override_path'],
+            data['page'],
+            data['querystring_key'],
+            default_number=data['default_number'],
+            override_path=data['override_path'],
         )
         return unicode(pages)
 

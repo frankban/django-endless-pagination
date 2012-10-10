@@ -8,6 +8,19 @@ from endless_pagination.settings import (
 )
 
 
+def get_data_from_context(context):
+    """Get the django paginator data object from the given *context*.
+
+    The context is a dict-like object. If the context key ``endless``
+    is not found, a *PaginationError* is raised.
+    """
+    try:
+        return context['endless']
+    except KeyError:
+        raise exceptions.PaginationError(
+            'Cannot find endless data in context.')
+
+
 def get_page_number_from_request(
         request, querystring_key=PAGE_LABEL, default=1):
     """Retrieve the current page number from *GET* or *POST* data.
@@ -19,34 +32,6 @@ def get_page_number_from_request(
         return int(request.REQUEST[querystring_key])
     except (KeyError, TypeError, ValueError):
         return default
-
-
-def get_page_from_context(context):
-    """Get the django paginator page object from the given *context*.
-
-    The context is a dict-like object. If the context key ``endless_page``
-    is not found, a *PaginationError* is raised.
-    """
-    try:
-        return context['endless_page']
-    except KeyError:
-        raise exceptions.PaginationError(
-            'Cannot find endless page in context.')
-
-
-def get_querystring_for_page(
-        request, page_number, querystring_key, default_number=1):
-    """Return a querystring pointing to *page_number*."""
-    querydict = request.GET.copy()
-    querydict[querystring_key] = page_number
-    # For the default page number (usually 1) the querystring is not required.
-    if page_number == default_number:
-        del querydict[querystring_key]
-    if 'querystring_key' in querydict:
-        del querydict['querystring_key']
-    if querydict:
-        return '?' + querydict.urlencode()
-    return ''
 
 
 def get_page_numbers(
@@ -96,3 +81,18 @@ def get_page_numbers(
     if current_page != num_pages:
         pages.append('next')
     return pages
+
+
+def get_querystring_for_page(
+        request, page_number, querystring_key, default_number=1):
+    """Return a querystring pointing to *page_number*."""
+    querydict = request.GET.copy()
+    querydict[querystring_key] = page_number
+    # For the default page number (usually 1) the querystring is not required.
+    if page_number == default_number:
+        del querydict[querystring_key]
+    if 'querystring_key' in querydict:
+        del querydict['querystring_key']
+    if querydict:
+        return '?' + querydict.urlencode()
+    return ''

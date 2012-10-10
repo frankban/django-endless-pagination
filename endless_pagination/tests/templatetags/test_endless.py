@@ -152,7 +152,7 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         # Ensure the context contains the correct override path.
         template = '{% $tagname 10 objects with "/mypath/" %}'
         _, context = self.render(self.request(), template)
-        self.assertEqual('/mypath/', context['endless_override_path'])
+        self.assertEqual('/mypath/', context['endless']['override_path'])
 
     def test_with_argument_as_variable(self):
         # Ensure the context contains the correct override path.
@@ -161,7 +161,7 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         template = '{% $tagname 10 entries with path %}'
         _, context = self.render(
             self.request(), template, entries=range(47), path=path)
-        self.assertEqual(path, context['endless_override_path'])
+        self.assertEqual(path, context['endless']['override_path'])
 
     def test_as_argument(self):
         # Ensure it is possible to change the resulting context variable.
@@ -184,7 +184,7 @@ class PaginateTestMixin(TemplateTagsTestMixin):
             self.request(), template, objects=range(47), mypage='page-number',
             path='mypath')
         self.assertSequenceEqual(range(5, 15), context['paginated'])
-        self.assertEqual('mypath', context['endless_override_path'])
+        self.assertEqual('mypath', context['endless']['override_path'])
 
     def test_invalid_arguments(self):
         # An error is raised if invalid arguments are provided.
