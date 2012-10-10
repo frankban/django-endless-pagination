@@ -34,8 +34,14 @@ class OnScrollPaginationTest(SeleniumTestCase):
     def test_multiple_show_more(self):
         # Ensure new pages are loaded again and again.
         self.get()
-        for page in range(2, 10):
+        for page in range(2, 5):
             expected_range = range(1, 5 * page + 1)
             with self.assertSameURL():
                 with self.assertNewElements('object', expected_range):
                     self.scroll_down()
+
+    def test_scrolling_last_page(self):
+        # Ensure scrolling on the last page is a no-op.
+        self.get(page=10)
+        with self.assertNewElements('object', range(46, 51)):
+            self.scroll_down()

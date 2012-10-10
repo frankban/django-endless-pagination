@@ -34,8 +34,13 @@ class TwitterPaginationTest(SeleniumTestCase):
     def test_multiple_show_more(self):
         # Ensure new pages are loaded again and again.
         self.get()
-        for page in range(2, 10):
+        for page in range(2, 5):
             expected_range = range(1, 5 * page + 1)
             with self.assertSameURL():
                 with self.assertNewElements('object', expected_range):
                     self.click_link(self.MORE)
+
+    def test_no_more_link_in_last_page(self):
+        # Ensure there is no more link on the last page.
+        self.get(page=10)
+        self.asserLinksEqual(0, self.MORE)

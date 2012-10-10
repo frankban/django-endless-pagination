@@ -38,3 +38,13 @@ class DiggPaginationTest(SeleniumTestCase):
         with self.assertSameURL():
             with self.assertNewElements('object', range(11, 16)):
                 self.click_link(self.PREVIOUS)
+
+    def test_no_previous_link_in_first_page(self):
+        # Ensure there is no previous link on the first page.
+        self.get()
+        self.asserLinksEqual(0, self.PREVIOUS)
+
+    def test_no_next_link_in_last_page(self):
+        # Ensure there is no forward link on the last page.
+        self.get(page=10)
+        self.asserLinksEqual(0, self.NEXT)

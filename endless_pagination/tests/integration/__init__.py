@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.http import QueryDict
 from django.test import LiveServerTestCase
 from django.utils import unittest
+from selenium.common import exceptions
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support import ui
 
@@ -66,9 +67,9 @@ class SeleniumTestCase(LiveServerTestCase):
         self.wait.until(document_ready)
         return self.wait
 
-    def click_link(self, text):
-        """Click the link with the given *text*."""
-        link = self.selenium.find_element_by_link_text(str(text))
+    def click_link(self, text, index=0):
+        """Click the link with the given *text* and *index*."""
+        link = self.selenium.find_elements_by_link_text(str(text))[index]
         link.click()
         return link
 
@@ -88,10 +89,26 @@ class SeleniumTestCase(LiveServerTestCase):
             elements.append(int(element.text.split()[1]))
         return elements
 
+    def asserLinksEqual(self, count, text):
+        """Assert the page contains *count* links with given *text*."""
+        links = self.selenium.find_elements_by_link_text(str(text))
+        self.assertEqual(count, len(links))
+
     def assertElements(self, class_name, elements):
         """Assert the current page contains the given *elements*."""
         current_elements = self.get_current_elements(class_name)
-        self.assertSequenceEqual(elements, current_elements)
+        self.assertSequenceEqual(
+            elements, current_elements, (
+                'Elements differ: {expected} != {actual}\n'
+                'Class name: {class_name}\n'
+                'Expected elements: {expected}\n'
+                'Actual elements: {actual}'
+            ).format(
+                actual=current_elements,
+                expected=elements,
+                class_name=class_name,
+            )
+        )
 
     @contextmanager
     def assertNewElements(self, class_name, new_elements):
@@ -100,7 +117,10 @@ class SeleniumTestCase(LiveServerTestCase):
             elements = self.get_current_elements(class_name, driver=driver)
             return elements == new_elements
         yield
-        self.wait_ajax().until(new_elements_loaded)
+        try:
+            self.wait_ajax().until(new_elements_loaded)
+        except exceptions.TimeoutException:
+            self.assertElements(class_name, new_elements)
 
     @contextmanager
     def assertSameURL(self):

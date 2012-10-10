@@ -89,7 +89,8 @@ an *ImproperlyConfigured* error while trying to pre-load the templates.
 ----
 
 **Fix**: replaced doctests with proper unittests. Improved, as a consequence,
-the code coverage.
+the code coverage. Also introduced integration tests exercising Javascript and
+using Selenium.
 
 ----
 

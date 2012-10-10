@@ -18,7 +18,7 @@ def _make_items(title, number):
     ]
 
 
-def base(request, extra_context=None, template=None, number=100):
+def base(request, extra_context=None, template=None, number=50):
     context = {
         'objects': _make_items('Object', number),
         'items': _make_items('Item', number),
