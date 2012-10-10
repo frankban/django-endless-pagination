@@ -11,9 +11,8 @@ from endless_pagination import (
 )
 
 
-# Preload page templates.
-CURRENT_TEMPLATE = loader.get_template('endless/current_link.html')
-PAGE_TEMPLATE = loader.get_template('endless/page_link.html')
+# Page templates cache.
+_template_cache = {}
 
 
 class EndlessPage(object):
@@ -54,7 +53,12 @@ class EndlessPage(object):
             'page': self,
             'querystring_key': self.querystring_key,
         })
-        template = CURRENT_TEMPLATE if self.is_current else PAGE_TEMPLATE
+        if self.is_current:
+            template_name = 'endless/current_link.html'
+        else:
+            template_name = 'endless/page_link.html'
+        template = _template_cache.setdefault(
+            template_name, loader.get_template(template_name))
         return template.render(context_instance)
 
 

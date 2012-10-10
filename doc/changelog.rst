@@ -74,6 +74,20 @@ Django ``ListView`` one.
 
 ----
 
+**Fix**: the *using* argument of *paginate* and *lazy_paginate* template tags
+now correctly handles querystring keys containing dashes, e.g.:
+
+.. code-block:: html+django
+
+    {% lazy_paginate entries using "entries-page" %}
+
+----
+
+**Fix**: in same corner cases, loading ``endless_pagination.models`` raised
+an *ImproperlyConfigured* error while trying to pre-load the templates.
+
+----
+
 **Fix**: replaced doctests with proper unittests. Improved, as a consequence,
 the code coverage.
 
