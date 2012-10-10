@@ -21,7 +21,7 @@ PAGINATE_EXPRESSION = re.compile(r"""
     (((?P<first_page>\w+)\,)?(?P<per_page>\w+)\s+)?  # First page, per page.
     (?P<objects>[\.\w]+)  # Objects / queryset.
     (\s+starting\s+from\s+page\s+(?P<number>\w+))?  # Page start.
-    (\s+using\s+(?P<key>[\"\'\w]+))?  # Querystring key.
+    (\s+using\s+(?P<key>[\"\'\-\w]+))?  # Querystring key.
     (\s+with\s+(?P<override_path>[\"\'\/\w]+))?  # Override path.
     (\s+as\s+(?P<var_name>\w+))?  # Context variable name.
     $   # End of line.
@@ -29,7 +29,7 @@ PAGINATE_EXPRESSION = re.compile(r"""
 SHOW_CURRENT_NUMBER_EXPRESSION = re.compile(r"""
     ^   # Begin of line.
     (starting\s+from\s+page\s+(?P<number>\w+))?\s*  # Page start.
-    (using\s+(?P<key>[\"\'\w]+))?\s*  # Querystring key.
+    (using\s+(?P<key>[\"\'\-\w]+))?\s*  # Querystring key.
     (as\s+(?P<var_name>\w+))?  # Context variable name.
     $   # End of line.
 """, re.VERBOSE)
