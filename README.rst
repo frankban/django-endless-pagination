@@ -10,10 +10,11 @@ is to allow pagination of web contents in `very few steps
 <http://django-endless-pagination.readthedocs.org/>`_, or in the docs
 directory of the project.
 
-To file **bugs and requests**, please use.
+To file **bugs and requests**, please use
+https://github.com/frankban/django-endless-pagination/issues.
 
 The **source code** for this app is hosted on
-http://code.google.com/p/django-endless-pagination/.
+https://github.com/frankban/django-endless-pagination.
 
-A **Mercurial mirror** of this project is hosted on
-https://bitbucket.org/frankban/django-endless-pagination/.
+The **Mercurial repository** of this project is hosted on
+https://bitbucket.org/frankban/django-endless-pagination.
