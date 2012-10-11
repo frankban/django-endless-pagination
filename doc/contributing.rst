@@ -19,7 +19,7 @@ To install virtualenv::
 
     $ sudo pip install virtualenv
 
-At this point, to from the root of this branch, run the command::
+At this point, from the root of this branch, run the command::
 
     $ make develop
 
