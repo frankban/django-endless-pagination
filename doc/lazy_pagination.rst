@@ -17,8 +17,8 @@ e.g.:
 
     {% load endless %}
 
-    {% lazy_paginate objects %}
-    {% for object in objects %}
+    {% lazy_paginate entries %}
+    {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_more %}

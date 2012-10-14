@@ -11,13 +11,13 @@ arguments, e.g.:
 
     {% load endless %}
 
-    {% lazy_paginate 4,20 objects %}
-    {% for object in objects %}
+    {% lazy_paginate 4,20 entries %}
+    {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_more %}
 
-This code will display 4 objects on the first page and 20 objects on the other
+This code will display 4 entries on the first page and 20 entries on the other
 pages.
 
 Of course the *first page* and *per page* arguments can be passed
@@ -25,4 +25,4 @@ as template variables, e.g.:
 
 .. code-block:: html+django
 
-    {% lazy_paginate first_page,per_page objects %}
+    {% lazy_paginate first_page,per_page entries %}

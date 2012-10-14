@@ -11,7 +11,7 @@ but in the case of multiple pagination the application provides a simple way to
 override the settings.
 
 If you do not need Ajax, the only file you need to edit is the template.
-Here is an example with 2 different paginations (*objects* and *other_objects*)
+Here is an example with 2 different paginations (*entries* and *other_entries*)
 in the same page, but there is no limit to the number of different paginations
 in a page:
 
@@ -19,15 +19,15 @@ in a page:
 
     {% load endless %}
 
-    {% paginate objects %}
-    {% for object in objects %}
+    {% paginate entries %}
+    {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_pages %}
 
-    {# "other_objects_page" is the new querystring key #}
-    {% paginate other_objects using "other_objects_page" %}
-    {% for object in other_objects %}
+    {# "other_entries_page" is the new querystring key #}
+    {% paginate other_entries using "other_entries_page" %}
+    {% for entry in other_entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_pages %}
@@ -37,8 +37,8 @@ the name of the querystring key used to track the page number.
 If not specified the system falls back to
 ``settings.ENDLESS_PAGINATION_PAGE_LABEL``.
 
-In the example above, the url *http://example.com?page=2&other_objects_page=3*
-requests the second page of *objects* and the third page of *other_objects*.
+In the example above, the url *http://example.com?page=2&other_entries_page=3*
+requests the second page of *entries* and the third page of *other_entries*.
 
 The name of the querystring key can also be dinamically passed in the template
 context, e.g.:
@@ -46,7 +46,7 @@ context, e.g.:
 .. code-block:: html+django
 
     {# page_variable is not surrounded by quotes #}
-    {% paginate other_objects using page_variable %}
+    {% paginate other_entries using page_variable %}
 
 You can use any style of pagination: ``show_pages``, ``get_pages``,
 ``show_more`` etc... (see :doc:`templatetags_reference`).
@@ -83,8 +83,8 @@ box each page in a div with a class called *endless_page_template*.
 
     {% load endless %}
 
-    {% paginate objects %}
-    {% for object in objects %}
+    {% paginate entries %}
+    {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_pages %}
@@ -95,8 +95,8 @@ box each page in a div with a class called *endless_page_template*.
 
     {% load endless %}
 
-    {% paginate other_objects using other_objects_page %}
-    {% for object in other_objects %}
+    {% paginate other_entries using other_entries_page %}
+    {% for entry in other_entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_pages %}
@@ -111,12 +111,12 @@ querystring key, e.g.::
     from endless_pagination.decorators import page_template
 
     @page_template('myapp/entries_page.html')
-    @page_template('myapp/other_entries_page.html', key='other_objects_page')
+    @page_template('myapp/other_entries_page.html', key='other_entries_page')
     def entry_index(
             request, template='myapp/entry_index.html', extra_context=None):
         context = {
-            'objects': Entry.objects.all(),
-            'other_objects': OtherEntry.objects.all(),
+            'entries': Entry.objects.all(),
+            'other_entries': OtherEntry.objects.all(),
         }
         if extra_context is not None:
             context.update(extra_context)
@@ -135,7 +135,7 @@ The previous example can be written as::
 
     @page_templates({
         'myapp/entries_page.html': None,
-        'myapp/other_entries_page.html': 'other_objects_page',
+        'myapp/other_entries_page.html': 'other_entries_page',
     })
     def entry_index():
         ...
@@ -148,7 +148,7 @@ of ``(template, key)`` pairs, e.g.::
 
     @page_templates((
         ('myapp/entries_page.html', None),
-        ('myapp/other_entries_page.html', 'other_objects_page'),
+        ('myapp/other_entries_page.html', 'other_entries_page'),
     ))
     def entry_index():
         ...

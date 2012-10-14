@@ -54,7 +54,7 @@ you can use Digg-style pagination to display objects just by adding:
 
     {% load endless %}
 
-    {% paginate objects %}
+    {% paginate entries %}
     {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}

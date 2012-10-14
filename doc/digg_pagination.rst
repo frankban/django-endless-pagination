@@ -8,8 +8,8 @@ pagination is not needed, all you have to do is modifying the template, e.g.:
 
     {% load endless %}
 
-    {% paginate objects %}
-    {% for object in objects %}
+    {% paginate entries %}
+    {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_pages %}
@@ -25,8 +25,8 @@ e.g.:
 
     {% load endless %}
 
-    {% paginate objects %}
-    {% for object in objects %}
+    {% paginate entries %}
+    {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% get_pages %}
@@ -47,7 +47,7 @@ The view is exactly the same as in ``show_more`` from
     def entry_index(
             request, template='myapp/entry_index.html', extra_context=None):
         context = {
-            'objects': Entry.objects.all(),
+            'entries': Entry.objects.all(),
         }
         if extra_context is not None:
             context.update(extra_context)
@@ -78,8 +78,8 @@ template is needed too, and must have a class named *endless_page_template*.
 
     {% load endless %}
 
-    {% paginate objects %}
-    {% for object in objects %}
+    {% paginate entries %}
+    {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_pages %}

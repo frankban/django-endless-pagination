@@ -12,7 +12,7 @@ keys (still present), e.g.::
 
     @page_templates((
         ('myapp/entries_page.html', None),
-        ('myapp/other_entries_page.html', 'other_objects_page'),
+        ('myapp/other_entries_page.html', 'other_entries_page'),
     ))
     def entry_index():
         ...
@@ -26,14 +26,14 @@ This also supports serving different paginated objects with the same template.
 
 .. code-block:: html+django
 
-    {% paginate objects.all as myobjects %}
+    {% paginate entries.all as myentries %}
 
 The code above is basically equivalent to:
 
 .. code-block:: html+django
 
-    {% with objects.all as myobjects %}
-        {% paginate myobjects %}
+    {% with entries.all as myentries %}
+        {% paginate myentries %}
     {% endwith %}
 
 In this case, and only in this case, the `as` argument is mandatory, and a
@@ -52,7 +52,7 @@ support hardcoded pagination URL endpoints, e.g.:
 
 .. code-block:: html+django
 
-    {% paginate 20 objects with "/mypage/" %}
+    {% paginate 20 entries with "/mypage/" %}
 
 ----
 

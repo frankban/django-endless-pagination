@@ -8,18 +8,18 @@ Usage:
 
 .. code-block:: html+django
 
-    {% paginate objects %}
+    {% paginate entries %}
 
-After this call, the *objects* variable in the template context is replaced
-by only the objects of the current page.
+After this call, the *entries* variable in the template context is replaced
+by only the entries of the current page.
 
-You can also keep your *objects* original variable (usually a queryset)
-and add to the context another name that refers to objects of the current page,
+You can also keep your *entries* original variable (usually a queryset)
+and add to the context another name that refers to entries of the current page,
 e.g.:
 
 .. code-block:: html+django
 
-    {% paginate objects as page_objects %}
+    {% paginate entries as page_entries %}
 
 The *as* argument is also useful when a nested context variable is provided
 as queryset. In this case, and only in this case, the resulting variable
@@ -27,34 +27,34 @@ name is mandatory, e.g.:
 
 .. code-block:: html+django
 
-    {% paginate objects.all as objects %}
+    {% paginate entries.all as entries %}
 
-The number of paginated object is taken from settings, but you can
+The number of paginated entries is taken from settings, but you can
 override the default locally, e.g.:
 
 .. code-block:: html+django
 
-    {% paginate 20 objects %}
+    {% paginate 20 entries %}
 
 Of course you can mix it all:
 
 .. code-block:: html+django
 
-    {% paginate 20 objects as paginated_objects %}
+    {% paginate 20 entries as paginated_entries %}
 
 By default, the first page is displayed the first time you load the page,
 but you can change this, e.g.:
 
 .. code-block:: html+django
 
-    {% paginate objects starting from page 3 %}
+    {% paginate entries starting from page 3 %}
 
 This can be also achieved using a template variable that was passed to the
 context, e.g.:
 
 .. code-block:: html+django
 
-    {% paginate objects starting from page page_number %}
+    {% paginate entries starting from page page_number %}
 
 If the passed page number does not exist, the first page is displayed.
 
@@ -63,26 +63,26 @@ querydict key for the single pagination, e.g.:
 
 .. code-block:: html+django
 
-    {% paginate objects using article_page %}
+    {% paginate entries using article_page %}
 
 In this case *article_page* is intended to be a context variable, but you can
 hardcode the key using quotes, e.g.:
 
 .. code-block:: html+django
 
-    {% paginate objects using 'articles_at_page' %}
+    {% paginate entries using 'articles_at_page' %}
 
 Again, you can mix it all (the order of arguments is important):
 
 .. code-block:: html+django
 
-    {% paginate 20 objects starting from page 3 using page_key as paginated_objects %}
+    {% paginate 20 entries starting from page 3 using page_key as paginated_entries %}
 
 Additionally you can pass a path to be used for the pagination:
 
 .. code-block:: html+django
 
-    {% paginate 20 objects using page_key with pagination_url as paginated_objects %}
+    {% paginate 20 entries using page_key with pagination_url as paginated_entries %}
 
 This way you can easily create views acting as API endpoints, and point your
 Ajax calls to that API. In this case *pagination_url* is considered a
@@ -90,7 +90,7 @@ context variable, but it is also possible to hardcode the URL, e.g.:
 
 .. code-block:: html+django
 
-    {% paginate 20 objects with "/mypage/" %}
+    {% paginate 20 entries with "/mypage/" %}
 
 If you want the first page to contain a different number of items than
 subsequent pages, you can separate the two values with a comma, e.g. if
@@ -98,7 +98,7 @@ you want 3 items on the first page and 10 on other pages:
 
 .. code-block:: html+django
 
-    {% paginate 3,10 objects %}
+    {% paginate 3,10 entries %}
 
 You must use this tag before calling the `show_more`_ one.
 
