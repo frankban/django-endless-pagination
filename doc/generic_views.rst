@@ -1,13 +1,12 @@
 Generic views
 =============
 
-Django 1.3 introduced class based generic views
+Django 1.3 introduced class-based generic views
 (see https://docs.djangoproject.com/en/1.3/topics/class-based-views/).
 
-This application provides a customized class based view, similar to
+This application provides a customized class-based view, similar to
 *django.views.generic.ListView*, that allows Ajax pagination of a
 list of objects (usually a queryset).
-
 
 AjaxListView reference
 ~~~~~~~~~~~~~~~~~~~~~~

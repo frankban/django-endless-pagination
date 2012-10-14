@@ -18,5 +18,5 @@ Contacts
 
 Francesco Banconi
 
-- Email: frankban at gmail.com
-- IRC: frankban@freenode
+- Email: ``frankban at gmail.com``
+- IRC: ``frankban@freenode``

@@ -2,10 +2,10 @@ Different number of items on the first page
 ===========================================
 
 Sometimes you might want to show on the first page a different number of
-items than subsequent pages (e.g. in a movie detail page you want to show
-4 images of the movie as a reminder, letting the user click to see other 20
-images, and so on). This is easy to achieve using comma separated *first page*
-and *per page* arguments, e.g.:
+items than on subsequent pages (e.g. in a movie detail page you want to show
+4 images of the movie as a reminder, making the user click to see the next 20
+images). To achieve this, use comma separated *first page* and *per page*
+arguments, e.g.:
 
 .. code-block:: html+django
 

@@ -1,7 +1,9 @@
 Twitter-style Pagination
 ========================
 
-As creative example, the developer wants Twitter-style pagination of
+.. Che significa "creative example"?
+
+As a creative example, the developer wants Twitter-style pagination of
 entries of a blog post.
 
 In *views.py* we have::
@@ -18,19 +20,19 @@ In *myapp/entry_index.html*:
 .. code-block:: html+django
 
     <h2>Entries:</h2>
-    {% for object in objects %}
+    {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
 
 Split the template
 ~~~~~~~~~~~~~~~~~~
 
-A response to an Ajax request should not return the entire template,
-but only the portion of the page to update or add.
-So it is convenient to extrapolate from the template the part containing
-entries and use the new one to render the context if the request is Ajax.
-The main template will include the other, so it is convenient to put
-the page template name in the context.
+The response to an Ajax request should not return the entire template,
+but only the portion of the page to be updated or added.
+So it is convenient to extract from the template the part containing the
+entries, and use it to render the context if the request is Ajax.
+The main template will include the extracted part, so it is convenient
+to put the page template name in the context.
 
 *views.py* becomes::
 
@@ -61,7 +63,7 @@ See below how to obtain the same result **just decorating the view**
 
 .. code-block:: html+django
 
-    {% for object in objects %}
+    {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
 
@@ -69,7 +71,7 @@ A shortcut for ajaxed views
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A good practice in writing views is to allow other developers to inject
-the template name and extra data to be added to the context.
+the template name and extra data, so that they are added to the context.
 This allows the view to be easily reused. Let's resume the original view
 with extra context injection:
 
@@ -86,7 +88,7 @@ with extra context injection:
             template, context, context_instance=RequestContext(request))
 
 Splitting templates and putting the Ajax template name in the context
-is easily achievable at this point (using a builtin decorator).
+is easily achievable by using an included decorator.
 
 *views.py* becomes::
 
@@ -106,15 +108,14 @@ is easily achievable at this point (using a builtin decorator).
 This way, *endless-pagination* can be included in **generic views** too.
 
 See :doc:`generic_views` if you use Django >= 1.3 and you want to replicate
-the same behavior using a class based generic view.
-
+the same behavior using a class-based generic view.
 
 Paginating objects
 ~~~~~~~~~~~~~~~~~~
 
-Nothing remains but to change the page template, loading endless templatetags,
-the jQuery library and the javascript file *endless.js* included
-in the distribution under ``/static/endless_pagination/js/``.
+All that's left is changing the page template and loading the endless
+templatetags, the jQuery library and the javascript file *endless.js*
+included in the distribution under ``/static/endless_pagination/js/``.
 
 *myapp/entry_index.html* becomes:
 
@@ -136,7 +137,7 @@ in the distribution under ``/static/endless_pagination/js/``.
     {% load endless %}
 
     {% paginate objects %}
-    {% for object in objects %}
+    {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_more %}
@@ -144,9 +145,10 @@ in the distribution under ``/static/endless_pagination/js/``.
 Pagination on scroll
 ~~~~~~~~~~~~~~~~~~~~
 
-If you want new items to load when the user scroll down the browser page
+If you want new items to load when the user scroll down the browser page,
 you can use the **pagination on scroll** feature: just load the
-*endless_on_scroll.js* javascript after the *endless.js* one in your template:
+*endless_on_scroll.js* Javascript file after the *endless.js* one in your
+template:
 
 .. code-block:: html+django
 
@@ -154,14 +156,12 @@ you can use the **pagination on scroll** feature: just load the
     <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
     <script src="{{ STATIC_URL }}endless_pagination/js/endless_on_scroll.js"></script>
 
-That's all. See :doc:`templatetags_reference` to improve the use of
+That's all. See the :doc:`templatetags_reference` to improve the use of
 included templatetags.
 
 It is possible to set the bottom margin used for pagination on scroll
-(default is 1 pixel).
-
-For example, if you want the pagination on scroll to be activated when
-20 pixels remain to the end of the page:
+(default is 1 pixel). For example, if you want the pagination on scroll
+to be activated when 20 pixels remain to the end of the page:
 
 .. code-block:: html+django
 

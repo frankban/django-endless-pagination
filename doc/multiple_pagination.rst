@@ -1,17 +1,19 @@
-Multiple pagination in the same page
-====================================
+Multiple paginations in the same page
+=====================================
 
 Sometimes it is necessary to show different types of paginated objects in the
-same page. In this case we have to associate to every pagination a different
-querystring key.
+same page. In this case we have to associate a different querystring key
+to every pagination.
+
 Normally, the key used is the one specified in
 ``settings.ENDLESS_PAGINATION_PAGE_LABEL`` (see :doc:`customization`),
 but in the case of multiple pagination the application provides a simple way to
 override the settings.
-If you do not need Ajax, the only file you need to edit
-is the template. Here is a usecase example with 2 different paginations
-(*objects* and *other_objects*) in the same page, but there is no limit to the
-number of different paginations in a page:
+
+If you do not need Ajax, the only file you need to edit is the template.
+Here is an example with 2 different paginations (*objects* and *other_objects*)
+in the same page, but there is no limit to the number of different paginations
+in a page:
 
 .. code-block:: html+django
 
@@ -34,6 +36,7 @@ The ``using`` argument of the ``paginate`` template tag allows you to choose
 the name of the querystring key used to track the page number.
 If not specified the system falls back to
 ``settings.ENDLESS_PAGINATION_PAGE_LABEL``.
+
 In the example above, the url *http://example.com?page=2&other_objects_page=3*
 requests the second page of *objects* and the third page of *other_objects*.
 
@@ -51,8 +54,8 @@ You can use any style of pagination: ``show_pages``, ``get_pages``,
 Adding Ajax for multiple pagination
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Obviously each pagination needs a template for the page content.
-Remember to box each page in a div with a class called *endless_page_template*.
+Obviously each pagination needs a template for the page content. Remember to
+box each page in a div with a class called *endless_page_template*.
 
 *myapp/entry_index.html*:
 
@@ -98,10 +101,11 @@ Remember to box each page in a div with a class called *endless_page_template*.
     {% endfor %}
     {% show_pages %}
 
-Again the decorator ``page_template`` simplifies the management of Ajax
+Again, the decorator ``page_template`` simplifies the management of Ajax
 requests in views. You must, however, map different paginations to different
 page templates.
-You can chain decorator's calls relating a template with the associated
+
+You can chain decorator calls relating a template to the associated
 querystring key, e.g.::
 
     from endless_pagination.decorators import page_template
@@ -124,8 +128,8 @@ decorator, then the page template is associated to the querystring key
 defined in the settings.
 
 You can use the ``page_templates`` (note the trailing *s*) decorator in
-substitution of a decorator's chain when you need multiple Ajax pagination.
-The previous example can be written::
+substitution of a decorator chain when you need multiple Ajax paginations.
+The previous example can be written as::
 
     from endless_pagination.decorators import page_templates
 
@@ -149,16 +153,14 @@ of ``(template, key)`` pairs, e.g.::
     def entry_index():
         ...
 
-This way the use case of different paginated objects being served by the
-same template is also supported.
+This also supports serving different paginated objects with the same template.
 
-
-Manually select what to bind
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Manually selecting  what to bind
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 What if you need Ajax pagination for *entries* but not for *other entries*?
-You will only need to add a class named ``endless_page_skip`` to the
-page container element, e.g.:
+You only have to add a class named ``endless_page_skip`` to the page container
+element, e.g.:
 
 .. code-block:: html+django
 
