@@ -1,16 +1,12 @@
 Twitter-style Pagination
 ========================
 
-.. Che significa "creative example"?
-
-As a creative example, the developer wants Twitter-style pagination of
-entries of a blog post.
-
-In *views.py* we have::
+Assuming the developer wants Twitter-style pagination of
+entries of a blog post, in *views.py* we have::
 
     def entry_index(request, template='myapp/entry_index.html'):
         context = {
-            'objects': Entry.objects.all(),
+            'entries': Entry.objects.all(),
         }
         return render_to_response(
             template, context, context_instance=RequestContext(request))
@@ -41,7 +37,7 @@ to put the page template name in the context.
             template='myapp/entry_index.html',
             page_template='myapp/entry_index_page.html'):
         context = {
-            'objects': Entry.objects.all(),
+            'entries': Entry.objects.all(),
             'page_template': page_template,
         }
         if request.is_ajax():
@@ -80,7 +76,7 @@ with extra context injection:
     def entry_index(
             request, template='myapp/entry_index.html', extra_context=None):
         context = {
-            'objects': Entry.objects.all(),
+            'entries': Entry.objects.all(),
         }
         if extra_context is not None:
             context.update(extra_context)
@@ -98,7 +94,7 @@ is easily achievable by using an included decorator.
     def entry_index(
             request, template='myapp/entry_index.html', extra_context=None):
         context = {
-            'objects': Entry.objects.all(),
+            'entries': Entry.objects.all(),
         }
         if extra_context is not None:
             context.update(extra_context)
@@ -136,7 +132,7 @@ included in the distribution under ``/static/endless_pagination/js/``.
 
     {% load endless %}
 
-    {% paginate objects %}
+    {% paginate entries %}
     {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
