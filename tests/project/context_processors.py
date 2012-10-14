@@ -10,6 +10,7 @@ import endless_pagination
 
 VOICES = (
     # Name and label pairs.
+    ('complete', 'Complete example'),
     ('digg', 'Digg-style'),
     ('twitter', 'Twitter-style'),
     ('onscroll', 'On scroll'),

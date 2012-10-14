@@ -52,7 +52,7 @@ with VenvLinkDeleted():
         name='django-endless-pagination',
         version=project.get_version(),
         description=project.__doc__,
-        long_description=read('README'),
+        long_description=read('README.rst'),
         author='Francesco Banconi',
         author_email='francesco.banconi@gmail.com',
         url='http://github.com/frankban/django-endless-pagination',

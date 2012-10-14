@@ -10,7 +10,7 @@ LOREM = """Lorem ipsum dolor sit amet, consectetur adipisicing elit,
 """
 
 
-def _make_items(title, number):
+def _make(title, number):
     """Make a *number* of items."""
     return [
         {'title': '{0} {1}'.format(title, i + 1), 'contents': LOREM}
@@ -18,11 +18,12 @@ def _make_items(title, number):
     ]
 
 
-def base(request, extra_context=None, template=None, number=50):
+def generic(request, extra_context=None, template=None, number=50):
     context = {
-        'objects': _make_items('Object', number),
-        'items': _make_items('Item', number),
-        'entries': _make_items('Entry', number),
+        'objects': _make('Object', number),
+        'items': _make('Item', number),
+        'entries': _make('Entry', number),
+        'articles': _make('Article', number),
     }
     if extra_context is not None:
         context.update(extra_context)
