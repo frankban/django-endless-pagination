@@ -30,3 +30,15 @@
     pages are loaded on scroll.
   </div>
 {% endblock %}
+
+{% block js %}
+  {{ block.super }}
+  <script>
+    // Paginate items.
+    $('#items').endlessPaginate({pageSelector: '#items'});
+    // Paginate entries.
+    $('#entries').endlessPaginate();
+    // Paginate articles.
+    $('#articles').endlessPaginate({paginateOnScroll: true});
+  </script>
+{% endblock %}

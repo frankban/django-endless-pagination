@@ -15,6 +15,7 @@ VOICES = (
     ('twitter', 'Twitter-style'),
     ('onscroll', 'On scroll'),
     ('multiple', 'Multiple'),
+    ('callbacks', 'Callbacks'),
 )
 
 

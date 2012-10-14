@@ -8,5 +8,7 @@
 
 {% block js %}
   {{ block.super }}
-  <script src="{{ STATIC_URL }}endless_pagination/js/endless_on_scroll.js"></script>
+  <script>
+    $.endlessPaginate({paginateOnScroll: true});
+  </script>
 {% endblock %}

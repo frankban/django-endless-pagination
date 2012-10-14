@@ -37,6 +37,7 @@
             // Twitter-style pagination.
             element.find(settings.moreSelector).live('click', function() {
                 var link = $(this),
+                    html_link = link.get(0),
                     container = link.closest(settings.containerSelector),
                     loading = container.find(settings.loadingSelector);
                 // Avoid multiple Ajax calls.
@@ -47,14 +48,15 @@
                 loading.show();
                 var context = getContext(link);
                 // Fire onClick callback.
-                if (settings.onClick.apply(link.get(0), [context]) !== false) {
+                if (settings.onClick.apply(html_link, [context]) !== false) {
                     var data = 'querystring_key=' + context.querystring_key;
                     // Send the Ajax request.
                     $.get(context.url, data, function(fragment) {
                         container.before(fragment);
                         container.remove();
                         // Fire onCompleted callback.
-                        settings.onCompleted.apply(fragment, [context]);
+                        settings.onCompleted.apply(
+                            html_link, [context, fragment]);
                     });
                 }
                 return false;
@@ -75,15 +77,17 @@
             // Digg-style pagination.
             element.find(settings.pagesSelector).live('click', function() {
                 var link = $(this),
+                    html_link = link.get(0),
                     context = getContext(link);
                 // Fire onClick callback.
-                if (settings.onClick.apply(link.get(0), [context]) !== false) {
+                if (settings.onClick.apply(html_link, [context]) !== false) {
                     var page_template = link.closest(settings.pageSelector),
                         data = 'querystring_key=' + context.querystring_key;
                     // Send the Ajax request.
                     page_template.load(context.url, data, function(fragment) {
                         // Fire onCompleted callback.
-                        settings.onCompleted.apply(fragment, [context]);
+                        settings.onCompleted.apply(
+                            html_link, [context, fragment]);
                     });
                 }
                 return false;

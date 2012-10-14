@@ -44,4 +44,8 @@ urlpatterns = patterns('',
         })(generic),
         {'template': 'multiple/index.html', 'number': 21},
         name='multiple'),
+    url(r'^callbacks/$',
+        page_template('callbacks/page.html')(generic),
+        {'template': 'callbacks/index.html'},
+        name='callbacks'),
 )

@@ -5,3 +5,10 @@
     {% include page_template %}
   </div>
 {% endblock %}
+
+{% block js %}
+  {{ block.super }}
+  <script>
+    $.endlessPaginate();
+  </script>
+{% endblock %}
