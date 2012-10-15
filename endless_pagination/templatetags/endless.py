@@ -42,77 +42,103 @@ register = template.Library()
 def paginate(parser, token, paginator_class=None):
     """Paginate objects.
 
-    Usage::
+    Usage:
 
-        {% paginate objects %}
+    .. code-block:: html+django
 
-    After this call, in the template context the *objects* variable is replaced
-    with only the objects of the current page.
+        {% paginate entries %}
 
-    You can also mantain your *objects* original variable (commonly a queryset)
-    and add to context another name referring to objects of the current page,
-    e.g.::
+    After this call, the *entries* variable in the template context is replaced
+    by only the entries of the current page.
 
-        {% paginate objects as page_objects %}
+    You can also keep your *entries* original variable (usually a queryset)
+    and add to the context another name that refers to entries of the current
+    page, e.g.:
+
+    .. code-block:: html+django
+
+        {% paginate entries as page_entries %}
 
     The *as* argument is also useful when a nested context variable is provided
-    as queryset. In that case, and only in that case, the resulting variable
-    name is mandatory, e.g.::
+    as queryset. In this case, and only in this case, the resulting variable
+    name is mandatory, e.g.:
 
-        {% paginate objects.all as objects %}
+    .. code-block:: html+django
 
-    The number of paginated object is taken from settings, but you can
-    override the default, e.g.::
+        {% paginate entries.all as entries %}
 
-        {% paginate 20 objects %}
+    The number of paginated entries is taken from settings, but you can
+    override the default locally, e.g.:
 
-    Of course you can mix it all::
+    .. code-block:: html+django
 
-        {% paginate 20 objects as paginated_objects %}
+        {% paginate 20 entries %}
+
+    Of course you can mix it all:
+
+    .. code-block:: html+django
+
+        {% paginate 20 entries as paginated_entries %}
 
     By default, the first page is displayed the first time you load the page,
-    but you can easily change this, e.g.::
+    but you can change this, e.g.:
 
-        {% paginate objects starting from page 3 %}
+    .. code-block:: html+django
 
-    This can be also achieved using a template variable you passed in the
-    context, e.g.::
+        {% paginate entries starting from page 3 %}
 
-        {% paginate objects starting from page page_number %}
+    This can be also achieved using a template variable that was passed to the
+    context, e.g.:
 
-    If the passed page number does not exist then first page is displayed.
+    .. code-block:: html+django
+
+        {% paginate entries starting from page page_number %}
+
+    If the passed page number does not exist, the first page is displayed.
 
     If you have multiple paginations in the same page, you can change the
-    querydict key for the single pagination, e.g.::
+    querydict key for the single pagination, e.g.:
 
-        {% paginate objects using article_page %}
+    .. code-block:: html+django
 
-    In this case *article_page* is intended to be a context variable,
-    but you can hardcode the key using quotes, e.g.::
+        {% paginate entries using article_page %}
 
-        {% paginate objects using 'articles_at_page' %}
+    In this case *article_page* is intended to be a context variable, but you
+    can hardcode the key using quotes, e.g.:
 
-    Again, you can mix it all (the order of arguments is important)::
+    .. code-block:: html+django
 
-        {% paginate 20 objects starting from page 3
-            using page_key as paginated_objects %}
+        {% paginate entries using 'articles_at_page' %}
 
-    Additionally you can pass a path to be used for the pagination::
+    Again, you can mix it all (the order of arguments is important):
 
-        {% paginate 20 objects using page_key with pagination_url
-            as paginated_objects %}
+    .. code-block:: html+django
 
-    This way you can easily create views acting as API endpoints and point your
-    Ajax calls to that API. In this case *pagination_url* is considered a
-    context variable, but it is also possible to hardcode the url, e.g.::
+        {% paginate 20 entries
+            starting from page 3 using page_key as paginated_entries %}
 
-        {% paginate 20 objects with "/mypage/" %}
+    Additionally you can pass a path to be used for the pagination:
+
+    .. code-block:: html+django
+
+        {% paginate 20 entries
+            using page_key with pagination_url as paginated_entries %}
+
+    This way you can easily create views acting as API endpoints, and point
+    your Ajax calls to that API. In this case *pagination_url* is considered a
+    context variable, but it is also possible to hardcode the URL, e.g.:
+
+    .. code-block:: html+django
+
+        {% paginate 20 entries with "/mypage/" %}
 
     If you want the first page to contain a different number of items than
-    subsequent pages you can separate the two values with a comma, e.g. if
-    you want 3 items on the first page and 10 on other pages::
+    subsequent pages, you can separate the two values with a comma, e.g. if
+    you want 3 items on the first page and 10 on other pages:
 
-    {% paginate 3,10 objects %}
+    .. code-block:: html+django
+
+    {% paginate 3,10 entries %}
 
     You must use this tag before calling the {% show_more %} one.
     """
@@ -328,72 +354,84 @@ def show_more(context, label=None, loading=settings.LOADING):
 def get_pages(parser, token):
     """Add to context the list of page links.
 
-    Usage::
+    Usage:
+
+    .. code-block:: html+django
 
         {% get_pages %}
 
-    This is mostly used for digg-style pagination. This call adds to the
-    context a *pages* variable, as a sequence of page links.
-    It is possible can use *pages* in several ways:
+    This is mostly used for Digg-style pagination.
+    This call inserts in the template context a *pages* variable, as a sequence
+    of page links. You can use *pages* in different ways:
 
-        - just print *pages* to render a Digg-style pagination::
+    - just print *pages* and you will get Digg-style pagination displayed:
 
-            {{ pages }}
+    .. code-block:: html+django
 
-        - display pages count::
+        {{ pages }}
 
-            {{ pages|length }}
+    - display pages count:
 
-        - get a specific page::
+    .. code-block:: html+django
 
-            {# the current selected page #}
-            {{ pages.current }}
+        {{ pages|length }}
 
-            {# the first page #}
-            {{ pages.first }}
+    - get a specific page:
 
-            {# the last page #}
-            {{ pages.last }}
+    .. code-block:: html+django
 
-            {# the previous page (or nothing if you are on first page) #}
-            {{ pages.previous }}
+        {# the current selected page #}
+        {{ pages.current }}
 
-            {# the next page (or nothing if you are in last page) #}
-            {{ pages.next }}
+        {# the first page #}
+        {{ pages.first }}
 
-            {# the third page #}
-            {{ pages.3 }}
-            {# this means page.1 is the same as page.first #}
+        {# the last page #}
+        {{ pages.last }}
 
-        - iterate over *pages* to get all pages::
+        {# the previous page (or nothing if you are on first page) #}
+        {{ pages.previous }}
 
-            {% for page in pages %}
-                {# display page link #}
-                {{ page }}
+        {# the next page (or nothing if you are in last page) #}
+        {{ pages.next }}
 
-                {# the page url (beginning with "?") #}
-                {{ page.url }}
+        {# the third page #}
+        {{ pages.3 }}
+        {# this means page.1 is the same as page.first #}
 
-                {# the page path #}
-                {{ page.path }}
+    - iterate over *pages* to get all pages:
 
-                {# the page number #}
-                {{ page.number }}
+    .. code-block:: html+django
 
-                {# a string representing the page (commonly the page number) #}
-                {{ page.label }}
+        {% for page in pages %}
+            {# display page link #}
+            {{ page }}
 
-                {# check if the page is the current one #}
-                {{ page.is_current }}
+            {# the page url (beginning with "?") #}
+            {{ page.url }}
 
-                {# check if the page is the first one #}
-                {{ page.is_first }}
+            {# the page path #}
+            {{ page.path }}
 
-                {# check if the page is the last one #}
-                {{ page.is_last }}
-            {% endfor %}
+            {# the page number #}
+            {{ page.number }}
 
-    It is possible to change the variable name, e.g.::
+            {# a string representing the page (commonly the page number) #}
+            {{ page.label }}
+
+            {# check if the page is the current one #}
+            {{ page.is_current }}
+
+            {# check if the page is the first one #}
+            {{ page.is_first }}
+
+            {# check if the page is the last one #}
+            {{ page.is_last }}
+        {% endfor %}
+
+    You can change the variable name, e.g.:
+
+    .. code-block:: html+django
 
         {% get_pages as page_links %}
 
@@ -440,34 +478,40 @@ class GetPagesNode(template.Node):
 def show_pages(parser, token):
     """Show page links.
 
-    Usage::
+    Usage:
+
+    .. code-block:: html+django
 
         {% show_pages %}
 
-    This is only a shortcut for::
+    It is just a shortcut for:
+
+    .. code-block:: html+django
 
         {% get_pages %}
         {{ pages }}
 
-    You can set *ENDLESS_PAGINATION_PAGE_LIST_CALLABLE* in your ``settings.py``
-    file as a callable used to customize the pages that are displayed.
-    The callable takes the current page number and the total number of pages
+    You can set ``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` in your *settings.py*
+    to a callable used to customize the pages that are displayed.
+
+    The callable takes the current page number and the total number of pages,
     and must return a sequence of page numbers that will be displayed.
+
     The sequence can contain other values:
 
-        - *'previous'*: will display the previous page in that position;
-        - *'next'*: will display the next page in that position;
-        - *None*: a separator will be displayed in that position.
+    - *"previous"*: will display the previous page in that position;
+    - *"next"*: will display the next page in that position;
+    - *None*: a separator will be displayed in that position.
 
-    Here is an example of custom calable that displays the previous page,
-    then the first page, then a separator, then the current page, and
-    finally the then next page::
+    Here is an example of a custom callable that displays the previous page,
+    then the first page, then a separator, then the current page, then the
+    next page::
 
         def get_page_numbers(current_page, num_pages):
-            return ('previous', 1, None, current_page, 'next')
+            return ("previous", 1, None, current_page, "next")
 
-    If *settings.PAGE_LIST_CALLABLE* is None an internal callable is used,
-    generating a Digg-style pagination.
+    If ``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` is *None* an internal
+    callable is used, generating a Digg-style pagination.
 
     Must be called after ``{% paginate objects %}``.
     """
@@ -499,39 +543,54 @@ class ShowPagesNode(template.Node):
 
 @register.tag
 def show_current_number(parser, token):
-    """Show (or add to the context) the current page number.
+    """Show the current page number, or insert it in the context.
 
-    This tag can be useful for example to change page title according to the
-    current page number. To just show current page number::
+    This tag can for example be useful to change the page title according to
+    the current page number.
+
+    To just show current page number:
+
+    .. code-block:: html+django
 
         {% show_current_number %}
 
-    If you use multiple paginations in the same page you can get the page
-    number for a specific pagination using the querystring key, e.g.::
+    If you use multiple paginations in the same page, you can get the page
+    number for a specific pagination using the querystring key, e.g.:
+
+    .. code-block:: html+django
 
         {% show_current_number using mykey %}
 
-    Default page when no querystring is specified is 1. If you changed it in
-    the *paginate* template tag, you have to call  *show_current_number*
-    according to your choice, e.g.::
+    The default page when no querystring is specified is 1. If you changed it
+    in the `paginate`_ template tag, you have to call  ``show_current_number``
+    according to your choice, e.g.:
+
+    .. code-block:: html+django
 
         {% show_current_number starting from page 3 %}
 
-    This can be also achieved using a template variable you passed in the
-    context, e.g.::
+    This can be also achieved using a template variable you passed to the
+    context, e.g.:
+
+    .. code-block:: html+django
 
         {% show_current_number starting from page page_number %}
 
-    Of course, you can mix it all (the order of arguments is important)::
+    You can of course mix it all (the order of arguments is important):
+
+    .. code-block:: html+django
 
         {% show_current_number starting from page 3 using mykey %}
 
     If you want to insert the current page number in the context, without
-    actually displaying it in the template, use the *as* argument, i.e.::
+    actually displaying it in the template, use the *as* argument, i.e.:
+
+    .. code-block:: html+django
 
         {% show_current_number as page_number %}
-        {% show_current_number starting from page 3 using mykey
-            as page_number %}
+        {% show_current_number
+            starting from page 3 using mykey as page_number %}
+
     """
     # Validate args.
     try:
