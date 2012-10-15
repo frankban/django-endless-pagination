@@ -1,4 +1,4 @@
-To install django-endless-pagination, run the following command 
+To install django-endless-pagination, run the following command
 inside this directory:
 
     python setup.py install

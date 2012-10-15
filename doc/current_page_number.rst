@@ -1,5 +1,5 @@
-Getting current page number
-===========================
+Getting the current page number
+===============================
 
 In the template
 ~~~~~~~~~~~~~~~
@@ -11,7 +11,7 @@ the ``show_current_number`` templatetag, e.g.:
 
     {% show_current_number %}
 
-The previous call will display the current page number, but you can also
+This call will display the current page number, but you can also
 insert the value in the context as a template variable:
 
 .. code-block:: html+django

@@ -5,20 +5,19 @@ Version 1.2 (under development)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **New feature**: the ``page_templates`` decorator also accepts a sequence
-of ``(template, key)`` pairs in place of a dict mapping templates and keys
-(still present), e.g.::
+of ``(template, key)`` pairs, functioning as a dict mapping templates and
+keys (still present), e.g.::
 
     from endless_pagination.decorators import page_templates
 
     @page_templates((
         ('myapp/entries_page.html', None),
-        ('myapp/other_entries_page.html', 'other_objects_page'),
+        ('myapp/other_entries_page.html', 'other_entries_page'),
     ))
     def entry_index():
         ...
 
-This way the use case of different paginated objects being served by the
-same template is also supported.
+This also supports serving different paginated objects with the same template.
 
 ----
 
@@ -27,14 +26,14 @@ same template is also supported.
 
 .. code-block:: html+django
 
-    {% paginate objects.all as myobjects %}
+    {% paginate entries.all as myentries %}
 
 The code above is basically equivalent to:
 
 .. code-block:: html+django
 
-    {% with objects.all as myobjects %}
-        {% paginate myobjects %}
+    {% with entries.all as myentries %}
+        {% paginate myentries %}
     {% endwith %}
 
 In this case, and only in this case, the `as` argument is mandatory, and a
@@ -53,7 +52,7 @@ support hardcoded pagination URL endpoints, e.g.:
 
 .. code-block:: html+django
 
-    {% paginate 20 objects with "/mypage/" %}
+    {% paginate 20 entries with "/mypage/" %}
 
 ----
 
@@ -61,13 +60,14 @@ support hardcoded pagination URL endpoints, e.g.:
 
 ----
 
-**Documentation**: added a :doc:`contributing` page. Go see that!
+**Documentation**: added a :doc:`contributing` page. Have a look!
 
 ----
 
 **Fix**: ``endless_pagination.views.AjaxListView`` no longer subclasses
 ``django.views.generic.list.ListView``. Instead, the base objects and
 mixins composing the final view are now defined by this app.
+
 This change eliminates the ambiguity of having two separate pagination
 machineries in place: the Django Endless Pagination one and the built-in
 Django ``ListView`` one.
@@ -83,14 +83,14 @@ now correctly handles querystring keys containing dashes, e.g.:
 
 ----
 
-**Fix**: in same corner cases, loading ``endless_pagination.models`` raised
+**Fix**: in some corner cases, loading ``endless_pagination.models`` raised
 an *ImproperlyConfigured* error while trying to pre-load the templates.
 
 ----
 
-**Fix**: replaced doctests with proper unittests. Improved, as a consequence,
-the code coverage. Also introduced integration tests exercising Javascript and
-using Selenium.
+**Fix**: replaced doctests with proper unittests. Improved the code coverage
+as a consequence. Also introduced integration tests exercising Javascript,
+based on Selenium.
 
 ----
 
@@ -104,7 +104,7 @@ Version 1.1
 pagination on scroll (default is 1 pixel).
 
 For example, if you want the pagination on scroll to be activated when
-20 pixels remain to the end of the page:
+20 pixels remain until the end of the page:
 
 .. code-block:: html+django
 
@@ -144,7 +144,7 @@ A template for multiple pagination with Ajax support may look like this
     </div>
 
 But what if you need Ajax pagination for *entries* but not for *other entries*?
-You will only need to add a class named ``endless_page_skip`` to the
+You will only have to add a class named ``endless_page_skip`` to the
 page container element, e.g.:
 
 .. code-block:: html+django
@@ -156,7 +156,7 @@ page container element, e.g.:
 
 ----
 
-**New feature**: implemented a class based generic view allowing
+**New feature**: implemented a class-based generic view allowing
 Ajax pagination of a list of objects (usually a queryset).
 
 Intended as a substitution of *django.views.generic.ListView*, it recreates

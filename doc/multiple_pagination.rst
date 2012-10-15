@@ -1,31 +1,33 @@
-Multiple pagination in the same page
-====================================
+Multiple paginations in the same page
+=====================================
 
 Sometimes it is necessary to show different types of paginated objects in the
-same page. In this case we have to associate to every pagination a different
-querystring key.
+same page. In this case we have to associate a different querystring key
+to every pagination.
+
 Normally, the key used is the one specified in
 ``settings.ENDLESS_PAGINATION_PAGE_LABEL`` (see :doc:`customization`),
 but in the case of multiple pagination the application provides a simple way to
 override the settings.
-If you do not need Ajax, the only file you need to edit
-is the template. Here is a usecase example with 2 different paginations
-(*objects* and *other_objects*) in the same page, but there is no limit to the
-number of different paginations in a page:
+
+If you do not need Ajax, the only file you need to edit is the template.
+Here is an example with 2 different paginations (*entries* and *other_entries*)
+in the same page, but there is no limit to the number of different paginations
+in a page:
 
 .. code-block:: html+django
 
     {% load endless %}
 
-    {% paginate objects %}
-    {% for object in objects %}
+    {% paginate entries %}
+    {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_pages %}
 
-    {# "other_objects_page" is the new querystring key #}
-    {% paginate other_objects using "other_objects_page" %}
-    {% for object in other_objects %}
+    {# "other_entries_page" is the new querystring key #}
+    {% paginate other_entries using "other_entries_page" %}
+    {% for entry in other_entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_pages %}
@@ -34,8 +36,9 @@ The ``using`` argument of the ``paginate`` template tag allows you to choose
 the name of the querystring key used to track the page number.
 If not specified the system falls back to
 ``settings.ENDLESS_PAGINATION_PAGE_LABEL``.
-In the example above, the url *http://example.com?page=2&other_objects_page=3*
-requests the second page of *objects* and the third page of *other_objects*.
+
+In the example above, the url *http://example.com?page=2&other_entries_page=3*
+requests the second page of *entries* and the third page of *other_entries*.
 
 The name of the querystring key can also be dinamically passed in the template
 context, e.g.:
@@ -43,7 +46,7 @@ context, e.g.:
 .. code-block:: html+django
 
     {# page_variable is not surrounded by quotes #}
-    {% paginate other_objects using page_variable %}
+    {% paginate other_entries using page_variable %}
 
 You can use any style of pagination: ``show_pages``, ``get_pages``,
 ``show_more`` etc... (see :doc:`templatetags_reference`).
@@ -51,8 +54,8 @@ You can use any style of pagination: ``show_pages``, ``get_pages``,
 Adding Ajax for multiple pagination
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Obviously each pagination needs a template for the page content.
-Remember to box each page in a div with a class called *endless_page_template*.
+Obviously each pagination needs a template for the page content. Remember to
+box each page in a div with a class called *endless_page_template*.
 
 *myapp/entry_index.html*:
 
@@ -80,8 +83,8 @@ Remember to box each page in a div with a class called *endless_page_template*.
 
     {% load endless %}
 
-    {% paginate objects %}
-    {% for object in objects %}
+    {% paginate entries %}
+    {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_pages %}
@@ -92,27 +95,28 @@ Remember to box each page in a div with a class called *endless_page_template*.
 
     {% load endless %}
 
-    {% paginate other_objects using other_objects_page %}
-    {% for object in other_objects %}
+    {% paginate other_entries using other_entries_page %}
+    {% for entry in other_entries %}
         {# your code to show the entry #}
     {% endfor %}
     {% show_pages %}
 
-Again the decorator ``page_template`` simplifies the management of Ajax
+Again, the decorator ``page_template`` simplifies the management of Ajax
 requests in views. You must, however, map different paginations to different
 page templates.
-You can chain decorator's calls relating a template with the associated
+
+You can chain decorator calls relating a template to the associated
 querystring key, e.g.::
 
     from endless_pagination.decorators import page_template
 
     @page_template('myapp/entries_page.html')
-    @page_template('myapp/other_entries_page.html', key='other_objects_page')
+    @page_template('myapp/other_entries_page.html', key='other_entries_page')
     def entry_index(
             request, template='myapp/entry_index.html', extra_context=None):
         context = {
-            'objects': Entry.objects.all(),
-            'other_objects': OtherEntry.objects.all(),
+            'entries': Entry.objects.all(),
+            'other_entries': OtherEntry.objects.all(),
         }
         if extra_context is not None:
             context.update(extra_context)
@@ -124,14 +128,14 @@ decorator, then the page template is associated to the querystring key
 defined in the settings.
 
 You can use the ``page_templates`` (note the trailing *s*) decorator in
-substitution of a decorator's chain when you need multiple Ajax pagination.
-The previous example can be written::
+substitution of a decorator chain when you need multiple Ajax paginations.
+The previous example can be written as::
 
     from endless_pagination.decorators import page_templates
 
     @page_templates({
         'myapp/entries_page.html': None,
-        'myapp/other_entries_page.html': 'other_objects_page',
+        'myapp/other_entries_page.html': 'other_entries_page',
     })
     def entry_index():
         ...
@@ -144,21 +148,19 @@ of ``(template, key)`` pairs, e.g.::
 
     @page_templates((
         ('myapp/entries_page.html', None),
-        ('myapp/other_entries_page.html', 'other_objects_page'),
+        ('myapp/other_entries_page.html', 'other_entries_page'),
     ))
     def entry_index():
         ...
 
-This way the use case of different paginated objects being served by the
-same template is also supported.
+This also supports serving different paginated objects with the same template.
 
-
-Manually select what to bind
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Manually selecting  what to bind
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 What if you need Ajax pagination for *entries* but not for *other entries*?
-You will only need to add a class named ``endless_page_skip`` to the
-page container element, e.g.:
+You only have to add a class named ``endless_page_skip`` to the page container
+element, e.g.:
 
 .. code-block:: html+django
 
