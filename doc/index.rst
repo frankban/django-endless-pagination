@@ -1,16 +1,18 @@
+=========================
 Django Endless Pagination
 =========================
 
-This app can be used to provide Twitter-style or Digg-style pagination, with
-optional Ajax support and other features like multiple or lazy pagination.
-The initial idea, which has guided the development of this application,
-is to allow pagination of web contents in very few steps.
+This application provides Twitter- and Digg-style pagination, with multiple
+and lazy pagination and optional Ajax support. It is devoted to implementing
+web pagination in very few steps.
 
-The **source code** for this app is hosted on
+The **source code** for this app is hosted at
 https://github.com/frankban/django-endless-pagination.
 
-The **Mercurial repository** of this project is hosted on
+The **Mercurial repository** of this project is hosted at
 https://bitbucket.org/frankban/django-endless-pagination.
+
+:doc:`start` is easy!
 
 Contents:
 
@@ -31,4 +33,3 @@ Contents:
    contributing
    contacts
    thanks
-

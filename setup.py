@@ -55,7 +55,7 @@ with VenvLinkDeleted():
         long_description=read('README.rst'),
         author='Francesco Banconi',
         author_email='francesco.banconi@gmail.com',
-        url='http://code.google.com/p/django-endless-pagination/',
+        url='http://github.com/frankban/django-endless-pagination',
         zip_safe=False,
         packages=[
             PROJECT_NAME,
