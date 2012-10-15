@@ -13,8 +13,8 @@ directory of the project.
 To file **bugs and requests**, please use
 https://github.com/frankban/django-endless-pagination/issues.
 
-The **source code** for this app is hosted on
+The **source code** for this app is hosted at
 https://github.com/frankban/django-endless-pagination.
 
-The **Mercurial repository** of this project is hosted on
+The **Mercurial repository** of this project is hosted at
 https://bitbucket.org/frankban/django-endless-pagination.

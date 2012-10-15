@@ -1,4 +1,4 @@
-"""Django Endless Pagination class based views."""
+"""Django Endless Pagination class-based views."""
 
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
@@ -139,7 +139,7 @@ class AjaxMultipleObjectTemplateResponseMixin(
 class AjaxListView(AjaxMultipleObjectTemplateResponseMixin, BaseListView):
     """Allows Ajax pagination of a list of objects.
 
-    You can use this class based view in place of *ListView* in order to
+    You can use this class-based view in place of *ListView* in order to
     recreate the behaviour of the *page_template* decorator.
 
     For instance, assume you have this code (taken from Django docs)::

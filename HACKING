@@ -1,7 +1,7 @@
 Hacking Django Endless Pagination
 =================================
 
-Steps needed to set up a development and testing environment.
+Here are the steps needed to set up a development and testing environment.
 
 Create a development environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -13,7 +13,7 @@ To install *make* under Debian/Ubuntu::
 
     $ sudo apt-get install build-essential
 
-Under MacOSX, *make* is available as part of XCode.
+Under Mac OS/X, *make* is available as part of XCode.
 
 To install virtualenv::
 
@@ -24,7 +24,7 @@ At this point, from the root of this branch, run the command::
     $ make develop
 
 This command will create a ``.venv`` directory in the branch root, ignored
-by DVCS, containing the development virtual environment with all the
+by DVCSes, containing the development virtual environment with all the
 dependencies.
 
 Testing and debugging
@@ -34,13 +34,13 @@ Run the tests::
 
     $ make test
 
-The test suite requires Python >= 2.7.
+The test suite requires Python >= 2.7, and < 3.x.
 
 Run the tests and lint checks::
 
     $ make check
 
-Note that the last command also lint the code. To be able to do that,
+Note that the last command also lints the code. To be able to do that,
 install the *pocket-lint* package, e.g.::
 
     $ sudo apt-get install python-pocket-lint
