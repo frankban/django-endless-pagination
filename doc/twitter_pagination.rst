@@ -147,7 +147,7 @@ Pagination on scroll
 
 If you want new items to load when the user scroll down the browser page,
 you can use the **pagination on scroll** feature: just set to *true* the
-*paginateOnScroll* option of *$.endlessPaginate()*, e.g.::
+*paginateOnScroll* option of *$.endlessPaginate()*, e.g.:
 
 .. code-block:: html+django
 
