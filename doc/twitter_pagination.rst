@@ -110,21 +110,22 @@ Paginating objects
 ~~~~~~~~~~~~~~~~~~
 
 All that's left is changing the page template and loading the endless
-templatetags, the jQuery library and the javascript file *endless.js*
-included in the distribution under ``/static/endless_pagination/js/``.
+templatetags, the jQuery library and the jQuery plugin
+``endless-pagination.js`` included in the distribution under ``/static/endless_pagination/js/``.
 
 *myapp/entry_index.html* becomes:
 
 .. code-block:: html+django
 
+    <h2>Entries:</h2>
+    {% include page_template %}
+
     {% block js %}
         {{ block.super }}
         <script src="http://code.jquery.com/jquery-latest.js"></script>
-        <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+        <script>$.endlessPaginate();</script>
     {% endblock %}
-
-    <h2>Entries:</h2>
-    {% include page_template %}
 
 *myapp/entry_index_page.html* becomes:
 
@@ -138,19 +139,27 @@ included in the distribution under ``/static/endless_pagination/js/``.
     {% endfor %}
     {% show_more %}
 
+See the :doc:`javascript` for a detailed explanation of how to integrate
+JavaScript and Ajax features in Django Endless Pagination.
+
 Pagination on scroll
 ~~~~~~~~~~~~~~~~~~~~
 
 If you want new items to load when the user scroll down the browser page,
-you can use the **pagination on scroll** feature: just load the
-*endless_on_scroll.js* Javascript file after the *endless.js* one in your
-template:
+you can use the **pagination on scroll** feature: just set to *true* the
+*paginateOnScroll* option of *$.endlessPaginate()*, e.g.::
 
 .. code-block:: html+django
 
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
-    <script src="{{ STATIC_URL }}endless_pagination/js/endless_on_scroll.js"></script>
+    <h2>Entries:</h2>
+    {% include page_template %}
+
+    {% block js %}
+        {{ block.super }}
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+        <script>$.endlessPaginate({paginateOnScroll: true});</script>
+    {% endblock %}
 
 That's all. See the :doc:`templatetags_reference` to improve the use of
 included templatetags.
@@ -161,11 +170,52 @@ to be activated when 20 pixels remain to the end of the page:
 
 .. code-block:: html+django
 
+    <h2>Entries:</h2>
+    {% include page_template %}
+
+    {% block js %}
+        {{ block.super }}
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+        <script>
+            $.endlessPaginate({
+                paginateOnScroll: true,
+                paginateOnScrollMargin: 20
+            });
+        </script>
+    {% endblock %}
+
+Again, see the :doc:`javascript`.
+
+Before version 1.2
+~~~~~~~~~~~~~~~~~~
+
+Django Endless Pagination 1.2 introduces a re-designed Ajax support for
+pagination. As seen above. Ajax can now be enabled using a brand new jQuery
+plugin that leaves in ``static/endless_pagination/js/endless-pagination.js``.
+
+For backward compatibility, the application still includes the two JavaScript
+files ``endless.js`` and ``endless_on_scroll.js`` that were used before, so
+that it is still possible to use code like this:
+
+.. code-block:: html+django
+
     <script src="http://code.jquery.com/jquery-latest.js"></script>
+    {# Deprecated. #}
+    <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
+
+To enable pagination on scroll, the code was the following:
+
+.. code-block:: html+django
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    {# Deprecated. #}
     <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
     <script src="{{ STATIC_URL }}endless_pagination/js/endless_on_scroll.js"></script>
 
-    {# add the lines below #}
-    <script type="text/javascript" charset="utf-8">
-        var endless_on_scroll_margin = 20;
-    </script>
+However, please consider to migrate as soon as possible: the old JavaScript
+files are deprecated, will be no longer maintained, and don't provide the new JavaScript features.
+
+Please refer to the :doc:`javascript` for a detailed overview of the new
+features and for instructions on **how to migrate** from the old JavaScript
+files to the new one.

@@ -54,23 +54,25 @@ The view is exactly the same as in ``show_more`` from
         return render_to_response(
             template, context, context_instance=RequestContext(request))
 
-Of course you have to split templates, but this time a container for the page
-template is needed too, and must have a class named *endless_page_template*.
+Of course you have to split templates, as seen in :doc:`twitter_pagination`,
+but this time a container for the page template is needed too, and, by default,
+must have a class named *endless_page_template*.
 
 *myapp/entry_index.html* becomes:
 
 .. code-block:: html+django
 
-    {% block js %}
-        {{ block.super }}
-        <script src="http://code.jquery.com/jquery-latest.js"></script>
-        <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
-    {% endblock %}
-
     <h2>Entries:</h2>
     <div class="endless_page_template">
         {% include page_template %}
     </div>
+
+    {% block js %}
+        {{ block.super }}
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+        <script>$.endlessPaginate();</script>
+    {% endblock %}
 
 *myapp/entry_index_page.html* becomes:
 
@@ -85,3 +87,24 @@ template is needed too, and must have a class named *endless_page_template*.
     {% show_pages %}
 
 Done.
+
+It is possible to manually override the container selector used by
+*$.endlessPaginate()* to update the page contents. This can be easily achieved
+by customizing the *pageSelector* option of *$.endlessPaginate()*, e.g.:
+
+.. code-block:: html+django
+
+    <h2>Entries:</h2>
+    <div id="entries">
+        {% include page_template %}
+    </div>
+
+    {% block js %}
+        {{ block.super }}
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+        <script>$.endlessPaginate({pageSelector: 'div#entries'});</script>
+    {% endblock %}
+
+See the :doc:`javascript` for a detailed explanation of how to integrate
+JavaScript and Ajax features in Django Endless Pagination.

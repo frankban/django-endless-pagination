@@ -13,9 +13,13 @@ jQuery  >= 1.3
 Installation
 ~~~~~~~~~~~~
 
-The Mercurial repository can be cloned with this command::
+The Git repository can be cloned with this command::
 
-    hg clone https://django-endless-pagination.googlecode.com/hg/ django-endless-pagination
+    git clone https://github.com/frankban/django-endless-pagination.git
+
+If you like Mercurial, you can clone the application with this command::
+
+    hg clone https://bitbucket.org/frankban/django-endless-pagination
 
 The ``endless_pagination`` package, included in the distribution, should be
 placed on the ``PYTHONPATH``.

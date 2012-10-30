@@ -4,6 +4,45 @@ Changelog
 Version 1.2 (under development)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+**New feature**: the **JavaScript refactoring**.
+
+This version introduces a re-designed Ajax support for pagination. Ajax can
+now be enabled using a brand new jQuery plugin that leaves in
+``static/endless_pagination/js/endless-pagination.js``.
+
+Usage:
+
+.. code-block:: html+django
+
+    {% block js %}
+        {{ block.super }}
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+        <script>$.endlessPaginate();</script>
+    {% endblock %}
+
+The last line in the block above enables Ajax requests to retrieve new
+pages for each pagination in the page. That's basically the same as the old
+approach of loading the file ``endless.js``. The new approach, however,
+is more jQuery idiomatic, increases the flexibility of how objects can be
+paginated, implements some :doc:`new features </javascript>` and also contains
+some bug fixes.
+
+For backward compatibility, the application still includes the two JavaScript
+files ``endless.js`` and ``endless_on_scroll.js``. However, please consider
+to migrate as soon as possible: the old JavaScript files are deprecated, will
+be no longer maintained, and don't provide the new JavaScript features.
+
+New features include ability to paginate different objects with different
+options, precisely selecting what to bind, ability to register callbacks and
+much more.
+
+Please refer to the :doc:`javascript` for a detailed overview of the new
+features and for instructions on **how to migrate** from the old JavaScript
+files to the new one.
+
+----
+
 **New feature**: the ``page_templates`` decorator also accepts a sequence
 of ``(template, key)`` pairs, functioning as a dict mapping templates and
 keys (still present), e.g.::
@@ -64,6 +103,10 @@ support hardcoded pagination URL endpoints, e.g.:
 
 ----
 
+**Documentation**: included a comprehensive :doc:`javascript`.
+
+----
+
 **Fix**: ``endless_pagination.views.AjaxListView`` no longer subclasses
 ``django.views.generic.list.ListView``. Instead, the base objects and
 mixins composing the final view are now defined by this app.
@@ -89,7 +132,7 @@ an *ImproperlyConfigured* error while trying to pre-load the templates.
 ----
 
 **Fix**: replaced doctests with proper unittests. Improved the code coverage
-as a consequence. Also introduced integration tests exercising Javascript,
+as a consequence. Also introduced integration tests exercising JavaScript,
 based on Selenium.
 
 ----

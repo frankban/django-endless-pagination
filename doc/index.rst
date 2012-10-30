@@ -28,6 +28,7 @@ Contents:
    different_first_page
    current_page_number
    templatetags_reference
+   javascript
    customization
    generic_views
    contributing

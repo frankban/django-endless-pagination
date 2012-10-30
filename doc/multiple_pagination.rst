@@ -54,18 +54,14 @@ You can use any style of pagination: ``show_pages``, ``get_pages``,
 Adding Ajax for multiple pagination
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Obviously each pagination needs a template for the page content. Remember to
-box each page in a div with a class called *endless_page_template*.
+Obviously each pagination needs a template for the page contents. Remember to
+box each page in a div with a class called *endless_page_template*, or to
+specify the container selector passing an option to *$.endlessPaginate()* as
+seen in :doc:`digg_pagination`.
 
 *myapp/entry_index.html*:
 
 .. code-block:: html+django
-
-    {% block js %}
-        {{ block.super }}
-        <script src="http://code.jquery.com/jquery-latest.js"></script>
-        <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
-    {% endblock %}
 
     <h2>Entries:</h2>
     <div class="endless_page_template">
@@ -76,6 +72,16 @@ box each page in a div with a class called *endless_page_template*.
     <div class="endless_page_template">
         {% include "myapp/other_entries_page.html" %}
     </div>
+
+    {% block js %}
+        {{ block.super }}
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+        <script>$.endlessPaginate();</script>
+    {% endblock %}
+
+See the :doc:`javascript` for further details on how to use the included
+jQuery plugin.
 
 *myapp/entries_page.html*:
 
@@ -155,16 +161,27 @@ of ``(template, key)`` pairs, e.g.::
 
 This also supports serving different paginated objects with the same template.
 
-Manually selecting  what to bind
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Manually selecting what to bind
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-What if you need Ajax pagination for *entries* but not for *other entries*?
-You only have to add a class named ``endless_page_skip`` to the page container
-element, e.g.:
+What if you need Ajax pagination only for *entries* and not for
+*other entries*? You can do this in a straightforward way using jQuery
+selectors, e.g.:
 
 .. code-block:: html+django
 
-    <h2>Other entries:</h2>
-    <div class="endless_page_template endless_page_skip">
-        {% include "myapp/other_entries_page.html" %}
-    </div>
+    {% block js %}
+        {{ block.super }}
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+        <script>$('#entries').endlessPaginate();</script>
+    {% endblock %}
+
+The call to *$('#entries').endlessPaginate()* applies Ajax pagination starting
+from the DOM node with id *entries* and in all sub-nodes. This means that
+*other entries* are left intact. Of course you can use any selector supported
+by jQuery.
+
+Refer to the :doc:`javascript` for an explanation of other features like
+calling *$.endlessPaginate()* multiple times in order to customize the behavior
+of each pagination in a multiple pagination view.
