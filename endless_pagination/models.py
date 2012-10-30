@@ -4,6 +4,7 @@ from django.template import (
     Context,
     loader,
 )
+from django.utils.encoding import iri_to_uri
 
 from endless_pagination import (
     settings,
@@ -44,7 +45,8 @@ class EndlessPage(object):
         self.url = utils.get_querystring_for_page(
             request, number, self.querystring_key,
             default_number=default_number)
-        self.path = '{0}{1}'.format(override_path or request.path, self.url)
+        path = iri_to_uri(override_path or request.path)
+        self.path = '{0}{1}'.format(path, self.url)
 
     def __unicode__(self):
         """Render the page as a link."""

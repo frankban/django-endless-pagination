@@ -187,3 +187,12 @@ class PageListTest(TestCase):
             rendered = unicode(self.pages).strip()
         expected = u'<span class="endless_separator">...</span>'
         self.assertEqual(expected, rendered)
+
+    def test_whitespace_in_path(self):
+        # Ensure white spaces in paths are correctly handled.
+        path = '/a path/containing spaces/'
+        request = self.factory.get(path)
+        next = models.PageList(
+            request, self.paginator.page(self.current_number),
+            self.page_label).next()
+        self.assertEqual(path.replace(' ', '%20') + next.url, next.path)
