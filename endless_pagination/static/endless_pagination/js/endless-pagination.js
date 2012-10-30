@@ -26,7 +26,7 @@
 
         var getContext = function(link) {
             return {
-                querystring_key: link.attr('rel').split(' ')[0],
+                key: link.attr('rel').split(' ')[0],
                 url: link.attr('href')
             };
         };
@@ -49,7 +49,7 @@
                 var context = getContext(link);
                 // Fire onClick callback.
                 if (settings.onClick.apply(html_link, [context]) !== false) {
-                    var data = 'querystring_key=' + context.querystring_key;
+                    var data = 'querystring_key=' + context.key;
                     // Send the Ajax request.
                     $.get(context.url, data, function(fragment) {
                         container.before(fragment);
@@ -82,7 +82,7 @@
                 // Fire onClick callback.
                 if (settings.onClick.apply(html_link, [context]) !== false) {
                     var page_template = link.closest(settings.pageSelector),
-                        data = 'querystring_key=' + context.querystring_key;
+                        data = 'querystring_key=' + context.key;
                     // Send the Ajax request.
                     page_template.load(context.url, data, function(fragment) {
                         // Fire onCompleted callback.
