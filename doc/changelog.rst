@@ -103,7 +103,7 @@ support hardcoded pagination URL endpoints, e.g.:
 
 ----
 
-**Documentation**: included a comprehensive :doc:`javascript` page.
+**Documentation**: included a comprehensive :doc:`javascript`.
 
 ----
 

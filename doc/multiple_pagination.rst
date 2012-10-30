@@ -182,6 +182,6 @@ from the DOM node with id *entries* and to all sub-nodes. This means that
 *other entries* are left intact. Of course you can use any selector supported
 by jQuery.
 
-Refer to the :doc:`javascript` page for an explanation of other features like
+Refer to the :doc:`javascript` for an explanation of other features like
 calling *$.endlessPaginate()* multiple times in order to customize the behavior
 of each pagination in a multiple pagination view.

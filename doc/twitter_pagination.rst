@@ -186,7 +186,7 @@ to be activated when 20 pixels remain to the end of the page:
         </script>
     {% endblock %}
 
-Again, see the :doc:`javascript` page.
+Again, see the :doc:`javascript`.
 
 Before version 1.2
 ~~~~~~~~~~~~~~~~~~
@@ -219,6 +219,6 @@ However, please consider migrating as soon as possible: the old JavaScript
 files are deprecated, are no longer maintained, and don't provide the new
 JavaScript features.
 
-Please refer to the :doc:`javascript` page for a detailed overview of the new
+Please refer to the :doc:`javascript` for a detailed overview of the new
 features and for instructions on **how to migrate** from the old JavaScript
 files to the new one.
