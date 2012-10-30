@@ -55,7 +55,7 @@ The view is exactly the same as in ``show_more`` from
             template, context, context_instance=RequestContext(request))
 
 Of course you have to split templates, as seen in :doc:`twitter_pagination`,
-but this time a container for the page template is needed too, and, by default,
+but this time a container for the page template is needed too and, by default,
 must have a class named *endless_page_template*.
 
 *myapp/entry_index.html* becomes:

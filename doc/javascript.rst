@@ -4,14 +4,14 @@ JavaScript reference
 For each type of pagination it is possible to enable Ajax so that the requested
 page is loaded using an asynchronous request to the server. This is especially
 important for Twitter-style pagination and endless pagination on scroll, but
-also Digg-style pagination can take advantage of this technique.
+Digg-style pagination can also take advantage of this technique.
 
 Activating Ajax support
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Ajax support is activated linking jQuery and the ``endless-pagination.js`` file
-included in this app. At this point it is possible to use the
-*$.endlessPaginate()* jQuery plugin to enable Ajax pagination, e.g.:
+included in this app. It is then possible to use the *$.endlessPaginate()*
+jQuery plugin to enable Ajax pagination, e.g.:
 
 .. code-block:: html+django
 
@@ -27,18 +27,19 @@ included in this app. At this point it is possible to use the
         <script>$.endlessPaginate();</script>
     {% endblock %}
 
-This example assumes you separated the fragment containing the single page
+This example assumes that you separated the fragment containing the single page
 (*page_tempate*) from the main template (the code snipper above). More on this
 in :doc:`twitter_pagination` and :doc:`digg_pagination`.
+
 The *$.endlessPaginate()* call activates Ajax for each pagination present in
-page.
+the page.
 
 Pagination on scroll
 ~~~~~~~~~~~~~~~~~~~~
 
-If you want new items to load when the user scroll down the browser page,
-you can use the **pagination on scroll** feature: just set to *true* the
-*paginateOnScroll* option of *$.endlessPaginate()*, e.g.:
+If you want new items to load when the user scrolls down the browser page,
+you can use the **pagination on scroll** feature: just set the
+*paginateOnScroll* option of *$.endlessPaginate()* to *true*, e.g.:
 
 .. code-block:: html+django
 
@@ -54,8 +55,8 @@ you can use the **pagination on scroll** feature: just set to *true* the
         <script>$.endlessPaginate({paginateOnScroll: true});</script>
     {% endblock %}
 
-That's all. See the :doc:`templatetags_reference` to improve the use of
-included templatetags.
+That's all. See the :doc:`templatetags_reference` page to improve usage of
+the included templatetags.
 
 It is possible to set the **bottom margin** used for pagination on scroll
 (default is 1 pixel). For example, if you want the pagination on scroll
@@ -120,7 +121,7 @@ the requested page:
 - *context.key*: the querystring key used to retrieve the requested contents.
 
 If the *onClick* callback returns *false*, the pagination process is stopped,
-the Ajax request is not performed and the *onComplete* callback never called.
+the Ajax request is not performed and the *onCompleted* callback never called.
 
 The *onCompleted* callbacks also receives a second argument: the data returned
 by the server. Basically this is the HTML fragment representing the new
@@ -163,7 +164,7 @@ Manually selecting what to bind
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 As seen above, *$.endlessPaginate()* enables Ajax support for each pagination
-in the page. But assume you are using :doc:`multiple_pagination`, e.g.:
+in the page. But assuming you are using :doc:`multiple_pagination`, e.g.:
 
 .. code-block:: html+django
 
@@ -198,7 +199,7 @@ selectors, e.g.:
     {% endblock %}
 
 The call to *$('#entries').endlessPaginate()* applies Ajax pagination starting
-from the DOM node with id *entries* and in all sub-nodes. This means that
+from the DOM node with id *entries* and to all sub-nodes. This means that
 *other entries* are left intact. Of course you can use any selector supported
 by jQuery.
 
@@ -255,8 +256,8 @@ to select DOM nodes. Here is a list of them all:
 - pagesSelector: 'a.endless_page_link'
   (Digg-style pagination link selector).
 
-An example can better explain the meaning of the selectors above.
-Assume you have a Digg-style pagination like the following:
+An example can better explain the meaning of the selectors above. Assume you
+have a Digg-style pagination like the following:
 
 .. code-block:: html+django
 
@@ -275,10 +276,11 @@ Assume you have a Digg-style pagination like the following:
     {% endblock %}
 
 Here the ``#entries`` node is selected and Digg-style pagination is applied.
-Digg-style needs to know what is the DOM node that must be updated with new
-contents, and in this case it's the same node we selected, because we added
-the *endless_page_template* class to that node, and *.endless_page_template*
-is the selector used by default. However, the following example is completely equivalent and does not involve adding another class to the container:
+Digg-style needs to know which DOM node will be updated with new contents,
+and in this case it's the same node we selected, because we added the
+*endless_page_template* class to that node, and *.endless_page_template*
+is the selector used by default. However, the following example is equivalent
+and does not involve adding another class to the container:
 
 .. code-block:: html+django
 
@@ -308,10 +310,10 @@ the :doc:`changelog`.
 The JavaScript code now lives in a file named ``endless-pagination.js``.
 For backward compatibility, the application still includes the two JavaScript
 files ``endless.js`` and ``endless_on_scroll.js``. However, please consider
-to migrate as soon as possible: the old JavaScript files are deprecated, will
-be no longer maintained, and don't provide the new JavaScript features.
+migrating as soon as possible: the old JavaScript files are deprecated, are
+no longer maintained, and don't provide the new JavaScript features.
 
-Instructions of how to migrate from the old version to the new one follow.
+Instructions on how to migrate from the old version to the new one follow.
 
 Basic migration
 ---------------
@@ -416,7 +418,7 @@ Now:
     {% endblock %}
 
 
-Avoid enabling Ajax to one or more paginations
+Avoid enabling Ajax on one or more paginations
 ----------------------------------------------
 
 Before:
@@ -450,5 +452,5 @@ Now:
         <script>$('not:(.endless_page_skip)').endlessPaginate();</script>
     {% endblock %}
 
-In this last example, just activating Ajax where you want might be preferred
+In this last example, activating Ajax just where you want might be preferred
 over excluding nodes.

@@ -111,7 +111,8 @@ Paginating objects
 
 All that's left is changing the page template and loading the endless
 templatetags, the jQuery library and the jQuery plugin
-``endless-pagination.js`` included in the distribution under ``/static/endless_pagination/js/``.
+``endless-pagination.js`` included in the distribution under
+``/static/endless_pagination/js/``.
 
 *myapp/entry_index.html* becomes:
 
@@ -146,8 +147,8 @@ Pagination on scroll
 ~~~~~~~~~~~~~~~~~~~~
 
 If you want new items to load when the user scroll down the browser page,
-you can use the **pagination on scroll** feature: just set to *true* the
-*paginateOnScroll* option of *$.endlessPaginate()*, e.g.:
+you can use the **pagination on scroll** feature: just set the
+*paginateOnScroll* option of *$.endlessPaginate()* to *true*, e.g.:
 
 .. code-block:: html+django
 
@@ -185,14 +186,15 @@ to be activated when 20 pixels remain to the end of the page:
         </script>
     {% endblock %}
 
-Again, see the :doc:`javascript`.
+Again, see the :doc:`javascript` page.
 
 Before version 1.2
 ~~~~~~~~~~~~~~~~~~
 
-Django Endless Pagination 1.2 introduces a re-designed Ajax support for
-pagination. As seen above. Ajax can now be enabled using a brand new jQuery
-plugin that leaves in ``static/endless_pagination/js/endless-pagination.js``.
+Django Endless Pagination 1.2 introduces a redesigned Ajax support for
+pagination. As seen above, Ajax can now be enabled using a brand new jQuery
+plugin that can be found in
+``static/endless_pagination/js/endless-pagination.js``.
 
 For backward compatibility, the application still includes the two JavaScript
 files ``endless.js`` and ``endless_on_scroll.js`` that were used before, so
@@ -213,9 +215,10 @@ To enable pagination on scroll, the code was the following:
     <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
     <script src="{{ STATIC_URL }}endless_pagination/js/endless_on_scroll.js"></script>
 
-However, please consider to migrate as soon as possible: the old JavaScript
-files are deprecated, will be no longer maintained, and don't provide the new JavaScript features.
+However, please consider migrating as soon as possible: the old JavaScript
+files are deprecated, are no longer maintained, and don't provide the new
+JavaScript features.
 
-Please refer to the :doc:`javascript` for a detailed overview of the new
+Please refer to the :doc:`javascript` page for a detailed overview of the new
 features and for instructions on **how to migrate** from the old JavaScript
 files to the new one.

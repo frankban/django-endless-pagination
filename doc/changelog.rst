@@ -7,7 +7,7 @@ Version 1.2 (under development)
 **New feature**: the **JavaScript refactoring**.
 
 This version introduces a re-designed Ajax support for pagination. Ajax can
-now be enabled using a brand new jQuery plugin that leaves in
+now be enabled using a brand new jQuery plugin that can be found in
 ``static/endless_pagination/js/endless-pagination.js``.
 
 Usage:
@@ -24,14 +24,14 @@ Usage:
 The last line in the block above enables Ajax requests to retrieve new
 pages for each pagination in the page. That's basically the same as the old
 approach of loading the file ``endless.js``. The new approach, however,
-is more jQuery idiomatic, increases the flexibility of how objects can be
+is more jQuery-idiomatic, increases the flexibility of how objects can be
 paginated, implements some :doc:`new features </javascript>` and also contains
 some bug fixes.
 
 For backward compatibility, the application still includes the two JavaScript
-files ``endless.js`` and ``endless_on_scroll.js``. However, please consider
-to migrate as soon as possible: the old JavaScript files are deprecated, will
-be no longer maintained, and don't provide the new JavaScript features.
+``endless.js`` and ``endless_on_scroll.js`` files. However, please consider
+migrating as soon as possible: the old JavaScript files are deprecated, are
+no longer maintained, and don't provide the new JavaScript features.
 
 New features include ability to paginate different objects with different
 options, precisely selecting what to bind, ability to register callbacks and
@@ -103,7 +103,7 @@ support hardcoded pagination URL endpoints, e.g.:
 
 ----
 
-**Documentation**: included a comprehensive :doc:`javascript`.
+**Documentation**: included a comprehensive :doc:`javascript` page.
 
 ----
 
