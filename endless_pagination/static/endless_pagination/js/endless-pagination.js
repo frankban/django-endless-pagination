@@ -20,7 +20,9 @@
             // Set this to true to use the paginate-on-scroll feature.
             paginateOnScroll: false,
             // If paginate-on-scroll is on, this margin will be used.
-            paginateOnScrollMargin : 1
+            paginateOnScrollMargin : 1,
+            // If paginate-on-scroll is on, it is possible to define chunks.
+            paginateOnScrollChunkSize: 0
         },
             settings = $.extend(defaults, options);
 
@@ -32,7 +34,8 @@
         };
 
         return this.each(function() {
-            var element = $(this);
+            var element = $(this),
+                loadedPages = 1;
 
             // Twitter-style pagination.
             element.find(settings.moreSelector).live('click', function() {
@@ -54,6 +57,8 @@
                     $.get(context.url, data, function(fragment) {
                         container.before(fragment);
                         container.remove();
+                        // Increase the number of loaded pages.
+                        loadedPages += 1;
                         // Fire onCompleted callback.
                         settings.onCompleted.apply(
                             html_link, [context, fragment]);
@@ -69,7 +74,12 @@
                 win.scroll(function(){
                     if (doc.height() - win.height() -
                         win.scrollTop() <= settings.paginateOnScrollMargin) {
-                        element.find(settings.moreSelector).click();
+                        // Do not paginate on scroll if chunks are used and
+                        // the current chunk is complete.
+                        var chunckSize = settings.paginateOnScrollChunkSize;
+                        if (!chunckSize || loadedPages % chunckSize) {
+                            element.find(settings.moreSelector).click();
+                        }
                     }
                 });
             }

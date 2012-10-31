@@ -36,6 +36,13 @@ urlpatterns = patterns('',
         page_template('onscroll/page.html')(generic),
         {'template': 'onscroll/index.html'},
         name='onscroll'),
+    url(r'^chunks/$',
+        page_templates({
+            'chunks/objects_page.html': None,
+            'chunks/items_page.html': 'items-page',
+        })(generic),
+        {'template': 'chunks/index.html', 'number': 50},
+        name='chunks'),
     url(r'^multiple/$',
         page_templates({
             'multiple/objects_page.html': 'objects-page',

@@ -16,6 +16,7 @@ VOICES = (
     ('onscroll', 'On scroll'),
     ('multiple', 'Multiple'),
     ('callbacks', 'Callbacks'),
+    ('chunks', 'On scroll/chunks'),
 )
 
 
