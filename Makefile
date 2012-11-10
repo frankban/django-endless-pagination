@@ -41,6 +41,9 @@ ipdb:
 lint:
 	@pocketlint $(PYFILES)
 
+opendoc:
+	@firefox ./doc/_build/html/index.html
+
 pep8:
 	@./tests/with_venv.sh pep8 --show-source $(PYFILES)
 
@@ -59,5 +62,5 @@ test:
 testall:
 	@USE_SELENIUM=1 ./tests/with_venv.sh python ./tests/manage.py test
 
-.PHONY: all doc clean cleanenv check develop install lint pep8 server shell \
-	source test testall
+.PHONY: all doc clean cleanenv check develop install lint opendoc pep8 server \
+	shell source test testall
