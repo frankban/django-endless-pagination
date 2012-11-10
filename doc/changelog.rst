@@ -33,9 +33,9 @@ For backward compatibility, the application still includes the two JavaScript
 migrating as soon as possible: the old JavaScript files are deprecated, are
 no longer maintained, and don't provide the new JavaScript features.
 
-New features include ability to paginate different objects with different
-options, precisely selecting what to bind, ability to register callbacks and
-much more.
+New features include ability to **paginate different objects with different
+options**, precisely **selecting what to bind**, ability to **register
+callbacks**, support for **pagination in chunks** and much more.
 
 Please refer to the :doc:`javascript` for a detailed overview of the new
 features and for instructions on **how to migrate** from the old JavaScript

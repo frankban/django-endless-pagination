@@ -300,6 +300,30 @@ and does not involve adding another class to the container:
         </script>
     {% endblock %}
 
+On scroll pagination using chunks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes, when using on scroll pagination, you may want to still display
+the *show more* link after each *N* pages. In Django Endless Pagination this is
+called *chunk size*. For instance, a chunk size of 5 means that a *show more*
+link is displayed after page 5 is loaded, then after page 10, then after page
+15 and so on. Activating this functionality is straightforward, just use the
+*paginateOnScrollChunkSize* option:
+
+.. code-block:: html+django
+
+    {% block js %}
+        {{ block.super }}
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+        <script>
+            $.endlessPaginate({
+                paginateOnScroll: true,
+                paginateOnScrollChunkSize: 5
+            });
+        </script>
+    {% endblock %}
+
 Migrate from version 1.1 to 1.2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
