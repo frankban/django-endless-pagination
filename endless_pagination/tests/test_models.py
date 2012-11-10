@@ -183,9 +183,9 @@ class PageListTest(TestCase):
             self.request, self.paginator.page(num_pages), self.page_label)
         self.assertEqual(u'', pages.next())
 
-    def _check_page_list_callable(self, callable_or_dotted_path):
+    def _check_page_list_callable(self, callable_or_path):
         """Check the provided *page_list_callable* is actually used."""
-        with local_settings(PAGE_LIST_CALLABLE=callable_or_dotted_path):
+        with local_settings(PAGE_LIST_CALLABLE=callable_or_path):
             rendered = unicode(self.pages).strip()
         expected = u'<span class="endless_separator">...</span>'
         self.assertEqual(expected, rendered)

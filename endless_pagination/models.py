@@ -7,6 +7,7 @@ from django.template import (
 from django.utils.encoding import iri_to_uri
 
 from endless_pagination import (
+    loaders,
     settings,
     utils,
 )
@@ -140,8 +141,14 @@ class PageList(object):
         generating a Digg-style pagination.
         """
         if len(self) > 1:
-            pages_callable = (
-                settings.PAGE_LIST_CALLABLE or utils.get_page_numbers)
+            callable_or_path = settings.PAGE_LIST_CALLABLE
+            if callable_or_path:
+                if callable(callable_or_path):
+                    pages_callable = callable_or_path
+                else:
+                    pages_callable = loaders.load_object(callable_or_path)
+            else:
+                pages_callable = utils.get_page_numbers
             pages = []
             for i in pages_callable(self._page.number, len(self)):
                 if i is None:
