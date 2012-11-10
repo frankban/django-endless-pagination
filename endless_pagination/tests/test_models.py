@@ -57,6 +57,9 @@ class LocalSettingsTest(TestCase):
             self.assertEqual('original', settings._LOCAL_SETTINGS_TEST)
 
 
+page_list_callable = lambda number, num_pages: [None]
+
+
 class PageListTest(TestCase):
 
     def setUp(self):
@@ -180,13 +183,22 @@ class PageListTest(TestCase):
             self.request, self.paginator.page(num_pages), self.page_label)
         self.assertEqual(u'', pages.next())
 
-    def test_customized_page_list_callable(self):
-        # The page list is rendered based on ``settings.PAGE_LIST_CALLABLE``.
-        page_list_callable = lambda number, num_pages: [None]
-        with local_settings(PAGE_LIST_CALLABLE=page_list_callable):
+    def _check_page_list_callable(self, callable_or_dotted_path):
+        """Check the provided *page_list_callable* is actually used."""
+        with local_settings(PAGE_LIST_CALLABLE=callable_or_dotted_path):
             rendered = unicode(self.pages).strip()
         expected = u'<span class="endless_separator">...</span>'
         self.assertEqual(expected, rendered)
+
+    def test_customized_page_list_callable(self):
+        # The page list is rendered based on ``settings.PAGE_LIST_CALLABLE``.
+        self._check_page_list_callable(page_list_callable)
+
+    def test_customized_page_list_dotted_path(self):
+        # The option ``settings.PAGE_LIST_CALLABLE`` can be provided as a
+        # dotted path, e.g.: 'path.to.my.callable'.
+        self._check_page_list_callable(
+            'endless_pagination.tests.test_models.page_list_callable')
 
     def test_whitespace_in_path(self):
         # Ensure white spaces in paths are correctly handled.
