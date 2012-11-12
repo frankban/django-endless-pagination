@@ -80,6 +80,13 @@ In this case, and only in this case, the `as` argument is mandatory, and a
 
 ----
 
+**New feature**: *settings.ENDLESS_PAGINATION_PAGE_LIST_CALLABLE* can now be
+either a callable or a **dotted path** to a callable, e.g.::
+
+    ENDLESS_PAGINATION_PAGE_LIST_CALLABLE = 'path.to.callable'
+
+----
+
 **New feature**: ability to create a development and testing environment
 (see :doc:`contributing`).
 

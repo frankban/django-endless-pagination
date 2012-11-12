@@ -138,7 +138,8 @@ class PageList(object):
                 return ('previous', 1, None, current_page, 'next')
 
         If *settings.PAGE_LIST_CALLABLE* is None an internal callable is used,
-        generating a Digg-style pagination.
+        generating a Digg-style pagination. The value of
+        *settings.PAGE_LIST_CALLABLE* can also be a dotted path to a callable.
         """
         if len(self) > 1:
             callable_or_path = settings.PAGE_LIST_CALLABLE

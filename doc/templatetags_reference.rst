@@ -238,6 +238,10 @@ It is just a shortcut for:
 
 You can set ``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` in your *settings.py* to
 a callable used to customize the pages that are displayed.
+``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` can also be a dotted path
+representing a callable, e.g.::
+
+    ENDLESS_PAGINATION_PAGE_LIST_CALLABLE = 'path.to.callable'
 
 The callable takes the current page number and the total number of pages,
 and must return a sequence of page numbers that will be displayed.

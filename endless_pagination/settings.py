@@ -29,7 +29,7 @@ NEXT_LABEL = getattr(settings, 'ENDLESS_PAGINATION_NEXT_LABEL', u'&gt;&gt;')
 # pagination to be ``nofollow``.
 ADD_NOFOLLOW = getattr(settings, 'ENDLESS_PAGINATION_ADD_NOFOLLOW', False)
 
-# Callable that returns pages to be displayed.
+# Callable (or dotted path to a callable) returning pages to be displayed.
 # If None, a default callable is used (which produces Digg-style pagination).
 PAGE_LIST_CALLABLE = getattr(
     settings, 'ENDLESS_PAGINATION_PAGE_LIST_CALLABLE', None)

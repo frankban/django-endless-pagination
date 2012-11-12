@@ -492,7 +492,8 @@ def show_pages(parser, token):
         {{ pages }}
 
     You can set ``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` in your *settings.py*
-    to a callable used to customize the pages that are displayed.
+    to a callable, or to a dotted path representing a callable, used to
+    customize the pages that are displayed.
 
     The callable takes the current page number and the total number of pages,
     and must return a sequence of page numbers that will be displayed.

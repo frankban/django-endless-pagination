@@ -31,7 +31,8 @@ Name                                              Default     Description
                                                               wants search engines not to follow
                                                               pagination links.
 ------------------------------------------------- ----------- ----------------------------------------------
-``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE``         *None*      Callable that returns pages to be displayed.
+``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE``         *None*      Callable (or dotted path to a callable) that
+                                                              returns pages to be displayed.
                                                               If *None*, a default callable is used;
                                                               that produces :doc:`digg_pagination`.
                                                               See :doc:`templatetags_reference` for
