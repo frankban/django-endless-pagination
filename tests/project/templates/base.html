@@ -21,7 +21,8 @@
       </div>
       <div class="navbar">
         <div class="navbar-inner">
-          <a class="brand" href="{% url home %}">Home</a>
+          {% load url from future %}
+          <a class="brand" href="{% url "home" %}">Home</a>
           <ul class="nav">
             {% for voice in navbar %}
               <li{% if voice.is_active %} class="active"{% endif %}>
