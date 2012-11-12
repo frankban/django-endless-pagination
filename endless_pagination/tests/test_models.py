@@ -9,7 +9,7 @@ from endless_pagination import (
     models,
     settings,
 )
-from endless_pagination.paginator import DefaultPaginator
+from endless_pagination.paginators import DefaultPaginator
 
 
 @contextmanager

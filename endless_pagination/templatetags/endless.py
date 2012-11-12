@@ -9,7 +9,7 @@ from endless_pagination import (
     settings,
     utils,
 )
-from endless_pagination.paginator import (
+from endless_pagination.paginators import (
     DefaultPaginator,
     EmptyPage,
     LazyPaginator,

@@ -2,7 +2,7 @@
 
 from django.test import TestCase
 
-from endless_pagination import paginator
+from endless_pagination import paginators
 
 
 class PaginatorTestMixin(object):
@@ -37,14 +37,14 @@ class PaginatorTestMixin(object):
 
     def test_empty_page(self):
         # En error if raised if the requested page does not exist.
-        with self.assertRaises(paginator.EmptyPage):
+        with self.assertRaises(paginators.EmptyPage):
             self.paginator.page(5)
 
     def test_invalid_page(self):
         # En error is raised if the requested page is not valid.
-        with self.assertRaises(paginator.PageNotAnInteger):
+        with self.assertRaises(paginators.PageNotAnInteger):
             self.paginator.page('__not_valid__')
-        with self.assertRaises(paginator.EmptyPage):
+        with self.assertRaises(paginators.EmptyPage):
             self.paginator.page(0)
 
 
@@ -71,7 +71,7 @@ class DifferentFirstPagePaginatorTestMixin(PaginatorTestMixin):
 
 class DefaultPaginatorTest(PaginatorTestMixin, TestCase):
 
-    paginator_class = paginator.DefaultPaginator
+    paginator_class = paginators.DefaultPaginator
 
     def test_indexes(self):
         # Ensure start and end indexes are correct.
@@ -108,7 +108,7 @@ class DefaultPaginatorTest(PaginatorTestMixin, TestCase):
 
 class LazyPaginatorTest(PaginatorTestMixin, TestCase):
 
-    paginator_class = paginator.LazyPaginator
+    paginator_class = paginators.LazyPaginator
 
     def test_items_count(self):
         # The lazy paginator does not implement items count.
@@ -129,10 +129,10 @@ class LazyPaginatorTest(PaginatorTestMixin, TestCase):
 class DifferentFirstPageDefaultPaginatorTest(
         DifferentFirstPagePaginatorTestMixin, TestCase):
 
-    paginator_class = paginator.DefaultPaginator
+    paginator_class = paginators.DefaultPaginator
 
 
 class DifferentFirstPageLazyPaginatorTest(
         DifferentFirstPagePaginatorTestMixin, TestCase):
 
-    paginator_class = paginator.LazyPaginator
+    paginator_class = paginators.LazyPaginator

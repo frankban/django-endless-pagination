@@ -133,6 +133,12 @@ now correctly handles querystring keys containing dashes, e.g.:
 
 ----
 
+**Fix**: replaced namespace ``endless_pagination.paginator`` with
+``endless_pagination.paginators``: the module contains more than one
+paginator classes.
+
+----
+
 **Fix**: in some corner cases, loading ``endless_pagination.models`` raised
 an *ImproperlyConfigured* error while trying to pre-load the templates.
 
