@@ -1,5 +1,6 @@
 """Model tests."""
 
+from __future__ import unicode_literals
 from contextlib import contextmanager
 
 from django.test import TestCase
@@ -8,6 +9,7 @@ from django.test.client import RequestFactory
 from endless_pagination import (
     models,
     settings,
+    utils,
 )
 from endless_pagination.paginators import DefaultPaginator
 
@@ -84,7 +86,7 @@ class PageListTest(TestCase):
     def check_page(self, page, number, is_first, is_last, is_current):
         """Perform several assertions on the given page attrs."""
         self.assertEqual(number, page.number)
-        self.assertEqual(unicode(page.number), page.label)
+        self.assertEqual(utils.text(page.number), page.label)
         self.assertEqual(is_first, page.is_first)
         self.assertEqual(is_last, page.is_last)
         self.assertEqual(is_current, page.is_current)
@@ -125,27 +127,27 @@ class PageListTest(TestCase):
     def test_page_render(self):
         # Ensure the page is correctly rendered.
         page = self.pages.first()
-        rendered_page = unicode(page)
+        rendered_page = utils.text(page)
         self.assertIn('href="/"', rendered_page)
         self.assertIn(page.label, rendered_page)
 
     def test_current_page_render(self):
         # Ensure the page is correctly rendered.
         page = self.pages.current()
-        rendered_page = unicode(page)
+        rendered_page = utils.text(page)
         self.assertNotIn('href', rendered_page)
         self.assertIn(page.label, rendered_page)
 
     def test_page_list_render(self):
         # Ensure the page list is correctly rendered.
-        rendered = unicode(self.pages)
+        rendered = utils.text(self.pages)
         self.assertEqual(5, rendered.count('<a href'))
 
     def test_page_list_render_just_one_page(self):
         # Ensure nothing is rendered if the page list contains only one page.
         page = DefaultPaginator(range(10), 10).page(1)
         pages = models.PageList(self.request, page, self.page_label)
-        self.assertEqual(u'', unicode(pages))
+        self.assertEqual('', utils.text(pages))
 
     def test_different_default_number(self):
         # Ensure the page path is generated based on the default number.
@@ -174,20 +176,20 @@ class PageListTest(TestCase):
         # An empty string is returned if the previous page cannot be found.
         pages = models.PageList(
             self.request, self.paginator.page(1), self.page_label)
-        self.assertEqual(u'', pages.previous())
+        self.assertEqual('', pages.previous())
 
     def test_no_next(self):
         # An empty string is returned if the next page cannot be found.
         num_pages = self.paginator.num_pages
         pages = models.PageList(
             self.request, self.paginator.page(num_pages), self.page_label)
-        self.assertEqual(u'', pages.next())
+        self.assertEqual('', pages.next())
 
     def _check_page_list_callable(self, callable_or_path):
         """Check the provided *page_list_callable* is actually used."""
         with local_settings(PAGE_LIST_CALLABLE=callable_or_path):
-            rendered = unicode(self.pages).strip()
-        expected = u'<span class="endless_separator">...</span>'
+            rendered = utils.text(self.pages).strip()
+        expected = '<span class="endless_separator">...</span>'
         self.assertEqual(expected, rendered)
 
     def test_customized_page_list_callable(self):

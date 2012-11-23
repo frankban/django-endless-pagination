@@ -1,5 +1,7 @@
 """Javascript callbacks integration tests."""
 
+from __future__ import unicode_literals
+
 from endless_pagination.tests.integration import SeleniumTestCase
 
 

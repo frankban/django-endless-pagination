@@ -2,6 +2,9 @@
 Twitter-style and Digg-style pagination.
 """
 
+from __future__ import unicode_literals
+
+
 VERSION = (1, 2)
 
 

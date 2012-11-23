@@ -1,5 +1,6 @@
 """Django Endless Pagination template tags."""
 
+from __future__ import unicode_literals
 import re
 
 from django import template
@@ -304,7 +305,7 @@ class PaginateNode(template.Node):
             'querystring_key': querystring_key,
         }
         context.update({'endless': data, self.var_name: page.object_list})
-        return u''
+        return ''
 
 
 @register.inclusion_tag('endless/show_more.html', takes_context=True)
@@ -471,7 +472,7 @@ class GetPagesNode(template.Node):
             default_number=data['default_number'],
             override_path=data['override_path'],
         )
-        return u''
+        return ''
 
 
 @register.tag
@@ -531,7 +532,7 @@ class ShowPagesNode(template.Node):
         # This template tag could raise a PaginationError: you have to call
         # *paginate* or *lazy_paginate* before including the getpages template.
         data = utils.get_data_from_context(context)
-        # Return the unicode representation of the sequence of pages.
+        # Return the string representation of the sequence of pages.
         pages = models.PageList(
             context['request'],
             data['page'],
@@ -539,7 +540,7 @@ class ShowPagesNode(template.Node):
             default_number=data['default_number'],
             override_path=data['override_path'],
         )
-        return unicode(pages)
+        return utils.text(pages)
 
 
 @register.tag
@@ -660,6 +661,6 @@ class ShowCurrentNumberNode(template.Node):
             context['request'], querystring_key, default=default_number)
 
         if self.var_name is None:
-            return unicode(page_number)
+            return utils.text(page_number)
         context[self.var_name] = page_number
-        return u''
+        return ''

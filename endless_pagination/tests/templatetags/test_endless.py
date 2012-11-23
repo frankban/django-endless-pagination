@@ -1,5 +1,6 @@
 """Endless template tags tests."""
 
+from __future__ import unicode_literals
 import string
 import xml.etree.ElementTree as etree
 

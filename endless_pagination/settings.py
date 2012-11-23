@@ -1,5 +1,7 @@
 """Django Endless Pagination settings file."""
 
+from __future__ import unicode_literals
+
 from django.conf import settings
 
 
@@ -22,8 +24,8 @@ LOADING = getattr(
 
 # Labels for previous and next page links.
 PREVIOUS_LABEL = getattr(
-    settings, 'ENDLESS_PAGINATION_PREVIOUS_LABEL', u'&lt;&lt;')
-NEXT_LABEL = getattr(settings, 'ENDLESS_PAGINATION_NEXT_LABEL', u'&gt;&gt;')
+    settings, 'ENDLESS_PAGINATION_PREVIOUS_LABEL', '&lt;&lt;')
+NEXT_LABEL = getattr(settings, 'ENDLESS_PAGINATION_NEXT_LABEL', '&gt;&gt;')
 
 # Set to True if your SEO alchemist wants all the links in Digg-style
 # pagination to be ``nofollow``.

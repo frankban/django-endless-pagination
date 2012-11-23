@@ -1,5 +1,7 @@
 """Django Endless Pagination class-based views."""
 
+from __future__ import unicode_literals
+
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
 from django.utils.encoding import smart_str
@@ -32,7 +34,7 @@ class MultipleObjectMixin(object):
         elif self.model is not None:
             queryset = self.model._default_manager.all()
         else:
-            msg = u'{0} must define ``queryset`` or ``model``'
+            msg = '{0} must define ``queryset`` or ``model``'
             raise ImproperlyConfigured(msg.format(self.__class__.__name__))
         return queryset
 
@@ -85,7 +87,7 @@ class MultipleObjectMixin(object):
                 page_template = self.get_page_template(**kwargs)
             else:
                 raise ImproperlyConfigured(
-                    u'AjaxListView requires a page_template')
+                    'AjaxListView requires a page_template')
         context['page_template'] = self.page_template = page_template
 
         return context
@@ -97,7 +99,7 @@ class BaseListView(MultipleObjectMixin, View):
         self.object_list = self.get_queryset()
         allow_empty = self.get_allow_empty()
         if not allow_empty and len(self.object_list) == 0:
-            msg = _(u'Empty list and ``%(class_name)s.allow_empty`` is False.')
+            msg = _('Empty list and ``%(class_name)s.allow_empty`` is False.')
             raise Http404(msg % {'class_name': self.__class__.__name__})
         context = self.get_context_data(
             object_list=self.object_list, page_template=self.page_template)

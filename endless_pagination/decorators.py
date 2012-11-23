@@ -1,5 +1,6 @@
 """View decorators for Twitter-style pagination."""
 
+from __future__ import unicode_literals
 from functools import wraps
 
 from endless_pagination.settings import (

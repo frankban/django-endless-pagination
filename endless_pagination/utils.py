@@ -1,11 +1,23 @@
 """Django Endless Pagination utility functions."""
 
+from __future__ import unicode_literals
+import sys
+
 from endless_pagination import exceptions
 from endless_pagination.settings import (
     DEFAULT_CALLABLE_AROUNDS,
     DEFAULT_CALLABLE_EXTREMES,
     PAGE_LABEL,
 )
+
+
+# Handle the Python 2to3 migration.
+if sys.version_info[0] >= 3:
+    PYTHON3 = True
+    text = str
+else:
+    PYTHON3 = False
+    text = unicode
 
 
 def get_data_from_context(context):
@@ -96,3 +108,11 @@ def get_querystring_for_page(
     if querydict:
         return '?' + querydict.urlencode()
     return ''
+
+
+class UnicodeMixin(object):
+    """Mixin class to handle defining the proper unicode and string methods."""
+
+    if PYTHON3:
+        def __str__(self):
+            return self.__unicode__()

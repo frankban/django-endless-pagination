@@ -1,5 +1,6 @@
 """Integration tests base objects definitions."""
 
+from __future__ import unicode_literals
 from contextlib import contextmanager
 import os
 

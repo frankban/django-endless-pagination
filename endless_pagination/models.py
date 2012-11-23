@@ -1,5 +1,7 @@
 """Ephemeral models used to represent a page and a list of pages."""
 
+from __future__ import unicode_literals
+
 from django.template import (
     Context,
     loader,
@@ -17,7 +19,7 @@ from endless_pagination import (
 _template_cache = {}
 
 
-class EndlessPage(object):
+class EndlessPage(utils.UnicodeMixin):
     """A page link representation.
 
     Interesting attributes:
@@ -36,7 +38,7 @@ class EndlessPage(object):
             self, request, number, current_number, total_number,
             querystring_key, label=None, default_number=1, override_path=None):
         self.number = number
-        self.label = unicode(number) if label is None else label
+        self.label = utils.text(number) if label is None else label
         self.querystring_key = querystring_key
 
         self.is_current = number == current_number
@@ -65,7 +67,7 @@ class EndlessPage(object):
         return template.render(context_instance)
 
 
-class PageList(object):
+class PageList(utils.UnicodeMixin):
     """A sequence of endless pages."""
 
     def __init__(
@@ -162,7 +164,7 @@ class PageList(object):
                     pages.append(self[i])
             context = {'pages': pages}
             return loader.render_to_string('endless/show_pages.html', context)
-        return u''
+        return ''
 
     def current(self):
         """Return the current page."""
@@ -185,7 +187,7 @@ class PageList(object):
             return self._endless_page(
                 self._page.previous_page_number(),
                 label=settings.PREVIOUS_LABEL)
-        return u''
+        return ''
 
     def next(self):
         """Return the next page.
@@ -196,4 +198,4 @@ class PageList(object):
             return self._endless_page(
                 self._page.next_page_number(),
                 label=settings.NEXT_LABEL)
-        return u''
+        return ''
