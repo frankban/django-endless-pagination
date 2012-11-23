@@ -1,5 +1,6 @@
 """Create a development and testing environment using a virtualenv."""
 
+from __future__ import unicode_literals
 import subprocess
 import os
 

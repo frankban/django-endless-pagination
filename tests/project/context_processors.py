@@ -1,5 +1,6 @@
 """Navigation bar context processor."""
 
+from __future__ import unicode_literals
 import platform
 
 import django
