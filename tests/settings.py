@@ -1,6 +1,5 @@
 """Settings file for the Django project used for tests."""
 
-from __future__ import unicode_literals
 import os
 
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
@@ -36,6 +35,6 @@ TEMPLATE_DIRS = os.path.join(PROJECT, 'templates')
 NOSE_ARGS = (
     '--verbosity=2',
     '--with-coverage',
-    '--cover-package=endless_pagination'
+    '--cover-package=endless_pagination',
 )
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
