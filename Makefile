@@ -14,7 +14,7 @@ all:
 	@echo 'make server - Run Django development server'
 	@echo 'make ipdb - Install ipdb in the virtualenv'
 	@echo 'make clean - Get rid of bytecode files, build dirs, dist files'
-	@echo 'make cleanvenv - Get rid of the virtualenv'
+	@echo 'make cleanall - Clean and also get rid of the virtualenv'
 
 doc:
 	@./tests/with_venv.sh make -C doc html
@@ -24,7 +24,7 @@ clean:
 	rm -rfv .coverage build/ dist/ doc/_build MANIFEST
 	find . -name '*.pyc' -delete
 
-cleanvenv:
+cleanall: clean
 	rm -rfv .venv
 
 check: test lint pep8

@@ -21,6 +21,7 @@ INSTALLED_APPS = (
     PROJECT_NAME,
 )
 ROOT_URLCONF = PROJECT_NAME + '.urls'
+SECRET_KEY = 'secret'
 SITE_ID = 1
 STATIC_ROOT = os.path.join(PROJECT, 'static')
 STATIC_URL = '/static/'
