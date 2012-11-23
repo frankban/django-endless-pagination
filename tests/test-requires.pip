@@ -4,6 +4,7 @@
 coverage
 django
 django-nose
+ipdb
 nose
 pep8
 selenium
