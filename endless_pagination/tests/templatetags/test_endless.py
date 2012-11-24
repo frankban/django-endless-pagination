@@ -70,6 +70,10 @@ class PaginateTestMixin(TemplateTagsTestMixin):
     Subclasses must define *tagname*.
     """
 
+    def assertRangeEqual(self, expected, actual):
+        """Assert the *expected* range equals the *actual* one."""
+        self.assertListEqual(list(expected), list(actual))
+
     def render(self, request, contents, **kwargs):
         text = string.Template(contents).substitute(tagname=self.tagname)
         return super(PaginateTestMixin, self).render(request, text, **kwargs)
@@ -78,14 +82,14 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         # Ensure the queryset is correctly updated.
         template = '{% $tagname objects %}'
         html, context = self.render(self.request(), template)
-        self.assertSequenceEqual(range(PER_PAGE), context['objects'])
+        self.assertRangeEqual(range(PER_PAGE), context['objects'])
         self.assertEqual('', html)
 
     def test_per_page_argument(self):
         # Ensure the queryset reflects the given ``per_page`` argument.
         template = '{% $tagname 20 objects %}'
         _, context = self.render(self.request(), template)
-        self.assertSequenceEqual(range(20), context['objects'])
+        self.assertRangeEqual(range(20), context['objects'])
 
     def test_per_page_argument_as_variable(self):
         # Ensure the queryset reflects the given ``per_page`` argument.
@@ -93,16 +97,16 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         template = '{% $tagname per_page entries %}'
         _, context = self.render(
             self.request(), template, entries=range(47), per_page=5)
-        self.assertSequenceEqual(range(5), context['entries'])
+        self.assertRangeEqual(range(5), context['entries'])
 
     def test_first_page_argument(self):
         # Ensure the queryset reflects the given ``first_page`` argument.
         template = '{% $tagname 10,20 objects %}'
         _, context = self.render(self.request(), template)
-        self.assertSequenceEqual(range(10), context['objects'])
+        self.assertRangeEqual(range(10), context['objects'])
         # Check the second page.
         _, context = self.render(self.request(page=2), template)
-        self.assertSequenceEqual(range(10, 30), context['objects'])
+        self.assertRangeEqual(range(10, 30), context['objects'])
 
     def test_first_page_argument_as_variable(self):
         # Ensure the queryset reflects the given ``first_page`` argument.
@@ -118,13 +122,13 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         # Check the second page.
         _, context = self.render(
             self.request(page=2), template, **context_data)
-        self.assertSequenceEqual(range(1, 41), context['entries'])
+        self.assertRangeEqual(range(1, 41), context['entries'])
 
     def test_starting_from_page_argument(self):
         # Ensure the queryset reflects the given ``starting_from_page`` arg.
         template = '{% $tagname 10 objects starting from page 3 %}'
         _, context = self.render(self.request(), template)
-        self.assertSequenceEqual(range(20, 30), context['objects'])
+        self.assertRangeEqual(range(20, 30), context['objects'])
 
     def test_starting_from_page_argument_as_variable(self):
         # Ensure the queryset reflects the given ``starting_from_page`` arg.
@@ -132,14 +136,14 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         template = '{% $tagname 10 entries starting from page mypage %}'
         _, context = self.render(
             self.request(), template, entries=range(47), mypage=2)
-        self.assertSequenceEqual(range(10, 20), context['entries'])
+        self.assertRangeEqual(range(10, 20), context['entries'])
 
     def test_using_argument(self):
         # Ensure the template tag uses the given querystring key.
         template = '{% $tagname 20 objects using "my-page" %}'
         _, context = self.render(
             self.request(data={'my-page': 2}), template)
-        self.assertSequenceEqual(range(20, 40), context['objects'])
+        self.assertRangeEqual(range(20, 40), context['objects'])
 
     def test_using_argument_as_variable(self):
         # Ensure the template tag uses the given querystring key.
@@ -147,7 +151,7 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         template = '{% $tagname 20 entries using qskey %}'
         _, context = self.render(
             self.request(p=3), template, entries=range(47), qskey='p')
-        self.assertSequenceEqual(range(40, 47), context['entries'])
+        self.assertRangeEqual(range(40, 47), context['entries'])
 
     def test_with_argument(self):
         # Ensure the context contains the correct override path.
@@ -168,9 +172,9 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         # Ensure it is possible to change the resulting context variable.
         template = '{% $tagname 20 objects as object_list %}'
         _, context = self.render(self.request(), template)
-        self.assertSequenceEqual(range(20), context['object_list'])
+        self.assertRangeEqual(range(20), context['object_list'])
         # The input queryset has not been changed.
-        self.assertSequenceEqual(range(47), context['objects'])
+        self.assertRangeEqual(range(47), context['objects'])
 
     def test_complete_argument_list(self):
         # Ensure the tag works providing all the arguments.
@@ -184,7 +188,7 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         _, context = self.render(
             self.request(), template, objects=range(47), mypage='page-number',
             path='mypath')
-        self.assertSequenceEqual(range(5, 15), context['paginated'])
+        self.assertRangeEqual(range(5, 15), context['paginated'])
         self.assertEqual('mypath', context['endless']['override_path'])
 
     def test_invalid_arguments(self):
@@ -203,14 +207,14 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         # The first page is displayed if an invalid page is provided.
         template = '{% $tagname 5 objects %}'
         _, context = self.render(self.request(page=0), template)
-        self.assertSequenceEqual(range(5), context['objects'])
+        self.assertRangeEqual(range(5), context['objects'])
 
     def test_nested_context_variable(self):
         # Ensure nested context variables are correctly handled.
         manager = {'all': range(47)}
         template = '{% $tagname 5 manager.all as objects %}'
         _, context = self.render(self.request(), template, manager=manager)
-        self.assertSequenceEqual(range(5), context['objects'])
+        self.assertRangeEqual(range(5), context['objects'])
 
     def test_failing_nested_context_variable(self):
         # An error is raised if a nested context variable is used but no
@@ -223,6 +227,7 @@ class PaginateTestMixin(TemplateTagsTestMixin):
 
     def test_multiple_pagination(self):
         # Ensure multiple pagination works correctly.
+        letters = string.ascii_letters
         template = (
             '{% $tagname 10,20 objects %}'
             '{% $tagname 1 items using items_page %}'
@@ -230,12 +235,12 @@ class PaginateTestMixin(TemplateTagsTestMixin):
         )
         _, context = self.render(
             self.request(page=2, entries=3), template,
-            objects=range(47), entries={'all': string.letters},
+            objects=range(47), entries={'all': letters},
             items=['foo', 'bar'], items_page='p')
-        self.assertSequenceEqual(range(10, 30), context['objects'])
+        self.assertRangeEqual(range(10, 30), context['objects'])
         self.assertSequenceEqual(['foo'], context['items'])
-        self.assertSequenceEqual(string.letters[10:15], context['myentries'])
-        self.assertSequenceEqual(string.letters, context['entries']['all'])
+        self.assertSequenceEqual(letters[10:15], context['myentries'])
+        self.assertSequenceEqual(letters, context['entries']['all'])
 
 
 class PaginateTest(PaginateTestMixin, TestCase):

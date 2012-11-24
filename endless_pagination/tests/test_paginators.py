@@ -14,7 +14,7 @@ class PaginatorTestMixin(object):
     """
 
     def setUp(self):
-        self.items = range(30)
+        self.items = list(range(30))
         self.per_page = 7
         self.paginator = self.paginator_class(
             self.items, self.per_page, orphans=2)
@@ -59,7 +59,7 @@ class DifferentFirstPagePaginatorTestMixin(PaginatorTestMixin):
     """
 
     def setUp(self):
-        self.items = range(26)
+        self.items = list(range(26))
         self.per_page = 7
         self.paginator = self.paginator_class(
             self.items, self.per_page, first_page=3, orphans=2)
