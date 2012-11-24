@@ -1,0 +1,12 @@
+# Django Endless Pagination test requirements for Python 3.
+# Dependencies are installed by the ``make develop`` command.
+# FIXME: this file can be deleted once Django 1.5 is released.
+
+coverage
+https://www.djangoproject.com/download/1.5a1/tarball/
+django-nose
+ipdb
+nose
+pep8
+selenium
+sphinx

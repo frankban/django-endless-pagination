@@ -1,5 +1,6 @@
 #!/bin/bash
 
 TESTS=`dirname $0`
-VENV=$TESTS/../.venv
+VENV=$TESTS/../$1
+shift
 source $VENV/bin/activate && $@

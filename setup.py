@@ -56,7 +56,6 @@ with VenvLinkDeleted():
         author='Francesco Banconi',
         author_email='francesco.banconi@gmail.com',
         url='http://github.com/frankban/django-endless-pagination',
-        zip_safe=False,
         packages=[
             PROJECT_NAME,
             '{0}.templatetags'.format(PROJECT_NAME),
