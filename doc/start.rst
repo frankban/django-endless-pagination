@@ -4,11 +4,11 @@ Getting started
 Requirements
 ~~~~~~~~~~~~
 
-======  =============
-Python  >= 2.5, < 3.x
+======  ====================
+Python  >= 2.6 (or Python 3)
 Django  >= 1.0
 jQuery  >= 1.3
-======  =============
+======  ====================
 
 Installation
 ~~~~~~~~~~~~

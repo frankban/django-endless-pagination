@@ -43,6 +43,13 @@ files to the new one.
 
 ----
 
+**New feature**: Python 3 support.
+
+Django Endless Pagination now supports both Python 2 and **Python 3**. Dropped
+support for Python 2.5. See :doc:`start` for the new list of requirements
+
+----
+
 **New feature**: the ``page_templates`` decorator also accepts a sequence
 of ``(template, key)`` pairs, functioning as a dict mapping templates and
 keys (still present), e.g.::
