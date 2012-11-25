@@ -8,8 +8,8 @@ VENV2 = .venv
 VENV3 = .venv3
 
 DEVELOP = ./tests/develop.py
-MANAGE = python ./tests/manage.py
 LINTER = pocketlint
+MANAGE = python ./tests/manage.py
 
 ifdef PY3
 	PYTHON = $(PYTHON3)
