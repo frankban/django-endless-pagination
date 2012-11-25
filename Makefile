@@ -1,7 +1,7 @@
 # Django Endless Pagination Makefile.
 
 # Define these variables based on the system Python versions.
-PYTHON2 = python2
+PYTHON2 = python
 PYTHON3 = python3
 
 VENV2 = .venv
