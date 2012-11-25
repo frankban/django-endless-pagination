@@ -1,11 +1,22 @@
 # Django Endless Pagination Makefile.
 
-ifdef PYTHON3
-	PYTHON = python3
-	VENV = .venv3
+# Define these variables based on the system Python versions.
+PYTHON2 = python2
+PYTHON3 = python3
+
+VENV2 = .venv
+VENV3 = .venv3
+
+DEVELOP = ./tests/develop.py
+MANAGE = python ./tests/manage.py
+LINTER = pocketlint
+
+ifdef PY3
+	PYTHON = $(PYTHON3)
+	VENV = $(VENV3)
 else
-	PYTHON = python2
-	VENV = .venv
+	PYTHON = $(PYTHON2)
+	VENV = $(VENV2)
 endif
 
 PYFILES = `find ./endless_pagination -name "*.py"`
@@ -27,52 +38,57 @@ all:
 	@echo 'make server - Run Django development server'
 	@echo 'make clean - Get rid of bytecode files, build dirs, dist files'
 	@echo 'make cleanall - Clean and also get rid of the virtualenv'
-	@echo -e '\nDefine the env var PYTHON3 to work using Python 3.'
+	@echo 'make venv - Set up development environment if it does not exist'
+	@echo -e '\nDefine the env var PY3 to work using Python 3.'
 	@echo 'E.g. to create a Python 3 development environment:'
-	@echo '  - make develop PYTHON3=yes'
+	@echo '  - make develop PY3=yes'
 
-doc:
+doc: venv
 	@$(WITH_VENV) make -C doc html
 
 clean:
 	$(PYTHON) setup.py clean
 	rm -rfv .coverage build/ dist/ doc/_build MANIFEST
 	find . -name '*.pyc' -delete
+	find . -name '__pycache__' -type d -delete
 
 cleanall: clean
-	rm -rfv .venv .venv3
+	rm -rfv $(VENV2) $(VENV3)
 
 check: test lint pep8
 
 develop:
-	@$(PYTHON) ./tests/develop.py
+	@$(PYTHON) $(DEVELOP)
 
 install:
 	python setup.py install
 
 lint:
-	@pocketlint $(PYFILES)
+	@$(LINTER) $(PYFILES)
 
 opendoc: doc
 	@firefox ./doc/_build/html/index.html
 
-pep8:
+pep8: venv
 	@$(WITH_VENV) pep8 --show-source $(PYFILES)
 
-server:
-	@$(WITH_VENV) python ./tests/manage.py runserver 0.0.0.0:8000
+server: venv
+	@$(WITH_VENV) $(MANAGE) runserver 0.0.0.0:8000
 
-shell:
-	@$(WITH_VENV) python ./tests/manage.py shell
+shell: venv
+	@$(WITH_VENV) $(MANAGE) shell
 
 source:
 	$(PYTHON) setup.py sdist
 
-test:
-	@$(WITH_VENV) python ./tests/manage.py test
+test: venv
+	@$(WITH_VENV) $(MANAGE) test
 
-testall:
-	@USE_SELENIUM=1 $(WITH_VENV) python ./tests/manage.py test
+testall: venv
+	@USE_SELENIUM=1 $(WITH_VENV) $(MANAGE) test
+
+venv:
+	@[ ! -d $(VENV) ] && $(PYTHON) $(DEVELOP) || true
 
 .PHONY: all doc clean cleanall check develop install lint opendoc pep8 server \
-	shell source test testall
+	shell source test testall venv
