@@ -58,4 +58,9 @@ Run the Django development server for manual testing::
 
     $ make server
 
+See all the available make targets, including info on how to create a Python 3
+development environment::
+
+    $ make
+
 Thanks for contributing, and have fun!
