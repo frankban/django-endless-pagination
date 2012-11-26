@@ -4,6 +4,13 @@ Changelog
 Version 1.2 (under development)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+**New feature**: Python 3 support.
+
+Django Endless Pagination now supports both Python 2 and **Python 3**. Dropped
+support for Python 2.5. See :doc:`start` for the new list of requirements.
+
+----
+
 **New feature**: the **JavaScript refactoring**.
 
 This version introduces a re-designed Ajax support for pagination. Ajax can
@@ -40,13 +47,6 @@ callbacks**, support for **pagination in chunks** and much more.
 Please refer to the :doc:`javascript` for a detailed overview of the new
 features and for instructions on **how to migrate** from the old JavaScript
 files to the new one.
-
-----
-
-**New feature**: Python 3 support.
-
-Django Endless Pagination now supports both Python 2 and **Python 3**. Dropped
-support for Python 2.5. See :doc:`start` for the new list of requirements
 
 ----
 
