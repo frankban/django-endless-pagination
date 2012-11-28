@@ -77,7 +77,7 @@ class MultipleObjectMixin(object):
         page_template = kwargs.pop('page_template')
 
         context_object_name = self.get_context_object_name(queryset)
-        context = {'object_list': queryset}
+        context = {'object_list': queryset, 'view': self}
         context.update(kwargs)
         if context_object_name is not None:
             context[context_object_name] = queryset

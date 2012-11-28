@@ -116,3 +116,13 @@ class AjaxListViewTest(TestCase):
         with self.assertRaises(Http404) as cm:
             view(self.request)
         self.assertIn('allow_empty', str(cm.exception))
+
+    def test_view_in_context(self):
+        # Ensure the view is included in the template context.
+        view = self.make_view(
+            queryset=range(30),
+            page_template=self.page_template,
+        )
+        response = view(self.request)
+        view_instance = response.context_data['view']
+        self.assertIsInstance(view_instance, views.AjaxListView)
