@@ -210,3 +210,13 @@ class PageListTest(TestCase):
             request, self.paginator.page(self.current_number),
             self.page_label).next()
         self.assertEqual(path.replace(' ', '%20') + next.url, next.path)
+
+    def test_lookup(self):
+        # Ensure the page list correctly handles lookups.
+        pages = self.pages
+        self.assertEqual(pages.first().number, pages[1].number)
+
+    def test_invalid_lookup(self):
+        # A TypeError is raised if the lookup is not valid.
+        with self.assertRaises(TypeError):
+            self.pages['invalid']
