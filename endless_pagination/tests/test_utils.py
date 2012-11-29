@@ -107,6 +107,55 @@ class GetPageNumbersTest(TestCase):
         self.assertSequenceEqual(expected, pages)
 
 
+class GetElasticPageNumbersTest(TestCase):
+
+    def _run_tests(self, test_data):
+        for current_page, num_pages, expected in test_data:
+            pages = utils.get_elastic_page_numbers(current_page, num_pages)
+            self.assertSequenceEqual(expected, pages)
+
+    def test_units(self):
+        test_data = (
+            (1, 1, [1]),
+            (1, 2, [1, 2]),
+            (2, 2, [1, 2]),
+            (1, 3, [1, 2, 3]),
+            (3, 3, [1, 2, 3]),
+            (1, 4, [1, 2, 3, 4]),
+            (4, 4, [1, 2, 3, 4]),
+            (1, 5, [1, 2, 3, 4, 5]),
+            (5, 5, [1, 2, 3, 4, 5]),
+            (1, 6, [1, 2, 3, 4, 5, 6]),
+            (6, 6, [1, 2, 3, 4, 5, 6]),
+            (1, 7, [1, 2, 3, 4, 5, 6, 7]),
+            (7, 7, [1, 2, 3, 4, 5, 6, 7]),
+            (1, 8, [1, 2, 3, 4, 5, 6, 7, 8]),
+            (8, 8, [1, 2, 3, 4, 5, 6, 7, 8]),
+            (1, 9, [1, 2, 3, 4, 5, 6, 7, 8, 9]),
+            (9, 9, [1, 2, 3, 4, 5, 6, 7, 8, 9]),
+            (1, 10, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            (6, 10, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            (10, 10, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+        )
+        self._run_tests(test_data)
+
+    def test_tens(self):
+        test_data = (
+            (1, 11, [1, 4, 8, 11, 'next', 'last']),
+            (2, 11, ['first', 'previous', 1, 2, 5, 8, 11, 'next', 'last']),
+            (3, 11, ['first', 'previous', 1, 3, 6, 8, 11, 'next', 'last']),
+            (4, 11, ['first', 'previous', 1, 4, 7, 8, 11, 'next', 'last']),
+            (5, 11, ['first', 'previous', 1, 5, 8, 11, 'next', 'last']),
+            (6, 11, ['first', 'previous', 1, 6, 11, 'next', 'last']),
+            (7, 11, ['first', 'previous', 1, 4, 7, 11, 'next', 'last']),
+            (8, 11, ['first', 'previous', 1, 4, 5, 8, 11, 'next', 'last']),
+            (9, 11, ['first', 'previous', 1, 4, 6, 9, 11, 'next', 'last']),
+            (10, 11, ['first', 'previous', 1, 4, 7, 10, 11, 'next', 'last']),
+            (11, 11, ['first', 'previous', 1, 4, 8, 11]),
+        )
+        self._run_tests(test_data)
+
+
 class GetQuerystringForPageTest(TestCase):
 
     def setUp(self):

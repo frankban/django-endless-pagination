@@ -258,8 +258,12 @@ the first page, then a separator, then the current page, then the next page::
     def get_page_numbers(current_page, num_pages):
         return ("previous", 1, None, current_page, "next")
 
-If ``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` is *None* an internal
-callable is used, generating a Digg-style pagination.
+If ``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` is *None* the internal callable
+``utils.get_page_numbers`` is used, generating a Digg-style pagination.
+
+An alternative implementation is available: ``utils.get_elastic_page_numbers``.
+It adapts its output to the number of pages, making it arguably more usable
+when there are many of them.
 
 This must be called after `paginate`_ or `lazy_paginate`_.
 

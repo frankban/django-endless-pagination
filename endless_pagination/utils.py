@@ -4,12 +4,16 @@ from __future__ import unicode_literals
 import sys
 
 from endless_pagination import exceptions
-from endless_pagination.settings import (
-    DEFAULT_CALLABLE_AROUNDS,
-    DEFAULT_CALLABLE_EXTREMES,
-    PAGE_LABEL,
-)
-
+try:
+    from endless_pagination.settings import (
+        DEFAULT_CALLABLE_AROUNDS,
+        DEFAULT_CALLABLE_EXTREMES,
+        PAGE_LABEL,
+    )
+except ImportError:
+    DEFAULT_CALLABLE_AROUNDS = 3
+    DEFAULT_CALLABLE_EXTREMES = 2
+    PAGE_LABEL = 'page'
 
 # Handle the Python 2 to 3 migration.
 if sys.version_info[0] >= 3:
@@ -18,6 +22,57 @@ if sys.version_info[0] >= 3:
 else:
     PYTHON3 = False
     text = unicode
+
+
+def _iter_factors(ten_power=1):
+    """Generator yielding 3, 10, 30, 100, 300 etc.
+
+    The series starts from ten_power * 3.
+    """
+    while True:
+        yield ten_power * 3
+        ten_power *= 10
+        yield ten_power
+
+
+def _make_elastic_range(begin, end):
+    """Generate an S-curved range of pages."""
+    starting_factor = max(1, (end - begin) // 100)
+    factor = _iter_factors(starting_factor)
+    left_half, right_half = [], []
+    left_val, right_val = begin, end
+    right_val = end
+    while left_val < right_val:
+        left_half.append(left_val)
+        right_half.append(right_val)
+        next_factor = next(factor)
+        left_val = begin + next_factor
+        right_val = end - next_factor
+    if left_val == right_val:
+        left_half.append(left_val)
+    right_half.reverse()
+    return left_half + right_half
+
+
+def get_elastic_page_numbers(current_page, num_pages):
+    """Alternative callable for page listing.
+
+    Produce an adaptive pagination, useful for big numbers of pages.
+    """
+    if not 1 <= current_page <= num_pages:
+        raise ValueError('"current_page" must be within 1 and %d, it is'
+            ' instead %d' % (num_pages, current_page))
+    if num_pages <= 10:
+        return list(range(1, num_pages+1))
+    if current_page == 1:
+        pages = [1]
+    else:
+        pages = ['first', 'previous']
+        pages.extend(_make_elastic_range(1, current_page))
+    if current_page != num_pages:
+        pages.extend(_make_elastic_range(current_page, num_pages)[1:])
+        pages.extend(['next', 'last'])
+    return pages
 
 
 def get_data_from_context(context):
