@@ -10,6 +10,7 @@ from endless_pagination.settings import (
     PAGE_LABEL,
 )
 
+
 # Handle the Python 2 to 3 migration.
 if sys.version_info[0] >= 3:
     PYTHON3 = True
