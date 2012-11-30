@@ -64,10 +64,11 @@ def get_elastic_page_numbers(current_page, num_pages):
     will have its own S-curve.
     """
     if not 1 <= current_page <= num_pages:
-        raise ValueError('"current_page" must be within 1 and %d, it is'
-            ' instead %d' % (num_pages, current_page))
+        raise ValueError(
+            '"current_page" must be within 1 and %d, it is instead %d' % (
+                num_pages, current_page))
     if num_pages <= 10:
-        return list(range(1, num_pages+1))
+        return list(range(1, num_pages + 1))
     if current_page == 1:
         pages = [1]
     else:
