@@ -11,12 +11,12 @@ DEVELOP = ./tests/develop.py
 LINTER = pocketlint
 MANAGE = python ./tests/manage.py
 
-ifdef PY2
-	PYTHON = $(PYTHON2)
-	VENV = $(VENV2)
-else
+ifdef PY3
 	PYTHON = $(PYTHON3)
 	VENV = $(VENV3)
+else
+	PYTHON = $(PYTHON2)
+	VENV = $(VENV2)
 endif
 
 PYFILES = `find ./endless_pagination -name "*.py"`
@@ -39,9 +39,9 @@ all:
 	@echo 'make clean - Get rid of bytecode files, build dirs, dist files'
 	@echo 'make cleanall - Clean and also get rid of the virtualenv'
 	@echo 'make venv - Set up development environment if it does not exist'
-	@echo -e '\nDefine the env var PY2 to work using Python 2.'
-	@echo 'E.g. to create a Python 2 development environment:'
-	@echo '  - make develop PY2=yes'
+	@echo -e '\nDefine the env var PY3 to work using Python 3.'
+	@echo 'E.g. to create a Python 3 development environment:'
+	@echo '  - make develop PY3=yes'
 
 doc: venv
 	@$(WITH_VENV) make -C doc html

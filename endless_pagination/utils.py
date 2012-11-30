@@ -4,16 +4,11 @@ from __future__ import unicode_literals
 import sys
 
 from endless_pagination import exceptions
-try:
-    from endless_pagination.settings import (
-        DEFAULT_CALLABLE_AROUNDS,
-        DEFAULT_CALLABLE_EXTREMES,
-        PAGE_LABEL,
-    )
-except ImportError:
-    DEFAULT_CALLABLE_AROUNDS = 3
-    DEFAULT_CALLABLE_EXTREMES = 2
-    PAGE_LABEL = 'page'
+from endless_pagination.settings import (
+    DEFAULT_CALLABLE_AROUNDS,
+    DEFAULT_CALLABLE_EXTREMES,
+    PAGE_LABEL,
+)
 
 # Handle the Python 2 to 3 migration.
 if sys.version_info[0] >= 3:
@@ -24,19 +19,24 @@ else:
     text = unicode
 
 
-def _iter_factors(ten_power=1):
-    """Generator yielding 3, 10, 30, 100, 300 etc.
+def _iter_factors(starting_factor=1):
+    """Generator yielding something like 1, 3, 10, 30, 100, 300 etc.
 
-    The series starts from ten_power * 3.
+    The series starts from starting_factor.
     """
     while True:
-        yield ten_power * 3
-        ten_power *= 10
-        yield ten_power
+        yield starting_factor
+        yield starting_factor * 3
+        starting_factor *= 10
 
 
 def _make_elastic_range(begin, end):
-    """Generate an S-curved range of pages."""
+    """Generate an S-curved range of pages.
+
+    Start from both left and right, adding exponentially growing indexes,
+    until the two trends collide.
+    """
+    # Limit growth for huge numbers of pages.
     starting_factor = max(1, (end - begin) // 100)
     factor = _iter_factors(starting_factor)
     left_half, right_half = [], []
@@ -48,6 +48,7 @@ def _make_elastic_range(begin, end):
         next_factor = next(factor)
         left_val = begin + next_factor
         right_val = end - next_factor
+    # If the trends happen to meet exactly at one point, retain it.
     if left_val == right_val:
         left_half.append(left_val)
     right_half.reverse()
@@ -57,7 +58,9 @@ def _make_elastic_range(begin, end):
 def get_elastic_page_numbers(current_page, num_pages):
     """Alternative callable for page listing.
 
-    Produce an adaptive pagination, useful for big numbers of pages.
+    Produce an adaptive pagination, useful for big numbers of pages, by
+    splitting the num_pages ranges in two parts at current_page. Each part
+    will have its own S-curve.
     """
     if not 1 <= current_page <= num_pages:
         raise ValueError('"current_page" must be within 1 and %d, it is'
