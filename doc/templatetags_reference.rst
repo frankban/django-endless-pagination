@@ -182,6 +182,12 @@ of page links. You can use *pages* in different ways:
     {{ pages.3 }}
     {# this means page.1 is the same as page.first #}
 
+    {# the first page represented as an arrow #}
+    {{ pages.first_as_arrow }}
+
+    {# the last page represented as an arrow #}
+    {{ pages.last_as_arrow }}
+
 - iterate over *pages* to get all pages:
 
 .. code-block:: html+django
@@ -248,15 +254,18 @@ and must return a sequence of page numbers that will be displayed.
 
 The sequence can contain other values:
 
-- *"previous"*: will display the previous page in that position;
-- *"next"*: will display the next page in that position;
+- *'previous'*: will display the previous page in that position;
+- *'next'*: will display the next page in that position;
+- *'first'*: will display the first page as an arrow;
+- *'last'*: will display the last page as an arrow;
 - *None*: a separator will be displayed in that position.
 
 Here is an example of a custom callable that displays the previous page, then
-the first page, then a separator, then the current page, then the next page::
+the first page, then a separator, then the current page, and finally the last
+page::
 
     def get_page_numbers(current_page, num_pages):
-        return ("previous", 1, None, current_page, "next")
+        return ('previous', 1, None, current_page, 'last')
 
 If ``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` is *None* an internal
 callable is used, generating a Digg-style pagination.
