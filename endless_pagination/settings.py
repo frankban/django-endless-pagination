@@ -24,8 +24,13 @@ LOADING = getattr(
 
 # Labels for previous and next page links.
 PREVIOUS_LABEL = getattr(
-    settings, 'ENDLESS_PAGINATION_PREVIOUS_LABEL', '&lt;&lt;')
-NEXT_LABEL = getattr(settings, 'ENDLESS_PAGINATION_NEXT_LABEL', '&gt;&gt;')
+    settings, 'ENDLESS_PAGINATION_PREVIOUS_LABEL', '&lt;')
+NEXT_LABEL = getattr(settings, 'ENDLESS_PAGINATION_NEXT_LABEL', '&gt;')
+
+# Labels for first and last page links.
+FIRST_LABEL = getattr(
+    settings, 'ENDLESS_PAGINATION_FIRST_LABEL', '&lt;&lt;')
+LAST_LABEL = getattr(settings, 'ENDLESS_PAGINATION_LAST_LABEL', '&gt;&gt;')
 
 # Set to True if your SEO alchemist wants all the links in Digg-style
 # pagination to be ``nofollow``.

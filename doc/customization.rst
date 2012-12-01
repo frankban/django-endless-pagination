@@ -23,9 +23,13 @@ Name                                              Default     Description
                                                               e.g. you can show your pretty animated GIF
                                                               ``ENDLESS_PAGINATION_LOADING = """<img src="/static/img/loader.gif" alt="loading" />"""``.
 ------------------------------------------------- ----------- ----------------------------------------------
-``ENDLESS_PAGINATION_PREVIOUS_LABEL``             '<<'        Default label for the *previous* page link.
+``ENDLESS_PAGINATION_PREVIOUS_LABEL``             '<'         Default label for the *previous* page link.
 ------------------------------------------------- ----------- ----------------------------------------------
-``ENDLESS_PAGINATION_NEXT_LABEL``                 '>>'        Default label for the *next* page link.
+``ENDLESS_PAGINATION_NEXT_LABEL``                 '>'         Default label for the *next* page link.
+------------------------------------------------- ----------- ----------------------------------------------
+``ENDLESS_PAGINATION_FIRST_LABEL``                '<<'        Default label for the *first* page link.
+------------------------------------------------- ----------- ----------------------------------------------
+``ENDLESS_PAGINATION_LAST_LABEL``                 '>>'        Default label for the *last* page link.
 ------------------------------------------------- ----------- ----------------------------------------------
 ``ENDLESS_PAGINATION_ADD_NOFOLLOW``               *False*     Set to *True* if your SEO alchemist
                                                               wants search engines not to follow
