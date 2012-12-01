@@ -83,7 +83,7 @@ class PageList(utils.UnicodeMixin):
         self._override_path = override_path
 
     def _endless_page(self, number, label=None):
-        """Factory function that returns a EndlessPage instance.
+        """Factory function that returns a *EndlessPage* instance.
 
         This method works just like a partial constructor.
         """
@@ -130,14 +130,16 @@ class PageList(utils.UnicodeMixin):
 
             - *'previous'*: will display the previous page in that position;
             - *'next'*: will display the next page in that position;
+            - *'first'*: will display the first page as an arrow;
+            - *'last'*: will display the last page as an arrow;
             - *None*: a separator will be displayed in that position.
 
         Here is an example of custom calable that displays the previous page,
         then the first page, then a separator, then the current page, and
-        finally the then next page::
+        finally the last page::
 
             def get_page_numbers(current_page, num_pages):
-                return ('previous', 1, None, current_page, 'next')
+                return ('previous', 1, None, current_page, 'last')
 
         If *settings.PAGE_LIST_CALLABLE* is None an internal callable is used,
         generating a Digg-style pagination. The value of
@@ -153,34 +155,53 @@ class PageList(utils.UnicodeMixin):
             else:
                 pages_callable = utils.get_page_numbers
             pages = []
-            for i in pages_callable(self._page.number, len(self)):
-                if i is None:
-                    pages.append(i)
-                elif i == 'previous':
+            for item in pages_callable(self._page.number, len(self)):
+                if item is None:
+                    pages.append(None)
+                elif item == 'previous':
                     pages.append(self.previous())
-                elif i == 'next':
+                elif item == 'next':
                     pages.append(self.next())
+                elif item == 'first':
+                    pages.append(self.first_as_arrow())
+                elif item == 'last':
+                    pages.append(self.last_as_arrow())
                 else:
-                    pages.append(self[i])
+                    pages.append(self[item])
             context = {'pages': pages}
             return loader.render_to_string('endless/show_pages.html', context)
         return ''
 
     def current(self):
         """Return the current page."""
-        return self[self._page.number]
+        return self._endless_page(self._page.number)
 
-    def first(self):
+    def first(self, label=None):
         """Return the first page."""
-        return self[1]
+        return self._endless_page(1, label=label)
 
-    def last(self):
+    def last(self, label=None):
         """Return the last page."""
-        return self[len(self)]
+        return self._endless_page(len(self), label=label)
+
+    def first_as_arrow(self):
+        """Return the first page as an arrow.
+
+        The page label (arrow) is defined in ``settings.FIRST_LABEL``.
+        """
+        return self.first(label=settings.FIRST_LABEL)
+
+    def last_as_arrow(self):
+        """Return the last page as an arrow.
+
+        The page label (arrow) is defined in ``settings.LAST_LABEL``.
+        """
+        return self.last(label=settings.LAST_LABEL)
 
     def previous(self):
         """Return the previous page.
 
+        The page label is defined in ``settings.PREVIOUS_LABEL``.
         Return an empty string if current page is the first.
         """
         if self._page.has_previous():
@@ -192,6 +213,7 @@ class PageList(utils.UnicodeMixin):
     def next(self):
         """Return the next page.
 
+        The page label is defined in ``settings.NEXT_LABEL``.
         Return an empty string if current page is the last.
         """
         if self._page.has_next():
