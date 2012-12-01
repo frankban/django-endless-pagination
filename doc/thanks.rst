@@ -7,4 +7,5 @@ This application was initially inspired by the excellent tool
 Thanks to Jannis Leidel for improving the application with some new features,
 and for contributing the German translation.
 
-And thanks to Nicola 'tekNico' Larosa for reviewing the documentation.
+And thanks to Nicola 'tekNico' Larosa for reviewing the documentation and for
+implementing the elastic pagination feature.

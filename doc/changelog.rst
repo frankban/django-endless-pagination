@@ -87,14 +87,51 @@ In this case, and only in this case, the `as` argument is mandatory, and a
 
 ----
 
+**New feature**: the page list object returned by the ``{% get_pages %}``
+template tag has been improved adding the following new methods:
+
+.. code-block:: html+django
+
+    {# the first page represented as an arrow #}
+    {{ pages.first_as_arrow }}
+
+    {# the last page represented as an arrow #}
+    {{ pages.last_as_arrow }}
+
+In the *arrow* representation, the page label defaults to ``<<`` for the first
+page and to ``>>`` for the last one. As a consequence, the labels of the
+previous and next pages are now single brackets, respectively ``<`` and ``>``.
+First and last pages' labels can be customized using
+``settings.ENDLESS_PAGINATION_FIRST_LABEL`` and
+``settings.ENDLESS_PAGINATION_LAST_LABEL``: see :doc:`customization`.
+
+----
+
+**New feature**: The sequence returned by the callable
+*settings.ENDLESS_PAGINATION_PAGE_LIST_CALLABLE* can now contain two new
+values:
+
+- *'first'*: will display the first page as an arrow;
+- *'last'*: will display the last page as an arrow.
+
+The *show_pages* documentation in :doc:`templatetag_reference` describes how to
+customize Digg-style pagination defining your own page list callable.
+
+----
+
 **New feature**: *settings.ENDLESS_PAGINATION_PAGE_LIST_CALLABLE* can now be
 either a callable or a **dotted path** to a callable, e.g.::
 
     ENDLESS_PAGINATION_PAGE_LIST_CALLABLE = 'path.to.callable'
 
-In addition to the default, ``utils.get_page_numbers``, an alternative
-implementation is now available: ``utils.get_elastic_page_numbers``, courtesy
-of Nicola 'tekNico' Larosa.
+In addition to the default, ``endless_pagination.utils.get_page_numbers``, an
+alternative implementation is now available:
+``endless_pagination.utils.get_elastic_page_numbers``. It adapts its output
+to the number of pages, making it arguably more usable when there are many
+of them. To enable it, add the following line to your ``settings.py``::
+
+    ENDLESS_PAGINATION_PAGE_LIST_CALLABLE = (
+        'endless_pagination.utils.get_elastic_page_numbers')
 
 ----
 

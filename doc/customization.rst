@@ -39,6 +39,12 @@ Name                                              Default     Description
                                                               returns pages to be displayed.
                                                               If *None*, a default callable is used;
                                                               that produces :doc:`digg_pagination`.
+                                                              The applicationt provides also a callable
+                                                              producing elastic pagination:
+                                                              ``endless_pagination.utils.get_elastic_page_numbers``.
+                                                              It adapts its output to the number of pages,
+                                                              making it arguably more usable when there are
+                                                              many of them.
                                                               See :doc:`templatetags_reference` for
                                                               information about writing custom callables.
 ------------------------------------------------- ----------- ----------------------------------------------

@@ -268,11 +268,13 @@ page::
         return ('previous', 1, None, current_page, 'last')
 
 If ``ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` is *None* the internal callable
-``utils.get_page_numbers`` is used, generating a Digg-style pagination.
+``endless_pagination.utils.get_page_numbers`` is used, generating a Digg-style
+pagination.
 
-An alternative implementation is available: ``utils.get_elastic_page_numbers``.
-It adapts its output to the number of pages, making it arguably more usable
-when there are many of them.
+An alternative implementation is available:
+``endless_pagination.utils.get_elastic_page_numbers``: it adapts its output
+to the number of pages, making it arguably more usable when there are many
+of them.
 
 This must be called after `paginate`_ or `lazy_paginate`_.
 
