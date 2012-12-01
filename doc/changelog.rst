@@ -92,6 +92,10 @@ either a callable or a **dotted path** to a callable, e.g.::
 
     ENDLESS_PAGINATION_PAGE_LIST_CALLABLE = 'path.to.callable'
 
+In addition to the default, ``utils.get_page_numbers``, an alternative
+implementation is now available: ``utils.get_elastic_page_numbers``, courtesy
+of Nicola 'tekNico' Larosa.
+
 ----
 
 **New feature**: ability to create a development and testing environment
