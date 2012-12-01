@@ -33,8 +33,8 @@ def teardown_package():
 class SeleniumTestCase(LiveServerTestCase):
     """Base test class for integration tests."""
 
-    PREVIOUS = '<<'
-    NEXT = '>>'
+    PREVIOUS = '<'
+    NEXT = '>'
     MORE = 'More results'
 
     def setUp(self):
