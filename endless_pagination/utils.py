@@ -20,66 +20,6 @@ else:
     text = unicode
 
 
-def _iter_factors(starting_factor=1):
-    """Generator yielding something like 1, 3, 10, 30, 100, 300 etc.
-
-    The series starts from starting_factor.
-    """
-    while True:
-        yield starting_factor
-        yield starting_factor * 3
-        starting_factor *= 10
-
-
-def _make_elastic_range(begin, end):
-    """Generate an S-curved range of pages.
-
-    Start from both left and right, adding exponentially growing indexes,
-    until the two trends collide.
-    """
-    # Limit growth for huge numbers of pages.
-    starting_factor = max(1, (end - begin) // 100)
-    factor = _iter_factors(starting_factor)
-    left_half, right_half = [], []
-    left_val, right_val = begin, end
-    right_val = end
-    while left_val < right_val:
-        left_half.append(left_val)
-        right_half.append(right_val)
-        next_factor = next(factor)
-        left_val = begin + next_factor
-        right_val = end - next_factor
-    # If the trends happen to meet exactly at one point, retain it.
-    if left_val == right_val:
-        left_half.append(left_val)
-    right_half.reverse()
-    return left_half + right_half
-
-
-def get_elastic_page_numbers(current_page, num_pages):
-    """Alternative callable for page listing.
-
-    Produce an adaptive pagination, useful for big numbers of pages, by
-    splitting the num_pages ranges in two parts at current_page. Each part
-    will have its own S-curve.
-    """
-    if not 1 <= current_page <= num_pages:
-        raise ValueError(
-            '"current_page" must be within 1 and %d, it is instead %d' % (
-                num_pages, current_page))
-    if num_pages <= 10:
-        return list(range(1, num_pages + 1))
-    if current_page == 1:
-        pages = [1]
-    else:
-        pages = ['first', 'previous']
-        pages.extend(_make_elastic_range(1, current_page))
-    if current_page != num_pages:
-        pages.extend(_make_elastic_range(current_page, num_pages)[1:])
-        pages.extend(['next', 'last'])
-    return pages
-
-
 def get_data_from_context(context):
     """Get the django paginator data object from the given *context*.
 
@@ -152,6 +92,62 @@ def get_page_numbers(
 
     if current_page != num_pages:
         pages.append('next')
+    return pages
+
+
+def _iter_factors(starting_factor=1):
+    """Generator yielding something like 1, 3, 10, 30, 100, 300 etc.
+
+    The series starts from starting_factor.
+    """
+    while True:
+        yield starting_factor
+        yield starting_factor * 3
+        starting_factor *= 10
+
+
+def _make_elastic_range(begin, end):
+    """Generate an S-curved range of pages.
+
+    Start from both left and right, adding exponentially growing indexes,
+    until the two trends collide.
+    """
+    # Limit growth for huge numbers of pages.
+    starting_factor = max(1, (end - begin) // 100)
+    factor = _iter_factors(starting_factor)
+    left_half, right_half = [], []
+    left_val, right_val = begin, end
+    right_val = end
+    while left_val < right_val:
+        left_half.append(left_val)
+        right_half.append(right_val)
+        next_factor = next(factor)
+        left_val = begin + next_factor
+        right_val = end - next_factor
+    # If the trends happen to meet exactly at one point, retain it.
+    if left_val == right_val:
+        left_half.append(left_val)
+    right_half.reverse()
+    return left_half + right_half
+
+
+def get_elastic_page_numbers(current_page, num_pages):
+    """Alternative callable for page listing.
+
+    Produce an adaptive pagination, useful for big numbers of pages, by
+    splitting the num_pages ranges in two parts at current_page. Each part
+    will have its own S-curve.
+    """
+    if num_pages <= 10:
+        return list(range(1, num_pages + 1))
+    if current_page == 1:
+        pages = [1]
+    else:
+        pages = ['first', 'previous']
+        pages.extend(_make_elastic_range(1, current_page))
+    if current_page != num_pages:
+        pages.extend(_make_elastic_range(current_page, num_pages)[1:])
+        pages.extend(['next', 'last'])
     return pages
 
 

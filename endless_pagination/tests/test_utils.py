@@ -23,143 +23,6 @@ class GetDataFromContextTest(TestCase):
         self.assertRaises(PaginationError, utils.get_data_from_context, {})
 
 
-class GetElasticPageNumbersTest(TestCase):
-
-    def _run_tests(self, test_data):
-        for current_page, num_pages, expected in test_data:
-            pages = utils.get_elastic_page_numbers(current_page, num_pages)
-            self.assertSequenceEqual(expected, pages)
-
-    def test_get_elastic_page_numbers_units(self):
-        test_data = (
-            (1, 1, [1]),
-            (1, 2, [1, 2]),
-            (2, 2, [1, 2]),
-            (1, 3, [1, 2, 3]),
-            (3, 3, [1, 2, 3]),
-            (1, 4, [1, 2, 3, 4]),
-            (4, 4, [1, 2, 3, 4]),
-            (1, 5, [1, 2, 3, 4, 5]),
-            (5, 5, [1, 2, 3, 4, 5]),
-            (1, 6, [1, 2, 3, 4, 5, 6]),
-            (6, 6, [1, 2, 3, 4, 5, 6]),
-            (1, 7, [1, 2, 3, 4, 5, 6, 7]),
-            (7, 7, [1, 2, 3, 4, 5, 6, 7]),
-            (1, 8, [1, 2, 3, 4, 5, 6, 7, 8]),
-            (8, 8, [1, 2, 3, 4, 5, 6, 7, 8]),
-            (1, 9, [1, 2, 3, 4, 5, 6, 7, 8, 9]),
-            (9, 9, [1, 2, 3, 4, 5, 6, 7, 8, 9]),
-            (1, 10, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-            (6, 10, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-            (10, 10, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-        )
-        self._run_tests(test_data)
-
-    def test_get_elastic_page_numbers_tens(self):
-        test_data = (
-            (1, 11,
-                [1, 2, 4, 8, 10, 11, 'next', 'last']),
-            (2, 11,
-                ['first', 'previous', 1, 2, 3, 5, 8, 10, 11, 'next', 'last']),
-            (3, 11,
-                ['first', 'previous', 1, 2, 3, 4, 6, 8, 10, 11, 'next',
-                    'last']),
-            (4, 11,
-                ['first', 'previous', 1, 2, 3, 4, 5, 7, 8, 10, 11, 'next',
-                    'last']),
-            (5, 11,
-                ['first', 'previous', 1, 2, 4, 5, 6, 8, 10, 11, 'next',
-                    'last']),
-            (6, 11,
-                ['first', 'previous', 1, 2, 5, 6, 7, 10, 11, 'next',
-                    'last']),
-            (7, 11,
-                ['first', 'previous', 1, 2, 4, 6, 7, 8, 10, 11, 'next',
-                    'last']),
-            (8, 11,
-                ['first', 'previous', 1, 2, 4, 5, 7, 8, 9, 10, 11, 'next',
-                    'last']),
-            (9, 11,
-                ['first', 'previous', 1, 2, 4, 6, 8, 9, 10, 11, 'next',
-                    'last']),
-            (10, 11,
-                ['first', 'previous', 1, 2, 4, 7, 9, 10, 11, 'next',
-                    'last']),
-            (11, 11,
-                ['first', 'previous', 1, 2, 4, 8, 10, 11]),
-            (1, 12,
-                [1, 2, 4, 9, 11, 12, 'next', 'last']),
-            (2, 12,
-                ['first', 'previous', 1, 2, 3, 5, 9, 11, 12, 'next', 'last']),
-            (6, 12,
-                ['first', 'previous', 1, 2, 5, 6, 7, 9, 11, 12, 'next',
-                    'last']),
-            (7, 12,
-                ['first', 'previous', 1, 2, 4, 6, 7, 8, 11, 12, 'next',
-                    'last']),
-            (11, 12,
-                ['first', 'previous', 1, 2, 4, 8, 10, 11, 12, 'next',
-                    'last']),
-            (12, 12,
-                ['first', 'previous', 1, 2, 4, 9, 11, 12]),
-            (1, 15,
-                [1, 2, 4, 12, 14, 15, 'next', 'last']),
-            (5, 15,
-                ['first', 'previous', 1, 2, 4, 5, 6, 8, 12, 14, 15, 'next',
-                    'last']),
-            (10, 15,
-                ['first', 'previous', 1, 2, 4, 7, 9, 10, 11, 14, 15,
-                    'next', 'last']),
-            (15, 15,
-                ['first', 'previous', 1, 2, 4, 12, 14, 15]),
-            (1, 100,
-                [1, 2, 4, 11, 31, 70, 90, 97, 99, 100, 'next', 'last']),
-            (25, 100,
-                ['first', 'previous', 1, 2, 4, 11, 15, 22, 24, 25, 26, 28, 35,
-                    55, 70, 90, 97, 99, 100, 'next', 'last']),
-            (75, 100,
-                ['first', 'previous', 1, 2, 4, 11, 31, 45, 65, 72, 74, 75, 76,
-                    78, 85, 90, 97, 99, 100, 'next', 'last']),
-            (100, 100,
-                ['first', 'previous', 1, 2, 4, 11, 31, 70, 90, 97, 99, 100]),
-        )
-        self._run_tests(test_data)
-
-    def test_get_elastic_page_numbers_more(self):
-        test_data = (
-            (1, 500,
-                [1, 5, 13, 41, 121, 380, 460, 488, 496, 500, 'next', 'last']),
-            (150, 500,
-                ['first', 'previous', 1, 2, 4, 11, 31, 120, 140, 147, 149, 150,
-                    153, 159, 180, 240, 410, 470, 491, 497, 500, 'next',
-                    'last']),
-            (350, 500,
-                ['first', 'previous', 1, 4, 10, 31, 91, 260, 320, 341, 347,
-                    350, 351, 353, 360, 380, 470, 490, 497, 499, 500, 'next',
-                    'last']),
-            (500, 500,
-                ['first', 'previous', 1, 5, 13, 41, 121, 380, 460, 488, 496,
-                    500]),
-            (100, 1000,
-                ['first', 'previous', 1, 2, 4, 11, 31, 70, 90, 97, 99, 100,
-                    109, 127, 190, 370, 730, 910, 973, 991, 1000, 'next',
-                    'last']),
-            (1000, 10000,
-                ['first', 'previous', 1, 10, 28, 91, 271, 730, 910, 973, 991,
-                    1000, 1090, 1270, 1900, 3700, 7300, 9100, 9730, 9910,
-                    10000, 'next', 'last']),
-            (10000, 100000,
-                ['first', 'previous', 1, 100, 298, 991, 2971, 7030, 9010, 9703,
-                    9901, 10000, 10900, 12700, 19000, 37000, 73000, 91000,
-                    97300, 99100, 100000, 'next', 'last']),
-            (100000, 1000000,
-                ['first', 'previous', 1, 1000, 2998, 9991, 29971, 70030, 90010,
-                    97003, 99001, 100000, 109000, 127000, 190000, 370000,
-                    730000, 910000, 973000, 991000, 1000000, 'next', 'last']),
-        )
-        self._run_tests(test_data)
-
-
 class GetPageNumberFromRequestTest(TestCase):
 
     def setUp(self):
@@ -244,38 +107,6 @@ class GetPageNumbersTest(TestCase):
         self.assertSequenceEqual(expected, pages)
 
 
-class GetQuerystringForPageTest(TestCase):
-
-    def setUp(self):
-        self.factory = RequestFactory()
-
-    def test_querystring(self):
-        # Ensure the querystring is correctly generated from request.
-        request = self.factory.get('/')
-        querystring = utils.get_querystring_for_page(request, 2, 'mypage')
-        self.assertEqual('?mypage=2', querystring)
-
-    def test_default_page(self):
-        # Ensure the querystring is empty for the default page.
-        request = self.factory.get('/')
-        querystring = utils.get_querystring_for_page(
-            request, 3, 'mypage', default_number=3)
-        self.assertEqual('', querystring)
-
-    def test_composition(self):
-        # Ensure existing querystring is correctly preserved.
-        request = self.factory.get('/?mypage=1&foo=bar')
-        querystring = utils.get_querystring_for_page(request, 4, 'mypage')
-        self.assertIn('mypage=4', querystring)
-        self.assertIn('foo=bar', querystring)
-
-    def test_querystring_key(self):
-        # The querystring key is deleted from the querystring if present.
-        request = self.factory.get('/?querystring_key=mykey')
-        querystring = utils.get_querystring_for_page(request, 5, 'mypage')
-        self.assertEqual('?mypage=5', querystring)
-
-
 class IterFactorsTest(TestCase):
 
     def _run_tests(self, test_data):
@@ -285,11 +116,12 @@ class IterFactorsTest(TestCase):
             self.assertEqual(expected, factors)
 
     def test__iter_factors(self):
+        # Ensure the correct values are progressively generated.
         test_data = (
             (1, 10, [1, 3, 10, 30, 100, 300, 1000, 3000, 10000, 30000]),
             (5, 10, [5, 15, 50, 150, 500, 1500, 5000, 15000, 50000, 150000]),
-            (10, 10,
-                [10, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000]),
+            (10, 10, [
+                10, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000]),
         )
         self._run_tests(test_data)
 
@@ -298,10 +130,11 @@ class MakeElasticRangeTest(TestCase):
 
     def _run_tests(self, test_data):
         for begin, end, expected in test_data:
-                elastic_range = utils._make_elastic_range(begin, end)
-                self.assertEqual(expected, elastic_range)
+            elastic_range = utils._make_elastic_range(begin, end)
+            self.assertEqual(expected, elastic_range)
 
     def test___make_elastic_range_units(self):
+        # Ensure an S-curved range of pages is correctly generated for units.
         test_data = (
             (1, 1, [1]),
             (1, 2, [1, 2]),
@@ -362,6 +195,7 @@ class MakeElasticRangeTest(TestCase):
         self._run_tests(test_data)
 
     def test___make_elastic_range_tens(self):
+        # Ensure an S-curved range of pages is correctly generated for tens.
         test_data = (
             (1, 20, [1, 2, 4, 17, 19, 20]),
             (5, 20, [5, 6, 8, 17, 19, 20]),
@@ -378,16 +212,177 @@ class MakeElasticRangeTest(TestCase):
         self._run_tests(test_data)
 
     def test___make_elastic_range_more(self):
+        # An S-curved range of pages is correctly generated for larger numbers.
         test_data = (
             (1, 500, [1, 5, 13, 41, 121, 380, 460, 488, 496, 500]),
             (1, 1000, [1, 10, 28, 91, 271, 730, 910, 973, 991, 1000]),
-            (1, 10000,
-                [1, 100, 298, 991, 2971, 7030, 9010, 9703, 9901, 10000]),
-            (1, 100000,
-                [1, 1000, 2998, 9991, 29971, 70030, 90010, 97003, 99001,
-                    100000]),
-            (1, 1000000,
-                [1, 10000, 29998, 99991, 299971, 700030, 900010, 970003,
-                    990001, 1000000]),
+            (1, 10000, [
+                1, 100, 298, 991, 2971, 7030, 9010, 9703, 9901, 10000]),
+            (1, 100000, [
+                1, 1000, 2998, 9991, 29971, 70030, 90010, 97003, 99001,
+                100000]),
+            (1, 1000000, [
+                1, 10000, 29998, 99991, 299971, 700030, 900010, 970003,
+                990001, 1000000]),
         )
         self._run_tests(test_data)
+
+
+class GetElasticPageNumbersTest(TestCase):
+
+    def _run_tests(self, test_data):
+        for current_page, num_pages, expected in test_data:
+            pages = utils.get_elastic_page_numbers(current_page, num_pages)
+            self.assertSequenceEqual(expected, pages)
+
+    def test_get_elastic_page_numbers_units(self):
+        # Ensure the callable returns the expected values for units.
+        test_data = (
+            (1, 1, [1]),
+            (1, 2, [1, 2]),
+            (2, 2, [1, 2]),
+            (1, 3, [1, 2, 3]),
+            (3, 3, [1, 2, 3]),
+            (1, 4, [1, 2, 3, 4]),
+            (4, 4, [1, 2, 3, 4]),
+            (1, 5, [1, 2, 3, 4, 5]),
+            (5, 5, [1, 2, 3, 4, 5]),
+            (1, 6, [1, 2, 3, 4, 5, 6]),
+            (6, 6, [1, 2, 3, 4, 5, 6]),
+            (1, 7, [1, 2, 3, 4, 5, 6, 7]),
+            (7, 7, [1, 2, 3, 4, 5, 6, 7]),
+            (1, 8, [1, 2, 3, 4, 5, 6, 7, 8]),
+            (8, 8, [1, 2, 3, 4, 5, 6, 7, 8]),
+            (1, 9, [1, 2, 3, 4, 5, 6, 7, 8, 9]),
+            (9, 9, [1, 2, 3, 4, 5, 6, 7, 8, 9]),
+            (1, 10, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            (6, 10, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            (10, 10, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+        )
+        self._run_tests(test_data)
+
+    def test_get_elastic_page_numbers_tens(self):
+        # Ensure the callable returns the expected values for tens.
+        test_data = (
+            (1, 11, [
+                1, 2, 4, 8, 10, 11, 'next', 'last']),
+            (2, 11, [
+                'first', 'previous', 1, 2, 3, 5, 8, 10, 11, 'next', 'last']),
+            (3, 11, [
+                'first', 'previous', 1, 2, 3, 4, 6, 8, 10, 11, 'next',
+                'last']),
+            (4, 11, [
+                'first', 'previous', 1, 2, 3, 4, 5, 7, 8, 10, 11, 'next',
+                'last']),
+            (5, 11, [
+                'first', 'previous', 1, 2, 4, 5, 6, 8, 10, 11, 'next',
+                'last']),
+            (6, 11, [
+                'first', 'previous', 1, 2, 5, 6, 7, 10, 11, 'next', 'last']),
+            (7, 11, [
+                'first', 'previous', 1, 2, 4, 6, 7, 8, 10, 11, 'next',
+                'last']),
+            (8, 11, [
+                'first', 'previous', 1, 2, 4, 5, 7, 8, 9, 10, 11, 'next',
+                'last']),
+            (9, 11, [
+                'first', 'previous', 1, 2, 4, 6, 8, 9, 10, 11, 'next',
+                'last']),
+            (10, 11, [
+                'first', 'previous', 1, 2, 4, 7, 9, 10, 11, 'next', 'last']),
+            (11, 11, ['first', 'previous', 1, 2, 4, 8, 10, 11]),
+            (1, 12, [1, 2, 4, 9, 11, 12, 'next', 'last']),
+            (2, 12, [
+                'first', 'previous', 1, 2, 3, 5, 9, 11, 12, 'next', 'last']),
+            (6, 12, [
+                'first', 'previous', 1, 2, 5, 6, 7, 9, 11, 12, 'next',
+                'last']),
+            (7, 12, [
+                'first', 'previous', 1, 2, 4, 6, 7, 8, 11, 12, 'next',
+                'last']),
+            (11, 12, [
+                'first', 'previous', 1, 2, 4, 8, 10, 11, 12, 'next', 'last']),
+            (12, 12, ['first', 'previous', 1, 2, 4, 9, 11, 12]),
+            (1, 15, [1, 2, 4, 12, 14, 15, 'next', 'last']),
+            (5, 15, [
+                'first', 'previous', 1, 2, 4, 5, 6, 8, 12, 14, 15, 'next',
+                'last']),
+            (10, 15, [
+                'first', 'previous', 1, 2, 4, 7, 9, 10, 11, 14, 15, 'next',
+                'last']),
+            (15, 15, ['first', 'previous', 1, 2, 4, 12, 14, 15]),
+            (1, 100, [1, 2, 4, 11, 31, 70, 90, 97, 99, 100, 'next', 'last']),
+            (25, 100, [
+                'first', 'previous', 1, 2, 4, 11, 15, 22, 24, 25, 26, 28, 35,
+                55, 70, 90, 97, 99, 100, 'next', 'last']),
+            (75, 100, [
+                'first', 'previous', 1, 2, 4, 11, 31, 45, 65, 72, 74, 75, 76,
+                78, 85, 90, 97, 99, 100, 'next', 'last']),
+            (100, 100, [
+                'first', 'previous', 1, 2, 4, 11, 31, 70, 90, 97, 99, 100]),
+        )
+        self._run_tests(test_data)
+
+    def test_get_elastic_page_numbers_more(self):
+        # Ensure the callable returns the expected values for larger numbers.
+        test_data = (
+            (1, 500, [
+                1, 5, 13, 41, 121, 380, 460, 488, 496, 500, 'next', 'last']),
+            (150, 500, [
+                'first', 'previous', 1, 2, 4, 11, 31, 120, 140, 147, 149, 150,
+                153, 159, 180, 240, 410, 470, 491, 497, 500, 'next', 'last']),
+            (350, 500, [
+                'first', 'previous', 1, 4, 10, 31, 91, 260, 320, 341, 347, 350,
+                351, 353, 360, 380, 470, 490, 497, 499, 500, 'next', 'last']),
+            (500, 500, [
+                'first', 'previous', 1, 5, 13, 41, 121, 380, 460, 488, 496,
+                500]),
+            (100, 1000, [
+                'first', 'previous', 1, 2, 4, 11, 31, 70, 90, 97, 99, 100, 109,
+                127, 190, 370, 730, 910, 973, 991, 1000, 'next', 'last']),
+            (1000, 10000, [
+                'first', 'previous', 1, 10, 28, 91, 271, 730, 910, 973, 991,
+                1000, 1090, 1270, 1900, 3700, 7300, 9100, 9730, 9910, 10000,
+                'next', 'last']),
+            (10000, 100000, [
+                'first', 'previous', 1, 100, 298, 991, 2971, 7030, 9010, 9703,
+                9901, 10000, 10900, 12700, 19000, 37000, 73000, 91000, 97300,
+                99100, 100000, 'next', 'last']),
+            (100000, 1000000, [
+                'first', 'previous', 1, 1000, 2998, 9991, 29971, 70030, 90010,
+                97003, 99001, 100000, 109000, 127000, 190000, 370000, 730000,
+                910000, 973000, 991000, 1000000, 'next', 'last']),
+        )
+        self._run_tests(test_data)
+
+
+class GetQuerystringForPageTest(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    def test_querystring(self):
+        # Ensure the querystring is correctly generated from request.
+        request = self.factory.get('/')
+        querystring = utils.get_querystring_for_page(request, 2, 'mypage')
+        self.assertEqual('?mypage=2', querystring)
+
+    def test_default_page(self):
+        # Ensure the querystring is empty for the default page.
+        request = self.factory.get('/')
+        querystring = utils.get_querystring_for_page(
+            request, 3, 'mypage', default_number=3)
+        self.assertEqual('', querystring)
+
+    def test_composition(self):
+        # Ensure existing querystring is correctly preserved.
+        request = self.factory.get('/?mypage=1&foo=bar')
+        querystring = utils.get_querystring_for_page(request, 4, 'mypage')
+        self.assertIn('mypage=4', querystring)
+        self.assertIn('foo=bar', querystring)
+
+    def test_querystring_key(self):
+        # The querystring key is deleted from the querystring if present.
+        request = self.factory.get('/?querystring_key=mykey')
+        querystring = utils.get_querystring_for_page(request, 5, 'mypage')
+        self.assertEqual('?mypage=5', querystring)
