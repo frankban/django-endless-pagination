@@ -83,13 +83,23 @@ class PageListTest(TestCase):
         """Return a path for the given page ``number``."""
         return '/' + self.get_url_for_page(number)
 
-    def check_page(self, page, number, is_first, is_last, is_current):
+    def check_page(
+            self, page, number, is_first, is_last, is_current, label=None):
         """Perform several assertions on the given page attrs."""
+        if label is None:
+            label = utils.text(page.number)
+        self.assertEqual(label, page.label)
         self.assertEqual(number, page.number)
-        self.assertEqual(utils.text(page.number), page.label)
         self.assertEqual(is_first, page.is_first)
         self.assertEqual(is_last, page.is_last)
         self.assertEqual(is_current, page.is_current)
+
+    def check_page_list_callable(self, callable_or_path):
+        """Check the provided *page_list_callable* is actually used."""
+        with local_settings(PAGE_LIST_CALLABLE=callable_or_path):
+            rendered = utils.text(self.pages).strip()
+        expected = '<span class="endless_separator">...</span>'
+        self.assertEqual(expected, rendered)
 
     def test_length(self):
         # Ensure the length of the page list equals the number of pages.
@@ -106,6 +116,23 @@ class PageListTest(TestCase):
         # Ensure the attrs of the last page are correctly defined.
         page = self.pages.last()
         self.check_page(page, len(self.pages), False, True, False)
+
+    def test_first_page_as_arrow(self):
+        # Ensure the attrs of the first page are correctly defined when the
+        # page is represented as an arrow.
+        page = self.pages.first_as_arrow()
+        self.assertEqual('/', page.path)
+        self.assertEqual('', page.url)
+        self.check_page(
+            page, 1, True, False, False, label=settings.FIRST_LABEL)
+
+    def test_last_page_as_arrow(self):
+        # Ensure the attrs of the last page are correctly defined when the
+        # page is represented as an arrow.
+        page = self.pages.last_as_arrow()
+        self.check_page(
+            page, len(self.pages), False, True, False,
+            label=settings.LAST_LABEL)
 
     def test_current_page(self):
         # Ensure the attrs of the current page are correctly defined.
@@ -185,21 +212,14 @@ class PageListTest(TestCase):
             self.request, self.paginator.page(num_pages), self.page_label)
         self.assertEqual('', pages.next())
 
-    def _check_page_list_callable(self, callable_or_path):
-        """Check the provided *page_list_callable* is actually used."""
-        with local_settings(PAGE_LIST_CALLABLE=callable_or_path):
-            rendered = utils.text(self.pages).strip()
-        expected = '<span class="endless_separator">...</span>'
-        self.assertEqual(expected, rendered)
-
     def test_customized_page_list_callable(self):
         # The page list is rendered based on ``settings.PAGE_LIST_CALLABLE``.
-        self._check_page_list_callable(page_list_callable)
+        self.check_page_list_callable(page_list_callable)
 
     def test_customized_page_list_dotted_path(self):
         # The option ``settings.PAGE_LIST_CALLABLE`` can be provided as a
         # dotted path, e.g.: 'path.to.my.callable'.
-        self._check_page_list_callable(
+        self.check_page_list_callable(
             'endless_pagination.tests.test_models.page_list_callable')
 
     def test_whitespace_in_path(self):
