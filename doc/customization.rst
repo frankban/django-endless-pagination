@@ -56,6 +56,10 @@ Name                                              Default     Description
                                                               :doc:`digg_pagination` is used with the
                                                               default callable.
 ------------------------------------------------- ----------- ----------------------------------------------
+``ENDLESS_PAGINATION_DEFAULT_CALLABLE_ARROWS``    *False*     Whether or not the first and last pages arrows
+                                                              are displayed when :doc:`digg_pagination` is
+                                                              used with the default callable.
+------------------------------------------------- ----------- ----------------------------------------------
 ``ENDLESS_PAGINATION_TEMPLATE_VARNAME``           'template'  Template variable name used by the
                                                               ``page_template`` decorator. You can change
                                                               this value if you are going to decorate

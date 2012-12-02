@@ -6,6 +6,7 @@ import sys
 from endless_pagination import exceptions
 from endless_pagination.settings import (
     DEFAULT_CALLABLE_AROUNDS,
+    DEFAULT_CALLABLE_ARROWS,
     DEFAULT_CALLABLE_EXTREMES,
     PAGE_LABEL,
 )
@@ -48,13 +49,17 @@ def get_page_number_from_request(
 
 def get_page_numbers(
         current_page, num_pages, extremes=DEFAULT_CALLABLE_EXTREMES,
-        arounds=DEFAULT_CALLABLE_AROUNDS):
+        arounds=DEFAULT_CALLABLE_AROUNDS, arrows=DEFAULT_CALLABLE_ARROWS):
     """Default callable for page listing.
 
-    Produce a digg-style pagination.
+    Produce a Digg-style pagination.
     """
     page_range = range(1, num_pages + 1)
-    pages = [] if current_page == 1 else ['previous']
+    pages = []
+    if current_page != 1:
+        if arrows:
+            pages.append('first')
+        pages.append('previous')
 
     # Get first and last pages (extremes).
     first = page_range[:extremes]
@@ -92,6 +97,8 @@ def get_page_numbers(
 
     if current_page != num_pages:
         pages.append('next')
+        if arrows:
+            pages.append('last')
     return pages
 
 

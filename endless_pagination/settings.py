@@ -1,4 +1,4 @@
-"""Django Endless Pagination settings file."""
+# """Django Endless Pagination settings file."""
 
 from __future__ import unicode_literals
 
@@ -41,12 +41,15 @@ ADD_NOFOLLOW = getattr(settings, 'ENDLESS_PAGINATION_ADD_NOFOLLOW', False)
 PAGE_LIST_CALLABLE = getattr(
     settings, 'ENDLESS_PAGINATION_PAGE_LIST_CALLABLE', None)
 
-# Default callable returns pages for Digg-style pagination, and depends
-# on the settings below.
+# The default callable returns a sequence of pages producing Digg-style
+# pagination, and depending on the settings below.
 DEFAULT_CALLABLE_EXTREMES = getattr(
     settings, 'ENDLESS_PAGINATION_DEFAULT_CALLABLE_EXTREMES', 3)
 DEFAULT_CALLABLE_AROUNDS = getattr(
     settings, 'ENDLESS_PAGINATION_DEFAULT_CALLABLE_AROUNDS', 2)
+# Whether or not the first and last pages arrows are displayed.
+DEFAULT_CALLABLE_ARROWS = getattr(
+    settings, 'ENDLESS_PAGINATION_DEFAULT_CALLABLE_ARROWS', False)
 
 # Template variable name for *page_template* decorator.
 TEMPLATE_VARNAME = getattr(

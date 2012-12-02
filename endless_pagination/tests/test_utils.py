@@ -106,6 +106,27 @@ class GetPageNumbersTest(TestCase):
         expected = [1]
         self.assertSequenceEqual(expected, pages)
 
+    def test_arrows(self):
+        # Ensure the pages are returned correctly adding first / last arrows.
+        pages = utils.get_page_numbers(5, 10, arrows=True)
+        expected = [
+            'first', 'previous', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 'next', 'last']
+        self.assertSequenceEqual(expected, pages)
+
+    def test_arrows_first_page(self):
+        # Ensure the correct pages are returned if the first page is requested
+        # adding first / last arrows.
+        pages = utils.get_page_numbers(1, 5, arrows=True)
+        expected = [1, 2, 3, 4, 5, 'next', 'last']
+        self.assertSequenceEqual(expected, pages)
+
+    def test_arrows_last_page(self):
+        # Ensure the correct pages are returned if the last page is requested
+        # adding first / last arrows.
+        pages = utils.get_page_numbers(5, 5, arrows=True)
+        expected = ['first', 'previous', 1, 2, 3, 4, 5]
+        self.assertSequenceEqual(expected, pages)
+
 
 class IterFactorsTest(TestCase):
 
