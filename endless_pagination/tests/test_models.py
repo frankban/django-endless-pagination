@@ -159,6 +159,16 @@ class PageListTest(TestCase):
             expected = self.get_url_for_page(num + 2)
             self.assertEqual(expected, page.url)
 
+    def test_current_indexes(self):
+        # Ensure the 1-based indexes of the first and last items on the current
+        # page are correctly returned.
+        self.assertEqual(8, self.pages.current_start_index())
+        self.assertEqual(14, self.pages.current_end_index())
+
+    def test_total_count(self):
+        # Ensure the total number of objects is correctly returned.
+        self.assertEqual(30, self.pages.total_count())
+
     def test_page_render(self):
         # Ensure the page is correctly rendered.
         page = self.pages.first()
