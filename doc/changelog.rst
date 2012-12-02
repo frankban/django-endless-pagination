@@ -108,18 +108,18 @@ First and last pages' labels can be customized using
 ----
 
 **New feature**: The sequence returned by the callable
-*settings.ENDLESS_PAGINATION_PAGE_LIST_CALLABLE* can now contain two new
+``settings.ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` can now contain two new
 values:
 
 - *'first'*: will display the first page as an arrow;
 - *'last'*: will display the last page as an arrow.
 
-The *show_pages* documentation in :doc:`templatetag_reference` describes how to
-customize Digg-style pagination defining your own page list callable.
+The *show_pages* documentation in :doc:`templatetags_reference` describes how
+to customize Digg-style pagination defining your own page list callable.
 
 ----
 
-**New feature**: *settings.ENDLESS_PAGINATION_PAGE_LIST_CALLABLE* can now be
+**New feature**: ``settings.ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` can now be
 either a callable or a **dotted path** to a callable, e.g.::
 
     ENDLESS_PAGINATION_PAGE_LIST_CALLABLE = 'path.to.callable'
