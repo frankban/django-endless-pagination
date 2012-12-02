@@ -59,7 +59,15 @@ class LocalSettingsTest(TestCase):
             self.assertEqual('original', settings._LOCAL_SETTINGS_TEST)
 
 
-page_list_callable = lambda number, num_pages: [None]
+def page_list_callable_arrows(number, num_pages):
+    """Wrap ``endless_pagination.utils.get_page_numbers``.
+
+    Set first / last page arrows to True.
+    """
+    return utils.get_page_numbers(number, num_pages, arrows=True)
+
+
+page_list_callable_dummy = lambda number, num_pages: [None]
 
 
 class PageListTest(TestCase):
@@ -169,6 +177,19 @@ class PageListTest(TestCase):
         # Ensure the page list is correctly rendered.
         rendered = utils.text(self.pages)
         self.assertEqual(5, rendered.count('<a href'))
+        self.assertIn(settings.PREVIOUS_LABEL, rendered)
+        self.assertIn(settings.NEXT_LABEL, rendered)
+
+    def test_page_list_render_using_arrows(self):
+        # Ensure the page list is correctly rendered when using first / last
+        # page arrows.
+        page_list_callable = (
+            'endless_pagination.tests.test_models.page_list_callable_arrows')
+        with local_settings(PAGE_LIST_CALLABLE=page_list_callable):
+            rendered = utils.text(self.pages)
+        self.assertEqual(7, rendered.count('<a href'))
+        self.assertIn(settings.FIRST_LABEL, rendered)
+        self.assertIn(settings.LAST_LABEL, rendered)
 
     def test_page_list_render_just_one_page(self):
         # Ensure nothing is rendered if the page list contains only one page.
@@ -214,13 +235,13 @@ class PageListTest(TestCase):
 
     def test_customized_page_list_callable(self):
         # The page list is rendered based on ``settings.PAGE_LIST_CALLABLE``.
-        self.check_page_list_callable(page_list_callable)
+        self.check_page_list_callable(page_list_callable_dummy)
 
     def test_customized_page_list_dotted_path(self):
         # The option ``settings.PAGE_LIST_CALLABLE`` can be provided as a
         # dotted path, e.g.: 'path.to.my.callable'.
         self.check_page_list_callable(
-            'endless_pagination.tests.test_models.page_list_callable')
+            'endless_pagination.tests.test_models.page_list_callable_dummy')
 
     def test_whitespace_in_path(self):
         # Ensure white spaces in paths are correctly handled.
