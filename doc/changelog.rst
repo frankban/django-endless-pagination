@@ -117,6 +117,11 @@ values:
 The *show_pages* documentation in :doc:`templatetags_reference` describes how
 to customize Digg-style pagination defining your own page list callable.
 
+When using the default Digg-style pagination (i.e. when
+``settings.ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` is set to *None*), it is
+possible to enable first / last page arrows by setting the new flag
+``settings.ENDLESS_PAGINATION_DEFAULT_CALLABLE_ARROWS`` to *True*.
+
 ----
 
 **New feature**: ``settings.ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` can now be
