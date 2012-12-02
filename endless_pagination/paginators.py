@@ -15,24 +15,23 @@ class CustomPage(Page):
     """Handle different number of items on the first page."""
 
     def start_index(self):
+        """Return the 1-based index of the first item on this page."""
+        paginator = self.paginator
         # Special case, return zero if no items.
-        if self.paginator.count == 0:
+        if paginator.count == 0:
             return 0
         elif self.number == 1:
             return 1
         return (
-            (self.number - 2) * self.paginator.per_page +
-            self.paginator.first_page + 1
-        )
+            (self.number - 2) * paginator.per_page + paginator.first_page + 1)
 
     def end_index(self):
+        """Return the 1-based index of the last item on this page."""
+        paginator = self.paginator
         # Special case for the last page because there can be orphans.
-        if self.number == self.paginator.num_pages:
-            return self.paginator.count
-        return (
-            (self.number - 1) * self.paginator.per_page +
-            self.paginator.first_page
-        )
+        if self.number == paginator.num_pages:
+            return paginator.count
+        return (self.number - 1) * paginator.per_page + paginator.first_page
 
 
 class BasePaginator(Paginator):
