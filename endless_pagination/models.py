@@ -177,6 +177,18 @@ class PageList(utils.UnicodeMixin):
         """Return the current page."""
         return self._endless_page(self._page.number)
 
+    def current_start_index(self):
+        """Return the 1-based index of the first item on the current page."""
+        return self._page.start_index()
+
+    def current_end_index(self):
+        """Return the 1-based index of the last item on the current page."""
+        return self._page.end_index()
+
+    def total_count(self):
+        """Return the total number of objects, across all pages."""
+        return self._page.paginator.count
+
     def first(self, label=None):
         """Return the first page."""
         return self._endless_page(1, label=label)

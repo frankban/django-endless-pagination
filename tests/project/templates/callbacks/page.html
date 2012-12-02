@@ -7,6 +7,12 @@
     {{ object.contents }}
   </div>
 {% endfor %}
+{% get_pages %}
+<div>
+    Objects <strong>{{ pages.current_start_index }}</strong> ...
+    <strong>{{ pages.current_end_index }}</strong>
+    of <strong>{{ pages.total_count }}</strong>
+</div>
 <div class="pagination pagination-centered">
-  <div>{% show_pages %}</div>
+  <div>{{ pages }}</div>
 </div>
