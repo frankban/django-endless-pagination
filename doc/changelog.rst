@@ -92,6 +92,15 @@ template tag has been improved adding the following new methods:
 
 .. code-block:: html+django
 
+    {# the 1-based index of the first item on the current page #}
+    {{ pages.current_start_index }}
+
+    {# the 1-based index of the last item on the current page #}
+    {{ pages.current_end_index }}
+
+    {# the total number of objects, across all pages #}
+    {{ pages.total_count }}
+
     {# the first page represented as an arrow #}
     {{ pages.first_as_arrow }}
 

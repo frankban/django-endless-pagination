@@ -182,6 +182,15 @@ of page links. You can use *pages* in different ways:
     {{ pages.3 }}
     {# this means page.1 is the same as page.first #}
 
+    {# the 1-based index of the first item on the current page #}
+    {{ pages.current_start_index }}
+
+    {# the 1-based index of the last item on the current page #}
+    {{ pages.current_end_index }}
+
+    {# the total number of objects, across all pages #}
+    {{ pages.total_count }}
+
     {# the first page represented as an arrow #}
     {{ pages.first_as_arrow }}
 
