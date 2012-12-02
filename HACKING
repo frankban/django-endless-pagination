@@ -34,7 +34,7 @@ Run the tests::
 
     $ make test
 
-The test suite requires Python >= 2.7, and < 3.x.
+The test suite requires Python >= 2.7.
 
 Run the tests and lint checks::
 
