@@ -3,8 +3,8 @@
 from __future__ import unicode_literals
 
 from django.template import (
-    Context,
     loader,
+    RequestContext,
 )
 from django.utils.encoding import iri_to_uri
 
@@ -37,6 +37,7 @@ class EndlessPage(utils.UnicodeMixin):
     def __init__(
             self, request, number, current_number, total_number,
             querystring_key, label=None, default_number=1, override_path=None):
+        self._request = request
         self.number = number
         self.label = utils.text(number) if label is None else label
         self.querystring_key = querystring_key
@@ -53,18 +54,18 @@ class EndlessPage(utils.UnicodeMixin):
 
     def __unicode__(self):
         """Render the page as a link."""
-        context_instance = Context({
+        context = {
             'add_nofollow': settings.ADD_NOFOLLOW,
             'page': self,
             'querystring_key': self.querystring_key,
-        })
+        }
         if self.is_current:
             template_name = 'endless/current_link.html'
         else:
             template_name = 'endless/page_link.html'
         template = _template_cache.setdefault(
             template_name, loader.get_template(template_name))
-        return template.render(context_instance)
+        return template.render(RequestContext(self._request, context))
 
 
 class PageList(utils.UnicodeMixin):
@@ -168,7 +169,7 @@ class PageList(utils.UnicodeMixin):
                     pages.append(self.last_as_arrow())
                 else:
                     pages.append(self[item])
-            context = {'pages': pages}
+            context = RequestContext(self._request, {'pages': pages})
             return loader.render_to_string('endless/show_pages.html', context)
         return ''
 
