@@ -72,6 +72,9 @@ opendoc: doc
 pep8: venv
 	@$(WITH_VENV) pep8 --show-source $(PYFILES)
 
+release: clean
+	python setup.py register sdist upload
+
 server: venv
 	@$(WITH_VENV) $(MANAGE) runserver 0.0.0.0:8000
 
@@ -90,5 +93,5 @@ testall: venv
 venv:
 	@[ ! -d $(VENV) ] && $(PYTHON) $(DEVELOP) || true
 
-.PHONY: all doc clean cleanall check develop install lint opendoc pep8 server \
-	shell source test testall venv
+.PHONY: all doc clean cleanall check develop install lint opendoc pep8 \
+	release server shell source test testall venv
