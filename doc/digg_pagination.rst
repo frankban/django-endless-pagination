@@ -35,6 +35,30 @@ e.g.:
 :doc:`customization` explains how to customize the arrows that go to previous
 and next pages.
 
+The ``{% get_pages %}`` template tag adds to the current template context a
+``pages`` variable containing several methods that can be used to fully
+customize how the page links are displayed. For example, assume you want to
+show the indexes of the entries in the current page, followed by the total
+number of entries:
+
+.. code-block:: html+django
+
+    {% load endless %}
+
+    {% paginate entries %}
+    {% for entry in entries %}
+        {# your code to show the entry #}
+    {% endfor %}
+    {% get_pages %}
+    Showing entries
+    {{ pages.current_start_index }}-{{ pages.current_end_index }} of
+    {{ pages.total_count }}.
+    {# Just print pages to render the Digg-style pagination. #}
+    {{ pages }}
+
+Again, for a full overview of the ``get_pages`` template tag, see
+:doc:`templatetags_reference`.
+
 Adding Ajax
 ~~~~~~~~~~~
 
