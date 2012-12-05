@@ -86,7 +86,6 @@ class SeleniumTestCase(LiveServerTestCase):
         if driver is None:
             driver = self.selenium
         for element in driver.find_elements_by_xpath(path):
-            #with self.handle_stale():
             elements.append(int(element.text.split()[1]))
         return elements
 
