@@ -7,7 +7,6 @@ PYTHON3 = python3
 VENV2 = .venv
 VENV3 = .venv3
 
-DEVELOP = ./tests/develop.py
 LINTER = pocketlint
 MANAGE = python ./tests/manage.py
 
@@ -19,7 +18,9 @@ else
 	VENV = $(VENV2)
 endif
 
+DOC_INDEX = doc/_build/html/index.html
 PYFILES = `find ./endless_pagination -name "*.py"`
+VENV_ACTIVATE = $(VENV)/bin/activate
 WITH_VENV = ./tests/with_venv.sh $(VENV)
 
 all:
@@ -37,14 +38,15 @@ all:
 	@echo 'make shell - Enter Django interactive interpreter'
 	@echo 'make server - Run Django development server'
 	@echo 'make clean - Get rid of bytecode files, build dirs, dist files'
-	@echo 'make cleanall - Clean and also get rid of the virtualenv'
-	@echo 'make venv - Set up development environment if it does not exist'
+	@echo 'make cleanall - Clean and also get rid of the virtualenvs'
 	@echo -e '\nDefine the env var PY3 to work using Python 3.'
 	@echo 'E.g. to create a Python 3 development environment:'
 	@echo '  - make develop PY3=yes'
 
-doc: venv
+$(DOC_INDEX): $(wildcard doc/*.rst)
 	@$(WITH_VENV) make -C doc html
+
+doc: develop $(DOC_INDEX)
 
 clean:
 	$(PYTHON) setup.py clean
@@ -57,8 +59,11 @@ cleanall: clean
 
 check: test lint pep8
 
-develop:
-	@$(PYTHON) $(DEVELOP)
+$(VENV_ACTIVATE): tests/develop.py tests/test-requires.pip
+	@$(PYTHON) tests/develop.py
+	@touch $(VENV_ACTIVATE)
+
+develop: $(VENV_ACTIVATE)
 
 install:
 	python setup.py install
@@ -67,31 +72,28 @@ lint:
 	@$(LINTER) $(PYFILES)
 
 opendoc: doc
-	@firefox ./doc/_build/html/index.html
+	@firefox $(DOC_INDEX)
 
-pep8: venv
+pep8: develop
 	@$(WITH_VENV) pep8 --show-source $(PYFILES)
 
 release: clean
 	python setup.py register sdist upload
 
-server: venv
+server: develop
 	@$(WITH_VENV) $(MANAGE) runserver 0.0.0.0:8000
 
-shell: venv
+shell: develop
 	@$(WITH_VENV) $(MANAGE) shell
 
 source:
 	$(PYTHON) setup.py sdist
 
-test: venv
+test: develop
 	@$(WITH_VENV) $(MANAGE) test
 
-testall: venv
+testall: develop
 	@USE_SELENIUM=1 $(WITH_VENV) $(MANAGE) test
 
-venv:
-	@[ ! -d $(VENV) ] && $(PYTHON) $(DEVELOP) || true
-
 .PHONY: all doc clean cleanall check develop install lint opendoc pep8 \
-	release server shell source test testall venv
+	release server shell source test testall
