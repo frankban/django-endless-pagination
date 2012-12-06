@@ -3,4 +3,4 @@
 TESTS=`dirname $0`
 VENV=$TESTS/../$1
 shift
-source $VENV/bin/activate && $@
+. $VENV/bin/activate && $@
