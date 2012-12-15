@@ -21,7 +21,7 @@ PAGINATE_EXPRESSION = re.compile(r"""
     ^   # Begin of line.
     (((?P<first_page>\w+)\,)?(?P<per_page>\w+)\s+)?  # First page, per page.
     (?P<objects>[\.\w]+)  # Objects / queryset.
-    (\s+starting\s+from\s+page\s+(?P<number>\w+))?  # Page start.
+    (\s+starting\s+from\s+page\s+(?P<number>>[\-]?\d+|\w+))?  # Page start.
     (\s+using\s+(?P<key>[\"\'\-\w]+))?  # Querystring key.
     (\s+with\s+(?P<override_path>[\"\'\/\w]+))?  # Override path.
     (\s+as\s+(?P<var_name>\w+))?  # Context variable name.
@@ -226,10 +226,11 @@ class PaginateNode(template.Node):
         self.page_number_variable = None
         if number is None:
             self.page_number = 1
-        elif number.isdigit():
-            self.page_number = int(number)
         else:
-            self.page_number_variable = template.Variable(number)
+            try:
+                self.page_number = int(number)
+            except ValueError:
+                self.page_number_variable = template.Variable(number)
 
         # Set the querystring key attribute.
         self.querystring_key_variable = None
