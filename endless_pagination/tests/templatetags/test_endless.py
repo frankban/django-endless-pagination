@@ -272,15 +272,6 @@ class PaginateTest(PaginateTestMixin, TestCase):
         _, context = self.render(self.request(), template)
         self.assertRangeEqual(range(40, 47), context['objects'])
 
-    def test_starting_from_last_page_argument_as_variable(self):
-        # Ensure the queryset reflects the given ``starting_from_page``
-        # argument when the last page is requested.
-        # In this case, the argument is provided as context variable.
-        template = '{% $tagname 10 objects starting from page last_page %}'
-        _, context = self.render(
-            self.request(), template, objects=range(47), last_page=-1)
-        self.assertRangeEqual(range(40, 47), context['objects'])
-
     def test_starting_from_negative_page_argument(self):
         # Ensure the queryset reflects the given ``starting_from_page``
         # argument when a negative number is passed as value.
