@@ -247,10 +247,56 @@ class PaginateTest(PaginateTestMixin, TestCase):
 
     tagname = 'paginate'
 
+    def test_starting_from_last_page_argument(self):
+        # Ensure the queryset reflects the given ``starting_from_page``
+        # argument when the last page is requested.
+        template = '{% $tagname 10 objects starting from page -1 %}'
+        _, context = self.render(self.request(), template)
+        self.assertRangeEqual(range(40, 47), context['objects'])
+
+    def test_starting_from_last_page_argument_as_variable(self):
+        # Ensure the queryset reflects the given ``starting_from_page``
+        # argument when the last page is requested.
+        # In this case, the argument is provided as context variable.
+        template = '{% $tagname 10 objects starting from page last_page %}'
+        _, context = self.render(
+            self.request(), template, objects=range(47), last_page=-1)
+        self.assertRangeEqual(range(40, 47), context['objects'])
+
+    def test_starting_from_negative_page_argument(self):
+        # Ensure the queryset reflects the given ``starting_from_page``
+        # argument when a negative number is passed as value.
+        template = '{% $tagname 10 objects starting from page -3 %}'
+        _, context = self.render(self.request(), template)
+        self.assertRangeEqual(range(20, 30), context['objects'])
+
+    def test_starting_from_negative_page_argument_as_variable(self):
+        # Ensure the queryset reflects the given ``starting_from_page``
+        # argument when a negative number is passed as value.
+        # In this case, the argument is provided as context variable.
+        template = '{% $tagname 10 objects starting from page mypage %}'
+        _, context = self.render(
+            self.request(), template, objects=range(47), mypage=-2)
+        self.assertRangeEqual(range(30, 40), context['objects'])
+
+    def test_starting_from_negative_page_out_of_range(self):
+        # Ensure the last page is returned when the ``starting_from_page``
+        # argument, given a negative value, produces an out of range error.
+        template = '{% $tagname 10 objects starting from page -5 %}'
+        _, context = self.render(self.request(), template)
+        self.assertRangeEqual(range(40, 47), context['objects'])
+
 
 class LazyPaginateTest(PaginateTestMixin, TestCase):
 
     tagname = 'lazy_paginate'
+
+    def test_starting_from_negative_page_raises_error(self):
+        # A *NotImplementedError* is raised if a negative value is given to
+        # the ``starting_from_page`` argument of ``lazy_paginate``.
+        template = '{% $tagname 10 objects starting from page -1 %}'
+        with self.assertRaises(NotImplementedError):
+            self.render(self.request(), template)
 
 
 class ShowMoreTest(EtreeTemplateTagsTestMixin, TestCase):
