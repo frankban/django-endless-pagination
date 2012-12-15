@@ -8,7 +8,10 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from endless_pagination import views
-from endless_pagination.tests import TestModel
+from endless_pagination.tests import (
+    make_model_instances,
+    TestModel,
+)
 
 
 class AjaxListViewTest(TestCase):
@@ -40,12 +43,6 @@ class AjaxListViewTest(TestCase):
         """Return an instance of AjaxListView."""
         return views.AjaxListView.as_view(*args, **kwargs)
 
-    def make_model_instances(self, number):
-        """Make a ``number`` of test model instances and return a queryset."""
-        for _ in range(number):
-            TestModel.objects.create()
-        return TestModel.objects.all()
-
     def test_list(self):
         # Ensure the view correctly adds the list to context.
         view = self.make_view(
@@ -68,28 +65,28 @@ class AjaxListViewTest(TestCase):
 
     def test_queryset(self):
         # Ensure the view correctly adds the queryset to context.
-        queryset = self.make_model_instances(30)
+        queryset = make_model_instances(30)
         view = self.make_view(queryset=queryset)
         response = view(self.request)
         self.check_response(response, self.model_template_name, queryset)
 
     def test_queryset_ajax(self):
         # Ensure the queryset view switches templates when the request is Ajax.
-        queryset = self.make_model_instances(30)
+        queryset = make_model_instances(30)
         view = self.make_view(queryset=queryset)
         response = view(self.ajax_request)
         self.check_response(response, self.model_page_template, queryset)
 
     def test_model(self):
         # Ensure the view correctly uses the model to generate the template.
-        queryset = self.make_model_instances(30)
+        queryset = make_model_instances(30)
         view = self.make_view(model=TestModel)
         response = view(self.request)
         self.check_response(response, self.model_template_name, queryset)
 
     def test_model_ajax(self):
         # Ensure the model view switches templates when the request is Ajax.
-        queryset = self.make_model_instances(30)
+        queryset = make_model_instances(30)
         view = self.make_view(model=TestModel)
         response = view(self.ajax_request)
         self.check_response(response, self.model_page_template, queryset)
