@@ -407,3 +407,23 @@ class GetQuerystringForPageTest(TestCase):
         request = self.factory.get('/?querystring_key=mykey')
         querystring = utils.get_querystring_for_page(request, 5, 'mypage')
         self.assertEqual('?mypage=5', querystring)
+
+
+class NormalizePageNumberTest(TestCase):
+
+    page_range = [1, 2, 3, 4]
+
+    def test_in_range(self):
+        # Ensure the correct page number is returned when the requested
+        # negative index is in range.
+        page_numbers = [-1, -2, -3, -4]
+        expected_results = reversed(self.page_range)
+        for page_number, expected in zip(page_numbers, expected_results):
+            result = utils.normalize_page_number(page_number, self.page_range)
+            self.assertEqual(expected, result)
+
+    def test_out_of_range(self):
+        # Ensure the page number 1 returned when the requested negative index
+        # is out of range.
+        result = utils.normalize_page_number(-5, self.page_range)
+        self.assertEqual(self.page_range[0], result)
