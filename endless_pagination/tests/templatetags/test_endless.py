@@ -18,6 +18,7 @@ from endless_pagination.settings import (
     PAGE_LABEL,
     PER_PAGE,
 )
+from endless_pagination.tests import make_model_instances
 
 
 class TemplateTagsTestMixin(object):
@@ -69,6 +70,23 @@ class PaginateTestMixin(TemplateTagsTestMixin):
 
     Subclasses must define *tagname*.
     """
+
+    def assertPaginationNumQueries(self, num_queries, template, queryset=None):
+        """Assert the expected *num_queries* are actually executed.
+
+        The given *queryset* is paginated using *template*. If the *queryset*
+        is not given, a default queryset containing 47 model instances is used.
+        In the *template*, the queryset must be referenced as ``objects``.
+
+        Return the resulting list of objects for the current page.
+        """
+        if queryset is None:
+            queryset = make_model_instances(47)
+        request = self.request()
+        with self.assertNumQueries(num_queries):
+            _, context = self.render(request, template, objects=queryset)
+            objects = list(context['objects'])
+        return objects
 
     def assertRangeEqual(self, expected, actual):
         """Assert the *expected* range equals the *actual* one."""
@@ -286,6 +304,25 @@ class PaginateTest(PaginateTestMixin, TestCase):
         _, context = self.render(self.request(), template)
         self.assertRangeEqual(range(40, 47), context['objects'])
 
+    def test_num_queries(self):
+        # Ensure paginating objects hits the database for the correct number
+        # of times.
+        template = '{% $tagname 10 objects %}'
+        objects = self.assertPaginationNumQueries(2, template)
+        self.assertEqual(10, len(objects))
+
+    def test_num_queries_starting_from_another_page(self):
+        # Ensure paginating objects hits the database for the correct number
+        # of times if pagination is performed starting from another page.
+        template = '{% $tagname 10 objects starting from page 3 %}'
+        self.assertPaginationNumQueries(2, template)
+
+    def test_num_queries_starting_from_last_page(self):
+        # Ensure paginating objects hits the database for the correct number
+        # of times if pagination is performed starting from last page.
+        template = '{% $tagname 10 objects starting from page -1 %}'
+        self.assertPaginationNumQueries(2, template)
+
 
 class LazyPaginateTest(PaginateTestMixin, TestCase):
 
@@ -297,6 +334,20 @@ class LazyPaginateTest(PaginateTestMixin, TestCase):
         template = '{% $tagname 10 objects starting from page -1 %}'
         with self.assertRaises(NotImplementedError):
             self.render(self.request(), template)
+
+    def test_num_queries(self):
+        # Ensure paginating objects hits the database for the correct number
+        # of times. If lazy pagination is used, the ``SELECT COUNT`` query
+        # should be avoided.
+        template = '{% $tagname 10 objects %}'
+        objects = self.assertPaginationNumQueries(1, template)
+        self.assertEqual(10, len(objects))
+
+    def test_num_queries_starting_from_another_page(self):
+        # Ensure paginating objects hits the database for the correct number
+        # of times if pagination is performed starting from another page.
+        template = '{% $tagname 10 objects starting from page 3 %}'
+        self.assertPaginationNumQueries(1, template)
 
 
 class ShowMoreTest(EtreeTemplateTagsTestMixin, TestCase):
