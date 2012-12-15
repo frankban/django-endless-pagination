@@ -21,7 +21,7 @@ PAGINATE_EXPRESSION = re.compile(r"""
     ^   # Begin of line.
     (((?P<first_page>\w+)\,)?(?P<per_page>\w+)\s+)?  # First page, per page.
     (?P<objects>[\.\w]+)  # Objects / queryset.
-    (\s+starting\s+from\s+page\s+(?P<number>>[\-]?\d+|\w+))?  # Page start.
+    (\s+starting\s+from\s+page\s+(?P<number>[\-]?\d+|\w+))?  # Page start.
     (\s+using\s+(?P<key>[\"\'\-\w]+))?  # Querystring key.
     (\s+with\s+(?P<override_path>[\"\'\/\w]+))?  # Override path.
     (\s+as\s+(?P<var_name>\w+))?  # Context variable name.
@@ -284,13 +284,18 @@ class PaginateNode(template.Node):
         else:
             override_path = self.override_path_variable.resolve(context)
 
-        # The current request is used to get the requested page number.
-        page_number = utils.get_page_number_from_request(
-            context['request'], querystring_key, default=default_number)
-
+        # Retrieve the queryset and create the paginator object.
         objects = self.objects.resolve(context)
         paginator = self.paginator(
             objects, per_page, first_page=first_page, orphans=settings.ORPHANS)
+
+        # The current request is used to get the requested page number.
+        # A negative page number is also normalized.
+        page_number = utils.get_page_number_from_request(
+            context['request'], querystring_key, default=default_number)
+        if page_number < 0:
+            page_number = utils.normalize_page_number(
+                page_number, paginator.page_range)
 
         # Get the page.
         try:

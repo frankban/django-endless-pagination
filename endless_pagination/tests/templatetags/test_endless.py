@@ -302,7 +302,7 @@ class PaginateTest(PaginateTestMixin, TestCase):
         # argument, given a negative value, produces an out of range error.
         template = '{% $tagname 10 objects starting from page -5 %}'
         _, context = self.render(self.request(), template)
-        self.assertRangeEqual(range(40, 47), context['objects'])
+        self.assertRangeEqual(range(10), context['objects'])
 
     def test_num_queries(self):
         # Ensure paginating objects hits the database for the correct number
