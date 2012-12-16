@@ -23,5 +23,6 @@ e.g.:
     {% endfor %}
     {% show_more %}
 
-The ``lazy_paginate`` tag can take all the args of ``paginate``
-(see :doc:`templatetags_reference`).
+The ``lazy_paginate`` tag can take all the args of the ``paginate`` one, with
+one exception: negative indexes can not be passed to the ``starting from page``
+argument. See :doc:`templatetags_reference`.

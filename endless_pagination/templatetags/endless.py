@@ -88,6 +88,13 @@ def paginate(parser, token, paginator_class=None):
 
         {% paginate entries starting from page 3 %}
 
+    When changing the default page, it is also possible to reference the last
+    page (or the second last page, and so on) by using negative indexes, e.g:
+
+    .. code-block:: html+django
+
+        {% paginate entries starting from page -1 %}
+
     This can be also achieved using a template variable that was passed to the
     context, e.g.:
 

@@ -49,6 +49,13 @@ but you can change this, e.g.:
 
     {% paginate entries starting from page 3 %}
 
+When changing the default page, it is also possible to reference the last
+page (or the second last page, and so on) by using negative indexes, e.g:
+
+.. code-block:: html+django
+
+    {% paginate entries starting from page -1 %}
+
 This can be also achieved using a template variable that was passed to the
 context, e.g.:
 
@@ -57,6 +64,9 @@ context, e.g.:
     {% paginate entries starting from page page_number %}
 
 If the passed page number does not exist, the first page is displayed.
+Note that negative indexes are specific to the ``{% paginate %}`` tag: this
+feature cannot be used when contents are lazy paginated (see `lazy_paginate`_
+below).
 
 If you have multiple paginations in the same page, you can change the
 querydict key for the single pagination, e.g.:
@@ -106,9 +116,17 @@ lazy_paginate
 ~~~~~~~~~~~~~
 
 Paginate objects without hitting the database with a *select count* query.
+Usually pagination requires hitting the database to get the total number of
+items to display. Lazy pagination avoids this *select count* query and results
+in a faster page load, with a disadvantage: you won't know the total number of
+pages in advance.
 
-Use this in the same way as `paginate`_ tag when you are not interested
-in the total number of pages.
+Use this in the same way as `paginate`_ tag when you are not interested in the
+total number of pages.
+
+The ``lazy_paginate`` tag can take all the args of the ``paginate`` one, with
+one exception: negative indexes can not be passed to the ``starting from page``
+argument.
 
 show_more
 ~~~~~~~~~

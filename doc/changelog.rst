@@ -164,6 +164,20 @@ support hardcoded pagination URL endpoints, e.g.:
 
 ----
 
+**New feature**: ability to specify negative indexes as values for the
+``starting from page`` argument of the ``paginate`` template tag.
+
+When changing the default page, it is now possible to reference the last page
+(or the second last page, and so on) by using negative indexes, e.g:
+
+.. code-block:: html+django
+
+    {% paginate entries starting from page -1 %}
+
+See :doc:`templatetags_reference`.
+
+----
+
 **Documentation**: general clean up.
 
 ----
