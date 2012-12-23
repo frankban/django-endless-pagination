@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 import string
+import sys
 import xml.etree.ElementTree as etree
 
 from django.template import (
@@ -11,6 +12,7 @@ from django.template import (
 )
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils import unittest
 
 from endless_pagination.exceptions import PaginationError
 from endless_pagination.models import PageList
@@ -19,6 +21,10 @@ from endless_pagination.settings import (
     PER_PAGE,
 )
 from endless_pagination.tests import make_model_instances
+
+
+skip_if_old_etree = unittest.skipIf(
+    sys.version_info < (2, 7), 'XPath not supported by this Python version.')
 
 
 class TemplateTagsTestMixin(object):
@@ -341,6 +347,7 @@ class LazyPaginateTest(PaginateTestMixin, TestCase):
         self.assertPaginationNumQueries(1, template)
 
 
+@skip_if_old_etree
 class ShowMoreTest(EtreeTemplateTagsTestMixin, TestCase):
 
     def test_first_page_next_url(self):
@@ -422,6 +429,7 @@ class GetPagesTest(TemplateTagsTestMixin, TestCase):
             self.render(request, template)
 
 
+@skip_if_old_etree
 class ShowPagesTest(EtreeTemplateTagsTestMixin, TestCase):
 
     def test_current_page(self):
