@@ -439,7 +439,6 @@ class GetPagesTest(TemplateTagsTestMixin, TestCase):
             self.request(), template, objects=range(47), page=1)
         page = context['pages'].last()
         self.assertEqual('', page.url)
-        self.assertRangeEqual(range(30, 40), context['objects'])
 
 
 @skip_if_old_etree

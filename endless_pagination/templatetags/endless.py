@@ -296,13 +296,14 @@ class PaginateNode(template.Node):
         paginator = self.paginator(
             objects, per_page, first_page=first_page, orphans=settings.ORPHANS)
 
+        # Normalize the default page number if a negative one is provided.
+        if default_number < 0:
+            default_number = utils.normalize_page_number(
+                default_number, paginator.page_range)
+
         # The current request is used to get the requested page number.
-        # A negative page number is also normalized.
         page_number = utils.get_page_number_from_request(
             context['request'], querystring_key, default=default_number)
-        if page_number < 0:
-            page_number = utils.normalize_page_number(
-                page_number, paginator.page_range)
 
         # Get the page.
         try:
