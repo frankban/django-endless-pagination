@@ -428,6 +428,19 @@ class GetPagesTest(TemplateTagsTestMixin, TestCase):
         with self.assertRaises(TemplateSyntaxError):
             self.render(request, template)
 
+    def test_starting_from_negative_page_in_another_page(self):
+        # Ensure the default page is missing the querystring when another
+        # page is displayed.
+        template = (
+            '{% paginate 10 objects starting from page -1 %}'
+            '{% get_pages %}'
+        )
+        _, context = self.render(
+            self.request(), template, objects=range(47), page=1)
+        page = context['pages'].last()
+        self.assertEqual('', page.url)
+        self.assertRangeEqual(range(30, 40), context['objects'])
+
 
 @skip_if_old_etree
 class ShowPagesTest(EtreeTemplateTagsTestMixin, TestCase):
