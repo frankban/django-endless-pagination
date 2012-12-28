@@ -440,6 +440,12 @@ class GetPagesTest(TemplateTagsTestMixin, TestCase):
         page = context['pages'].last()
         self.assertEqual('', page.url)
 
+    def test_pages_length(self):
+        # Ensure the pages length returns the correct number of pages.
+        template = '{% paginate 10 objects %}{% get_pages %}{{ pages|length }}'
+        html, context = self.render(self.request(), template)
+        self.assertEqual('5', html)
+
 
 @skip_if_old_etree
 class ShowPagesTest(EtreeTemplateTagsTestMixin, TestCase):
