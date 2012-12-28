@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import re
 
 from django import template
+from django.utils.encoding import iri_to_uri
 
 from endless_pagination import (
     models,
@@ -356,7 +357,7 @@ def show_more(context, label=None, loading=settings.LOADING):
         return {
             'label': label,
             'loading': loading,
-            'path': data['override_path'] or request.path,
+            'path': iri_to_uri(data['override_path'] or request.path),
             'querystring': querystring,
             'querystring_key': querystring_key,
             'request': request,
