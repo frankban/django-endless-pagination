@@ -1,4 +1,4 @@
-"""View decorators for Twitter-style pagination."""
+"""View decorators for Ajax powered pagination."""
 
 from __future__ import unicode_literals
 from functools import wraps
@@ -16,7 +16,7 @@ def page_template(template, key=PAGE_LABEL):
     arguments (like generic views).
     The template is switched to *page_template* if request is ajax and
     if *querystring_key* variable passed by the request equals to *key*.
-    This allows multiple ajax paginations in the same page.
+    This allows multiple Ajax paginations in the same page.
     The name of the page template is given as *page_template* in the
     extra context.
     """
@@ -27,7 +27,7 @@ def page_template(template, key=PAGE_LABEL):
             # in his view.
             extra_context = kwargs.setdefault('extra_context', {})
             extra_context['page_template'] = template
-            # Switch template on ajax requests.
+            # Switch the template when the request is Ajax.
             querystring_key = request.REQUEST.get(
                 'querystring_key', PAGE_LABEL)
             if request.is_ajax() and querystring_key == key:
@@ -81,7 +81,7 @@ def page_templates(mapping):
                 'querystring_key', PAGE_LABEL)
             template = _get_template(querystring_key, mapping)
             extra_context['page_template'] = template
-            # Switch template on ajax requests.
+            # Switch the template when the request is Ajax.
             if request.is_ajax() and template:
                 kwargs[TEMPLATE_VARNAME] = template
             return view(request, *args, **kwargs)
