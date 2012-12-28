@@ -177,6 +177,14 @@ of page links. You can use *pages* in different ways:
 
     {{ pages|length }}
 
+- check if the page list contains more than one page:
+
+.. code-block:: html+django
+
+    {{ pages.paginated }}
+    {# the following is equivalent #}
+    {{ pages|length > 1 }}
+
 - get a specific page:
 
 .. code-block:: html+django

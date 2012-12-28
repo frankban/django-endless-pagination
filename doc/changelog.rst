@@ -92,6 +92,9 @@ template tag has been improved adding the following new methods:
 
 .. code-block:: html+django
 
+    {# whether the page list contains more than one page #}
+    {{ pages.paginated }}
+
     {# the 1-based index of the first item on the current page #}
     {{ pages.current_start_index }}
 

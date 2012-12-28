@@ -16,6 +16,9 @@ pagination is not needed, all you have to do is modifying the template, e.g.:
 
 That's it!
 
+Page by page
+~~~~~~~~~~~~
+
 If you only want to display previous and next links (in a page-by-page
 pagination) you have to use the lower level ``get_pages`` templatetag
 (see :doc:`templatetags_reference`),
@@ -34,6 +37,9 @@ e.g.:
 
 :doc:`customization` explains how to customize the arrows that go to previous
 and next pages.
+
+Showing indexes
+~~~~~~~~~~~~~~~
 
 The ``{% get_pages %}`` template tag adds to the current template context a
 ``pages`` variable containing several methods that can be used to fully
@@ -55,6 +61,32 @@ number of entries:
     {{ pages.total_count }}.
     {# Just print pages to render the Digg-style pagination. #}
     {{ pages }}
+
+Number of pages
+~~~~~~~~~~~~~~~
+
+You can use ``{{ pages|length }}`` to retrieve and display the pages count.
+A common use case is to change the layout or display additional info based
+on whether the page list contains more than one page. This can be achieved
+checking ``{% if pages|length > 1 %}``, or, in a more convenient way, using
+``{{ pages.paginated }}``. For example, assume you want to change the layout,
+or display some info, only if the page list contains more than one page, i.e.
+the results are actually paginated:
+
+.. code-block:: html+django
+
+    {% load endless %}
+
+    {% paginate entries %}
+    {% for entry in entries %}
+        {# your code to show the entry #}
+    {% endfor %}
+    {% get_pages %}
+    {% if pages.paginated %}
+        Some info/layout to display only if the available
+        objects span multiple pages...
+        {{ pages }}
+    {% endif %}
 
 Again, for a full overview of the ``get_pages`` template tag, see
 :doc:`templatetags_reference`.
