@@ -113,6 +113,14 @@ class PageListTest(TestCase):
         # Ensure the length of the page list equals the number of pages.
         self.assertEqual(self.paginator.num_pages, len(self.pages))
 
+    def test_paginated(self):
+        # Ensure the *paginated* method returns True if the page list contains
+        # more than one page, False otherwise.
+        page = DefaultPaginator(range(10), 10).page(1)
+        pages = models.PageList(self.request, page, self.page_label)
+        self.assertFalse(pages.paginated())
+        self.assertTrue(self.pages.paginated())
+
     def test_first_page(self):
         # Ensure the attrs of the first page are correctly defined.
         page = self.pages.first()

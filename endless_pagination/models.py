@@ -234,3 +234,7 @@ class PageList(utils.UnicodeMixin):
                 self._page.next_page_number(),
                 label=settings.NEXT_LABEL)
         return ''
+
+    def paginated(self):
+        """Return True if this page list contains more than one page."""
+        return len(self) > 1
