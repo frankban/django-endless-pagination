@@ -18,7 +18,8 @@ if sys.version_info[0] >= 3:
     text = str
 else:
     PYTHON3 = False
-    text = unicode
+    # Avoid lint errors under Python 3.
+    text = unicode  # NOQA
 
 
 def get_data_from_context(context):
