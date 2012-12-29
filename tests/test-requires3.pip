@@ -4,9 +4,9 @@
 
 coverage
 https://www.djangoproject.com/download/1.5b1/tarball/
-django-nose
+django-nose==1.1
+flake8
 ipdb
 nose
-pep8
 selenium
 sphinx
