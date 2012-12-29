@@ -21,7 +21,7 @@ To install virtualenv::
 
 At this point, from the root of this branch, run the command::
 
-    $ make develop
+    $ make
 
 This command will create a ``.venv`` directory in the branch root, ignored
 by DVCSes, containing the development virtual environment with all the
@@ -36,14 +36,9 @@ Run the tests::
 
 The test suite requires Python >= 2.7.
 
-Run the tests and lint checks::
+Run the tests and lint/pep8 checks::
 
     $ make check
-
-Note that the last command also lints the code. To be able to do that,
-install the *pocket-lint* package, e.g.::
-
-    $ sudo apt-get install python-pocket-lint
 
 Integration tests are also available. They use Selenium and require Firefox
 to be installed. To run all the tests, including integration ones::
@@ -61,6 +56,6 @@ Run the Django development server for manual testing::
 See all the available make targets, including info on how to create a Python 3
 development environment::
 
-    $ make
+    $ make help
 
 Thanks for contributing, and have fun!
