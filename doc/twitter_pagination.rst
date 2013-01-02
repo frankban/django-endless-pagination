@@ -188,10 +188,10 @@ to be activated when 20 pixels remain to the end of the page:
 
 Again, see the :doc:`javascript`.
 
-Before version 1.2
+Before version 2.0
 ~~~~~~~~~~~~~~~~~~
 
-Django Endless Pagination 1.2 introduces a redesigned Ajax support for
+Django Endless Pagination v2.0 introduces a redesigned Ajax support for
 pagination. As seen above, Ajax can now be enabled using a brand new jQuery
 plugin that can be found in
 ``static/endless_pagination/js/endless-pagination.js``.

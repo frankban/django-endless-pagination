@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Version 1.2 (under development)
+Version 2.0 (under development)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **New feature**: Python 3 support.

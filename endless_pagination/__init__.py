@@ -5,7 +5,7 @@ Twitter-style and Digg-style pagination.
 from __future__ import unicode_literals
 
 
-VERSION = (1, 2)
+VERSION = (2, 0)
 
 
 def get_version():

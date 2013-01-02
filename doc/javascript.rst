@@ -324,10 +324,10 @@ link is displayed after page 5 is loaded, then after page 10, then after page
         </script>
     {% endblock %}
 
-Migrate from version 1.1 to 1.2
+Migrate from version 1.1 to 2.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Django Endless Pagination v1.2 introduces changes in how Ajax pagination
+Django Endless Pagination v2.0 introduces changes in how Ajax pagination
 is handled by JavaScript. These changes are discussed in this document and in
 the :doc:`changelog`.
 
