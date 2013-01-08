@@ -8,11 +8,11 @@ import sys
 
 if sys.version_info[0] >= 3:
     # FIXME: a different requirements file will no longer be required once
-    # Django 1.5 is released.
+    # Django 1.5 is released (bug #15).
     REQUIREMENTS_FILE = 'test-requires3.pip'
     VENV_NAME = '.venv3'
     # FIXME: running 2to3 on django-nose will no longer be required once
-    # the project supports Python 3.
+    # the project supports Python 3 (bug #16).
     PATCH_DJANGO_NOSE = True
 else:
     REQUIREMENTS_FILE = 'test-requires.pip'
@@ -39,7 +39,7 @@ def pip_install(*args):
 
 def patch_django_nose():
     """Run 2to3 on django-nose and remove ``import new`` from its runner."""
-    # FIXME: delete once django-nose supports Python 3.
+    # FIXME: delete once django-nose supports Python 3 (bug #16).
     python = 'python' + '.'.join(map(str, sys.version_info[:2]))
     django_nose = os.path.join(
         VENV, 'lib', python, 'site-packages', 'django_nose')
@@ -54,6 +54,6 @@ def patch_django_nose():
 if __name__ == '__main__':
     call('virtualenv', '--distribute', '-p', sys.executable, VENV)
     pip_install('-r', REQUIREMENTS)
-    # FIXME: delete from now on once django-nose supports Python 3.
+    # FIXME: delete from now on once django-nose supports Python 3  (bug #16).
     if PATCH_DJANGO_NOSE:
         patch_django_nose()

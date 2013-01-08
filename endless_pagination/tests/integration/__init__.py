@@ -17,6 +17,8 @@ from endless_pagination.utils import PYTHON3
 
 
 SKIP_SELENIUM = os.getenv('SKIP_SELENIUM', False)
+# FIXME: do not exclude integration tests on Python3 once Selenium is updated
+# (bug #17).
 tests_are_run = not (PYTHON3 or SKIP_SELENIUM)
 
 
@@ -40,6 +42,8 @@ def teardown_package():
         SeleniumTestCase.selenium.quit()
 
 
+# FIXME: do not exclude integration tests on Python3 once Selenium is updated
+# (bug #17).
 @unittest.skipIf(
     PYTHON3,
     'excluding integration tests: Python 3 tests are still not supported.')
@@ -98,10 +102,10 @@ class SeleniumTestCase(LiveServerTestCase):
     def get_current_elements(self, class_name, driver=None):
         """Return the range of current elements as a list of numbers."""
         elements = []
-        path = '//div[contains(@class, "{0}")]/h4'.format(class_name)
+        selector = 'div.{0} > h4'.format(class_name)
         if driver is None:
             driver = self.selenium
-        for element in driver.find_elements_by_xpath(path):
+        for element in driver.find_elements_by_css_selector(selector):
             elements.append(int(element.text.split()[1]))
         return elements
 
