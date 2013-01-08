@@ -52,7 +52,6 @@ help:
 	@echo 'make test - Run tests'
 	@echo 'make lint - Run linter and pep8'
 	@echo 'make check - Run tests, linter and pep8'
-	@echo 'make testall - Run tests including integration ones'
 	@echo 'make doc - Build Sphinx documentation'
 	@echo 'make opendoc - Build Sphinx documentation and open it in browser'
 	@echo 'make source - Create source package'
@@ -66,6 +65,9 @@ help:
 	@echo '  - make PY3=1'
 	@echo 'E.g. to run tests and linter under Python 3:'
 	@echo '  - make check PY3=1'
+	@echo -e '\nWhen testing the application, define the env var'
+	@echo 'SKIP_SELENIUM to exclude integration tests, e.g.:'
+	@echo '  - make check SKIP_SELENIUM=1'
 
 install:
 	python setup.py install
@@ -91,8 +93,5 @@ source:
 test: develop
 	@$(WITH_VENV) $(MANAGE) test
 
-testall: develop
-	@USE_SELENIUM=1 $(WITH_VENV) $(MANAGE) test
-
 .PHONY: all doc clean cleanall check develop install lint opendoc release \
-	server shell source test testall
+	server shell source test
