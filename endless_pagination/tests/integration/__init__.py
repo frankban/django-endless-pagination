@@ -11,6 +11,7 @@ from django.utils import unittest
 from selenium.common import exceptions
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support import ui
+from xvfbwrapper import Xvfb
 
 
 USE_SELENIUM = os.getenv('USE_SELENIUM', False)
@@ -19,6 +20,10 @@ USE_SELENIUM = os.getenv('USE_SELENIUM', False)
 def setup_package():
     """Set up the Selenium driver once for all tests."""
     if USE_SELENIUM:
+        # Perform all graphical operations in memory.
+        vdisplay = SeleniumTestCase.vdisplay = Xvfb(width=1280, height=720)
+        vdisplay.start()
+        # Create a Selenium browser instance.
         selenium = SeleniumTestCase.selenium = WebDriver()
         SeleniumTestCase.wait = ui.WebDriverWait(selenium, 10)
 
@@ -26,6 +31,7 @@ def setup_package():
 def teardown_package():
     """Quit the Selenium driver."""
     if USE_SELENIUM:
+        SeleniumTestCase.vdisplay.stop()
         SeleniumTestCase.selenium.quit()
 
 
