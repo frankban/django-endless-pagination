@@ -17,6 +17,27 @@ from endless_pagination.utils import PYTHON3
 
 
 SKIP_SELENIUM = os.getenv('SKIP_SELENIUM', False)
+tests_are_run = not (PYTHON3 or SKIP_SELENIUM)
+
+
+def setup_package():
+    """Set up the Selenium driver once for all tests."""
+    # Just skipping *setup_package* and *teardown_package* generates an
+    # uncaught exception under Python 2.6.
+    if tests_are_run:
+        # Perform all graphical operations in memory.
+        vdisplay = SeleniumTestCase.vdisplay = Xvfb(width=1280, height=720)
+        vdisplay.start()
+        # Create a Selenium browser instance.
+        selenium = SeleniumTestCase.selenium = WebDriver()
+        SeleniumTestCase.wait = ui.WebDriverWait(selenium, 10)
+
+
+def teardown_package():
+    """Quit the Selenium driver."""
+    if tests_are_run:
+        SeleniumTestCase.vdisplay.stop()
+        SeleniumTestCase.selenium.quit()
 
 
 @unittest.skipIf(
@@ -24,23 +45,7 @@ SKIP_SELENIUM = os.getenv('SKIP_SELENIUM', False)
     'excluding integration tests: Python 3 tests are still not supported.')
 @unittest.skipIf(
     SKIP_SELENIUM,
-    'excluding integration tests: env variable SKIP_SELENIUM is set.')
-def setup_package():
-    """Set up the Selenium driver once for all tests."""
-    # Perform all graphical operations in memory.
-    vdisplay = SeleniumTestCase.vdisplay = Xvfb(width=1280, height=720)
-    vdisplay.start()
-    # Create a Selenium browser instance.
-    selenium = SeleniumTestCase.selenium = WebDriver()
-    SeleniumTestCase.wait = ui.WebDriverWait(selenium, 10)
-
-
-def teardown_package():
-    """Quit the Selenium driver."""
-    SeleniumTestCase.vdisplay.stop()
-    SeleniumTestCase.selenium.quit()
-
-
+    'excluding integration tests: environment variable SKIP_SELENIUM is set.')
 class SeleniumTestCase(LiveServerTestCase):
     """Base test class for integration tests."""
 
