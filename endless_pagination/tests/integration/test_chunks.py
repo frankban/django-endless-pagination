@@ -43,5 +43,6 @@ class ChunksPaginationTest(SeleniumTestCase):
         self.get()
         for i in range(5):
             self.scroll_down()
+            self.wait_ajax()
         self.assertElements('object', range(1, 16))
         self.assertElements('item', range(1, 21))
