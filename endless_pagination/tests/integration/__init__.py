@@ -11,7 +11,7 @@ from django.utils import unittest
 from selenium.common import exceptions
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support import ui
-from xvfbwrapper import Xvfb
+from xvfbwrapper.xvfbwrapper import Xvfb
 
 
 USE_SELENIUM = os.getenv('USE_SELENIUM', False)
