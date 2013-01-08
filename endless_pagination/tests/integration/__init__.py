@@ -13,29 +13,34 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support import ui
 from xvfbwrapper.xvfbwrapper import Xvfb
 
+from endless_pagination.utils import PYTHON3
 
-USE_SELENIUM = os.getenv('USE_SELENIUM', False)
+
+SKIP_SELENIUM = os.getenv('SKIP_SELENIUM', False)
 
 
+@unittest.skipIf(
+    PYTHON3,
+    'excluding integration tests: Python 3 tests are still not supported.')
+@unittest.skipIf(
+    SKIP_SELENIUM,
+    'excluding integration tests: env variable SKIP_SELENIUM is set.')
 def setup_package():
     """Set up the Selenium driver once for all tests."""
-    if USE_SELENIUM:
-        # Perform all graphical operations in memory.
-        vdisplay = SeleniumTestCase.vdisplay = Xvfb(width=1280, height=720)
-        vdisplay.start()
-        # Create a Selenium browser instance.
-        selenium = SeleniumTestCase.selenium = WebDriver()
-        SeleniumTestCase.wait = ui.WebDriverWait(selenium, 10)
+    # Perform all graphical operations in memory.
+    vdisplay = SeleniumTestCase.vdisplay = Xvfb(width=1280, height=720)
+    vdisplay.start()
+    # Create a Selenium browser instance.
+    selenium = SeleniumTestCase.selenium = WebDriver()
+    SeleniumTestCase.wait = ui.WebDriverWait(selenium, 10)
 
 
 def teardown_package():
     """Quit the Selenium driver."""
-    if USE_SELENIUM:
-        SeleniumTestCase.vdisplay.stop()
-        SeleniumTestCase.selenium.quit()
+    SeleniumTestCase.vdisplay.stop()
+    SeleniumTestCase.selenium.quit()
 
 
-@unittest.skipUnless(USE_SELENIUM, 'env variable USE_SELENIUM is not set.')
 class SeleniumTestCase(LiveServerTestCase):
     """Base test class for integration tests."""
 
