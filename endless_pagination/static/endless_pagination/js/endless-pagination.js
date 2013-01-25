@@ -61,7 +61,7 @@
                         loadedPages += 1;
                         // Fire onCompleted callback.
                         settings.onCompleted.apply(
-                            html_link, [context, fragment]);
+                            html_link, [context, fragment.trim()]);
                     });
                 }
                 return false;
@@ -97,7 +97,7 @@
                     page_template.load(context.url, data, function(fragment) {
                         // Fire onCompleted callback.
                         settings.onCompleted.apply(
-                            html_link, [context, fragment]);
+                            html_link, [context, fragment.trim()]);
                     });
                 }
                 return false;
