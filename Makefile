@@ -70,8 +70,8 @@ help:
 	@echo '  - make check SKIP_SELENIUM=1'
 	@echo -e '\nWhen running integration tests, by default all graphical'
 	@echo 'operations are performed in memory where possible. However,'
-	@echo 'defining the env var SHOW_BROWSER, it is possible run tests'
-	@echo 'using a visible browser instance, e.g.:'
+	@echo 'it is possible to run tests using a visible browser instance'
+	@echo 'by defining the env var SHOW_BROWSER, e.g.:'
 	@echo '  - make check SHOW_BROWSER=1'
 
 install:
