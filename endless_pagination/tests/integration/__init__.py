@@ -9,13 +9,14 @@ from django.http import QueryDict
 from django.test import LiveServerTestCase
 from django.utils import unittest
 from selenium.common import exceptions
-from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver import Firefox
 from selenium.webdriver.support import ui
 from xvfbwrapper.xvfbwrapper import Xvfb
 
 from endless_pagination.utils import PYTHON3
 
 
+SHOW_BROWSER = os.getenv('SHOW_BROWSER', False)
 SKIP_SELENIUM = os.getenv('SKIP_SELENIUM', False)
 # FIXME: do not exclude integration tests on Python3 once Selenium is updated
 # (bug #17).
@@ -27,18 +28,20 @@ def setup_package():
     # Just skipping *setup_package* and *teardown_package* generates an
     # uncaught exception under Python 2.6.
     if tests_are_run:
-        # Perform all graphical operations in memory.
-        vdisplay = SeleniumTestCase.vdisplay = Xvfb(width=1280, height=720)
-        vdisplay.start()
+        if not SHOW_BROWSER:
+            # Perform all graphical operations in memory.
+            vdisplay = SeleniumTestCase.vdisplay = Xvfb(width=1280, height=720)
+            vdisplay.start()
         # Create a Selenium browser instance.
-        selenium = SeleniumTestCase.selenium = WebDriver()
+        selenium = SeleniumTestCase.selenium = Firefox()
         SeleniumTestCase.wait = ui.WebDriverWait(selenium, 10)
 
 
 def teardown_package():
     """Quit the Selenium driver."""
     if tests_are_run:
-        SeleniumTestCase.vdisplay.stop()
+        if not SHOW_BROWSER:
+            SeleniumTestCase.vdisplay.stop()
         SeleniumTestCase.selenium.quit()
 
 

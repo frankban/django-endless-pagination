@@ -68,6 +68,11 @@ help:
 	@echo -e '\nWhen testing the application, define the env var'
 	@echo 'SKIP_SELENIUM to exclude integration tests, e.g.:'
 	@echo '  - make check SKIP_SELENIUM=1'
+	@echo -e '\nWhen running integration tests, by default all graphical'
+	@echo 'operations are performed in memory where possible. However,'
+	@echo 'defining the env var SHOW_BROWSER, it is possible run tests'
+	@echo 'using a visible browser instance, e.g.:'
+	@echo '  - make check SHOW_BROWSER=1'
 
 install:
 	python setup.py install
