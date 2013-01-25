@@ -38,7 +38,8 @@ some bug fixes.
 For backward compatibility, the application still includes the two JavaScript
 ``endless.js`` and ``endless_on_scroll.js`` files. However, please consider
 migrating as soon as possible: the old JavaScript files are deprecated, are
-no longer maintained, and don't provide the new JavaScript features.
+no longer maintained, and don't provide the new JavaScript features. Also note
+that the old Javascript files will not work if jQuery >= 1.9 is used.
 
 New features include ability to **paginate different objects with different
 options**, precisely **selecting what to bind**, ability to **register

@@ -38,7 +38,7 @@
                 loadedPages = 1;
 
             // Twitter-style pagination.
-            element.find(settings.moreSelector).live('click', function() {
+            element.on('click', settings.moreSelector, function() {
                 var link = $(this),
                     html_link = link.get(0),
                     container = link.closest(settings.containerSelector),
@@ -85,7 +85,7 @@
             }
 
             // Digg-style pagination.
-            element.find(settings.pagesSelector).live('click', function() {
+            element.on('click', settings.pagesSelector, function() {
                 var link = $(this),
                     html_link = link.get(0),
                     context = getContext(link);
