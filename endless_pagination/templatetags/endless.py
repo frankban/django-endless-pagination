@@ -19,7 +19,7 @@ from endless_pagination.paginators import (
 
 
 PAGINATE_EXPRESSION = re.compile(r"""
-    ^   # Begin of line.
+    ^   # Beginning of line.
     (((?P<first_page>\w+)\,)?(?P<per_page>\w+)\s+)?  # First page, per page.
     (?P<objects>[\.\w]+)  # Objects / queryset.
     (\s+starting\s+from\s+page\s+(?P<number>[\-]?\d+|\w+))?  # Page start.
@@ -29,7 +29,7 @@ PAGINATE_EXPRESSION = re.compile(r"""
     $   # End of line.
 """, re.VERBOSE)
 SHOW_CURRENT_NUMBER_EXPRESSION = re.compile(r"""
-    ^   # Begin of line.
+    ^   # Beginning of line.
     (starting\s+from\s+page\s+(?P<number>\w+))?\s*  # Page start.
     (using\s+(?P<key>[\"\'\-\w]+))?\s*  # Querystring key.
     (as\s+(?P<var_name>\w+))?  # Context variable name.
