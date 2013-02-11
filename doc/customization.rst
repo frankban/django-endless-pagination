@@ -79,5 +79,3 @@ some rules:
 - the *more* link class is *endless_more*;
 - the *more* link rel attribute is ``{{ querystring_key }}``;
 - the loader hidden element class is *endless_loading*.
-
-The application is available in the English, German and Italian languages.
