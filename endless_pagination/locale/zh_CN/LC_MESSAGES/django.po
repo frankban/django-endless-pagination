@@ -1,8 +1,9 @@
 # Django Endless Pagination Locale
-# Copyright (C) 2009-2013
+# Copyright (C) 2009-2013 Francesco Banconi
 # This file is distributed under the same license as the django-endless-pagination package.
-# Francesco Banconi <francesco.banconi@gmail.com>, 2009.
+# Francesco Banconi <francesco.banconi@gmail.com>, 2013.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
