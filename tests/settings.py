@@ -19,6 +19,7 @@ INSTALLED_APPS = (
     'endless_pagination',
     PROJECT_NAME,
 )
+LANGUAGE_CODE = os.getenv('ENDLESS_PAGINATION_LANGUAGE_CODE', 'en-us')
 ROOT_URLCONF = PROJECT_NAME + '.urls'
 SECRET_KEY = os.getenv('ENDLESS_PAGINATION_SECRET_KEY', 'secret')
 SITE_ID = 1
