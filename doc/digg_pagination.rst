@@ -14,15 +14,17 @@ pagination is not needed, all you have to do is modifying the template, e.g.:
     {% endfor %}
     {% show_pages %}
 
-That's it!
+That's it! As seen, the :ref:`templatetags-paginate` template tag takes care of
+customizing the given queryset and the current template context. The
+:ref:`templatetags-show-pages` one displays the page links allowing for
+navigation to other pages.
 
 Page by page
 ~~~~~~~~~~~~
 
 If you only want to display previous and next links (in a page-by-page
-pagination) you have to use the lower level ``get_pages`` templatetag
-(see :doc:`templatetags_reference`),
-e.g.:
+pagination) you have to use the lower level :ref:`templatetags-get-pages`
+template tag, e.g.:
 
 .. code-block:: html+django
 
@@ -41,10 +43,10 @@ and next pages.
 Showing indexes
 ~~~~~~~~~~~~~~~
 
-The ``{% get_pages %}`` template tag adds to the current template context a
-``pages`` variable containing several methods that can be used to fully
-customize how the page links are displayed. For example, assume you want to
-show the indexes of the entries in the current page, followed by the total
+The :ref:`templatetags-get-pages` template tag adds to the current template
+context a ``pages`` variable containing several methods that can be used to
+fully customize how the page links are displayed. For example, assume you want
+to show the indexes of the entries in the current page, followed by the total
 number of entries:
 
 .. code-block:: html+django
@@ -88,14 +90,16 @@ the results are actually paginated:
         {{ pages }}
     {% endif %}
 
-Again, for a full overview of the ``get_pages`` template tag, see
-:doc:`templatetags_reference`.
+Again, for a full overview of the :ref:`templatetags-get-pages` and all the
+other template tags, see the :doc:`templatetags_reference`.
+
+.. _digg-ajax:
 
 Adding Ajax
 ~~~~~~~~~~~
 
-The view is exactly the same as in ``show_more`` from
-:doc:`twitter_pagination`::
+The view is exactly the same as the one used in
+:ref:`Twitter-style Pagination<twitter-page-template>`::
 
     from endless_pagination.decorators import page_template
 
@@ -110,9 +114,11 @@ The view is exactly the same as in ``show_more`` from
         return render_to_response(
             template, context, context_instance=RequestContext(request))
 
-Of course you have to split templates, as seen in :doc:`twitter_pagination`,
-but this time a container for the page template is needed too and, by default,
-must have a class named *endless_page_template*.
+As seen before in :doc:`twitter_pagination`, you have to
+:ref:`split the templates<twitter-split-template>`, separating the main one from
+the fragment representing the single page. However, this time a container for
+the page template is also required and, by default, must be an element having a
+class named *endless_page_template*.
 
 *myapp/entry_index.html* becomes:
 
@@ -144,7 +150,8 @@ must have a class named *endless_page_template*.
 
 Done.
 
-It is possible to manually override the container selector used by
+It is possible to manually
+:ref:`override the container selector<javascript-selectors>` used by
 *$.endlessPaginate()* to update the page contents. This can be easily achieved
 by customizing the *pageSelector* option of *$.endlessPaginate()*, e.g.:
 

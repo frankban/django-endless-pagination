@@ -1,6 +1,8 @@
 Templatetags reference
 ======================
 
+.. _templatetags-paginate:
+
 paginate
 ~~~~~~~~
 
@@ -110,7 +112,10 @@ you want 3 items on the first page and 10 on other pages:
 
     {% paginate 3,10 entries %}
 
-You must use this tag before calling the `show_more`_ one.
+You must use this tag before calling the `show_more`_, `get_pages`_ or
+`show_pages`_ ones.
+
+.. _templatetags-lazy-paginate:
 
 lazy_paginate
 ~~~~~~~~~~~~~
@@ -127,6 +132,8 @@ total number of pages.
 The ``lazy_paginate`` tag can take all the args of the ``paginate`` one, with
 one exception: negative indexes can not be passed to the ``starting from page``
 argument.
+
+.. _templatetags-show-more:
 
 show_more
 ~~~~~~~~~
@@ -150,6 +157,8 @@ You can override the loading text too:
     {% show_more "even more" "working" %}
 
 Must be called after `paginate`_ or `lazy_paginate`_.
+
+.. _templatetags-get-pages:
 
 get_pages
 ~~~~~~~~~
@@ -261,6 +270,8 @@ You can change the variable name, e.g.:
 
 This must be called after `paginate`_ or `lazy_paginate`_.
 
+.. _templatetags-show-pages:
+
 show_pages
 ~~~~~~~~~~
 
@@ -312,6 +323,8 @@ to the number of pages, making it arguably more usable when there are many
 of them.
 
 This must be called after `paginate`_ or `lazy_paginate`_.
+
+.. _templatetags-show-current-number:
 
 show_current_number
 ~~~~~~~~~~~~~~~~~~~

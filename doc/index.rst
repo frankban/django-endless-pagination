@@ -29,8 +29,8 @@ Contents:
    current_page_number
    templatetags_reference
    javascript
-   customization
    generic_views
+   customization
    contributing
    contacts
    thanks

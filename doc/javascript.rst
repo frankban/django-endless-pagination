@@ -3,8 +3,9 @@ JavaScript reference
 
 For each type of pagination it is possible to enable Ajax so that the requested
 page is loaded using an asynchronous request to the server. This is especially
-important for Twitter-style pagination and endless pagination on scroll, but
-Digg-style pagination can also take advantage of this technique.
+important for :doc:`twitter_pagination` and
+:ref:`endless pagination on scroll<javascript-pagination-on-scroll>`, but
+:doc:`digg_pagination` can also take advantage of this technique.
 
 Activating Ajax support
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,12 +28,15 @@ jQuery plugin to enable Ajax pagination, e.g.:
         <script>$.endlessPaginate();</script>
     {% endblock %}
 
-This example assumes that you separated the fragment containing the single page
-(*page_tempate*) from the main template (the code snipper above). More on this
-in :doc:`twitter_pagination` and :doc:`digg_pagination`.
+This example assumes that you
+:ref:`separated the fragment<twitter-split-template>` containing the single
+page (*page_tempate*) from the main template (the code snipper above). More on
+this in :doc:`twitter_pagination` and :doc:`digg_pagination`.
 
 The *$.endlessPaginate()* call activates Ajax for each pagination present in
 the page.
+
+.. _javascript-pagination-on-scroll:
 
 Pagination on scroll
 ~~~~~~~~~~~~~~~~~~~~
@@ -239,6 +243,8 @@ the behavior of each pagination. E.g. if you need to register a callback for
         </script>
     {% endblock %}
 
+.. _javascript-selectors:
+
 Selectors
 ~~~~~~~~~
 
@@ -300,6 +306,8 @@ and does not involve adding another class to the container:
         </script>
     {% endblock %}
 
+.. _javascript-chunks:
+
 On scroll pagination using chunks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -323,6 +331,8 @@ link is displayed after page 5 is loaded, then after page 10, then after page
             });
         </script>
     {% endblock %}
+
+.. _javascript-migrate:
 
 Migrate from version 1.1 to 2.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

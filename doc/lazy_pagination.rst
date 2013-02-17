@@ -7,11 +7,12 @@ in a faster page load, with a disadvantage: you won't know the total number of
 pages in advance.
 
 For this reason it is better to use lazy pagination in conjunction with
-twitter-style pagination (e.g. using the ``show_more`` template tag).
+:doc:`twitter_pagination` (e.g. using the :ref:`templatetags-show-more`
+template tag).
 
 In order to switch to lazy pagination you have to use the
-``{% lazy_paginate %}`` template tag instead of the ``{% paginate %}`` one,
-e.g.:
+:ref:`templatetags-lazy-paginate` template tag instead of the
+:ref:`templatetags-paginate` one, e.g.:
 
 .. code-block:: html+django
 
@@ -23,6 +24,6 @@ e.g.:
     {% endfor %}
     {% show_more %}
 
-The ``lazy_paginate`` tag can take all the args of the ``paginate`` one, with
-one exception: negative indexes can not be passed to the ``starting from page``
-argument. See :doc:`templatetags_reference`.
+The :ref:`templatetags-lazy-paginate` tag can take all the args of the
+:ref:`templatetags-paginate` one, with one exception: negative indexes can not
+be passed to the ``starting from page`` argument.

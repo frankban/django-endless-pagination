@@ -4,8 +4,9 @@ Different number of items on the first page
 Sometimes you might want to show on the first page a different number of
 items than on subsequent pages (e.g. in a movie detail page you want to show
 4 images of the movie as a reminder, making the user click to see the next 20
-images). To achieve this, use comma separated *first page* and *per page*
-arguments, e.g.:
+images). To achieve this, use the :ref:`templatetags-paginate` or
+:ref:`templatetags-lazy-paginate` tags with comma separated *first page* and
+*per page* arguments, e.g.:
 
 .. code-block:: html+django
 

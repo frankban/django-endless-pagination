@@ -32,8 +32,8 @@ in a page:
     {% endfor %}
     {% show_pages %}
 
-The ``using`` argument of the ``paginate`` template tag allows you to choose
-the name of the querystring key used to track the page number.
+The ``using`` argument of the :ref:`templatetags-paginate` template tag allows
+you to choose the name of the querystring key used to track the page number.
 If not specified the system falls back to
 ``settings.ENDLESS_PAGINATION_PAGE_LABEL``.
 
@@ -48,8 +48,9 @@ context, e.g.:
     {# page_variable is not surrounded by quotes #}
     {% paginate other_entries using page_variable %}
 
-You can use any style of pagination: ``show_pages``, ``get_pages``,
-``show_more`` etc... (see :doc:`templatetags_reference`).
+You can use any style of pagination: :ref:`templatetags-show-pages`,
+:ref:`templatetags-get-pages`, :ref:`templatetags-show-more` etc...
+(see :doc:`templatetags_reference`).
 
 Adding Ajax for multiple pagination
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,7 +58,7 @@ Adding Ajax for multiple pagination
 Obviously each pagination needs a template for the page contents. Remember to
 box each page in a div with a class called *endless_page_template*, or to
 specify the container selector passing an option to *$.endlessPaginate()* as
-seen in :doc:`digg_pagination`.
+seen in :ref:`Digg-style pagination and Ajax<digg-ajax>`.
 
 *myapp/entry_index.html*:
 
@@ -107,9 +108,9 @@ jQuery plugin.
     {% endfor %}
     {% show_pages %}
 
-Again, the decorator ``page_template`` simplifies the management of Ajax
-requests in views. You must, however, map different paginations to different
-page templates.
+As seen :ref:`before<twitter-page-template>`, the decorator ``page_template``
+simplifies the management of Ajax requests in views. You must, however, map
+different paginations to different page templates.
 
 You can chain decorator calls relating a template to the associated
 querystring key, e.g.::
@@ -132,6 +133,8 @@ querystring key, e.g.::
 As seen in previous examples, if you do not specify the *key* kwarg in the
 decorator, then the page template is associated to the querystring key
 defined in the settings.
+
+.. _multiple-page-templates:
 
 You can use the ``page_templates`` (note the trailing *s*) decorator in
 substitution of a decorator chain when you need multiple Ajax paginations.

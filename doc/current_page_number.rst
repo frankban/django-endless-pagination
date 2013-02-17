@@ -5,7 +5,7 @@ In the template
 ~~~~~~~~~~~~~~~
 
 You can get and display the current page number in the template using
-the ``show_current_number`` templatetag, e.g.:
+the :ref:`templatetags-show-current-number` template tag, e.g.:
 
 .. code-block:: html+django
 
@@ -20,8 +20,8 @@ insert the value in the context as a template variable:
     {% show_current_number as page_number %}
     {{ page_number }}
 
-See :doc:`templatetags_reference` for more information on
-``show_current_number`` accepted arguments.
+See the :ref:`templatetags-show-current-number` refrence for more information
+on accepted arguments.
 
 In the view
 ~~~~~~~~~~~
@@ -33,9 +33,9 @@ function called ``get_page_number_from_request``, e.g.::
 
     page = utils.get_page_number_from_request(request)
 
-If you are using multiple pagination or you have changed the default
-querystring for pagination, you can pass the querystring key as
-an optional argument::
+If you are using :doc:`multiple pagination<multiple_pagination>`, or you have
+changed the default querystring for pagination, you can pass the querystring
+key as an optional argument::
 
     page = utils.get_page_number_from_request(request, querystring_key=mykey)
 

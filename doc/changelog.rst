@@ -37,23 +37,24 @@ some bug fixes.
 
 For backward compatibility, the application still includes the two JavaScript
 ``endless.js`` and ``endless_on_scroll.js`` files. However, please consider
-migrating as soon as possible: the old JavaScript files are deprecated, are
-no longer maintained, and don't provide the new JavaScript features. Also note
-that the old Javascript files will not work if jQuery >= 1.9 is used.
+:ref:`migrating<javascript-migrate>` as soon as possible: the old JavaScript
+files are deprecated, are no longer maintained, and don't provide the new
+JavaScript features. Also note that the old Javascript files will not work if
+jQuery >= 1.9 is used.
 
 New features include ability to **paginate different objects with different
 options**, precisely **selecting what to bind**, ability to **register
 callbacks**, support for **pagination in chunks** and much more.
 
 Please refer to the :doc:`javascript` for a detailed overview of the new
-features and for instructions on **how to migrate** from the old JavaScript
-files to the new one.
+features and for instructions on :ref:`how to migrate<javascript-migrate>` from
+the old JavaScript files to the new one.
 
 ----
 
-**New feature**: the ``page_templates`` decorator also accepts a sequence
-of ``(template, key)`` pairs, functioning as a dict mapping templates and
-keys (still present), e.g.::
+**New feature**: the :ref:`page_templates<multiple-page-templates>` decorator
+also accepts a sequence of ``(template, key)`` pairs, functioning as a dict
+mapping templates and keys (still present), e.g.::
 
     from endless_pagination.decorators import page_templates
 
@@ -69,7 +70,8 @@ This also supports serving different paginated objects with the same template.
 ----
 
 **New feature**: ability to provide nested context variables in the
-*paginate* and *lazy_paginate* template tags, e.g.:
+:ref:`templatetags-paginate` and :ref:`templatetags-lazy-paginate` template
+tags, e.g.:
 
 .. code-block:: html+django
 
@@ -88,8 +90,9 @@ In this case, and only in this case, the `as` argument is mandatory, and a
 
 ----
 
-**New feature**: the page list object returned by the ``{% get_pages %}``
-template tag has been improved adding the following new methods:
+**New feature**: the page list object returned by the
+:ref:`templatetags-get-pages` template tag has been improved adding the
+following new methods:
 
 .. code-block:: html+django
 
@@ -127,8 +130,8 @@ values:
 - *'first'*: will display the first page as an arrow;
 - *'last'*: will display the last page as an arrow.
 
-The *show_pages* documentation in :doc:`templatetags_reference` describes how
-to customize Digg-style pagination defining your own page list callable.
+The :ref:`templatetags-show-pages` template tag documentation describes how to
+customize Digg-style pagination defining your own page list callable.
 
 When using the default Digg-style pagination (i.e. when
 ``settings.ENDLESS_PAGINATION_PAGE_LIST_CALLABLE`` is set to *None*), it is
@@ -159,8 +162,9 @@ of them. To enable it, add the following line to your ``settings.py``::
 ----
 
 **New feature**: in addition to the ability to provide a customized pagination
-URL as a context variable, the *paginate* and *lazy_paginate* tags now
-support hardcoded pagination URL endpoints, e.g.:
+URL as a context variable, the :ref:`templatetags-paginate` and
+:ref:`templatetags-lazy-paginate` tags now support hardcoded pagination URL
+endpoints, e.g.:
 
 .. code-block:: html+django
 
@@ -169,7 +173,8 @@ support hardcoded pagination URL endpoints, e.g.:
 ----
 
 **New feature**: ability to specify negative indexes as values for the
-``starting from page`` argument of the ``paginate`` template tag.
+``starting from page`` argument of the :ref:`templatetags-paginate` template
+tag.
 
 When changing the default page, it is now possible to reference the last page
 (or the second last page, and so on) by using negative indexes, e.g:
@@ -204,8 +209,9 @@ Django ``ListView`` one.
 
 ----
 
-**Fix**: the *using* argument of *paginate* and *lazy_paginate* template tags
-now correctly handles querystring keys containing dashes, e.g.:
+**Fix**: the *using* argument of :ref:`templatetags-paginate` and
+:ref:`templatetags-lazy-paginate` template tags now correctly handles
+querystring keys containing dashes, e.g.:
 
 .. code-block:: html+django
 

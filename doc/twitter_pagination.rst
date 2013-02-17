@@ -20,6 +20,8 @@ In *myapp/entry_index.html*:
         {# your code to show the entry #}
     {% endfor %}
 
+.. _twitter-split-template:
+
 Split the template
 ~~~~~~~~~~~~~~~~~~
 
@@ -45,8 +47,8 @@ to put the page template name in the context.
         return render_to_response(
             template, context, context_instance=RequestContext(request))
 
-See below how to obtain the same result **just decorating the view**
-(in a way compatible with generic views too).
+See :ref:`below<twitter-page-template>` how to obtain the same result
+**just decorating the view** (in a way compatible with generic views too).
 
 *myapp/entry_index.html* becomes:
 
@@ -62,6 +64,8 @@ See below how to obtain the same result **just decorating the view**
     {% for entry in entries %}
         {# your code to show the entry #}
     {% endfor %}
+
+.. _twitter-page-template:
 
 A shortcut for ajaxed views
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,9 +113,9 @@ the same behavior using a class-based generic view.
 Paginating objects
 ~~~~~~~~~~~~~~~~~~
 
-All that's left is changing the page template and loading the endless
-templatetags, the jQuery library and the jQuery plugin
-``endless-pagination.js`` included in the distribution under
+All that's left is changing the page template and loading the
+:doc:`endless templatetags<templatetags_reference>`, the jQuery library and the
+jQuery plugin ``endless-pagination.js`` included in the distribution under
 ``/static/endless_pagination/js/``.
 
 *myapp/entry_index.html* becomes:
@@ -140,15 +144,26 @@ templatetags, the jQuery library and the jQuery plugin
     {% endfor %}
     {% show_more %}
 
-See the :doc:`javascript` for a detailed explanation of how to integrate
-JavaScript and Ajax features in Django Endless Pagination.
+The :ref:`templatetags-paginate` template tag takes care of customizing the
+given queryset and the current template context. In the context of a
+Twitter-style pagination the :ref:`templatetags-paginate` tag is often replaced
+by the :ref:`templatetags-lazy-paginate` one, which offers, more or less, the
+same functionalities and allows for reducing database access: see
+:doc:`lazy_pagination`.
+
+The :ref:`templatetags-show-more` one displays the link to navigate to the next
+page.
+
+You might want to glance at the :doc:`javascript` for a detailed explanation of
+how to integrate JavaScript and Ajax features in Django Endless Pagination.
 
 Pagination on scroll
 ~~~~~~~~~~~~~~~~~~~~
 
 If you want new items to load when the user scroll down the browser page,
-you can use the **pagination on scroll** feature: just set the
-*paginateOnScroll* option of *$.endlessPaginate()* to *true*, e.g.:
+you can use the :ref:`pagination on scroll<javascript-pagination-on-scroll>`
+feature: just set the *paginateOnScroll* option of *$.endlessPaginate()* to
+*true*, e.g.:
 
 .. code-block:: html+django
 
@@ -165,9 +180,10 @@ you can use the **pagination on scroll** feature: just set the
 That's all. See the :doc:`templatetags_reference` to improve the use of
 included templatetags.
 
-It is possible to set the bottom margin used for pagination on scroll
-(default is 1 pixel). For example, if you want the pagination on scroll
-to be activated when 20 pixels remain to the end of the page:
+It is possible to set the bottom margin used for
+:ref:`pagination on scroll<javascript-pagination-on-scroll>` (default is 1
+pixel). For example, if you want the pagination on scroll to be activated when
+20 pixels remain to the end of the page:
 
 .. code-block:: html+django
 
@@ -187,6 +203,30 @@ to be activated when 20 pixels remain to the end of the page:
     {% endblock %}
 
 Again, see the :doc:`javascript`.
+
+On scroll pagination using chunks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sometimes, when using on scroll pagination, you may want to still display
+the *show more* link after each *N* pages. In Django Endless Pagination this is
+called *chunk size*. For instance, a chunk size of 5 means that a *show more*
+link is displayed after page 5 is loaded, then after page 10, then after page
+15 and so on. Activating :ref:`chunks<javascript-chunks>` is straightforward,
+just use the *paginateOnScrollChunkSize* option:
+
+.. code-block:: html+django
+
+    {% block js %}
+        {{ block.super }}
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="{{ STATIC_URL }}endless_pagination/js/endless-pagination.js"></script>
+        <script>
+            $.endlessPaginate({
+                paginateOnScroll: true,
+                paginateOnScrollChunkSize: 5
+            });
+        </script>
+    {% endblock %}
 
 Before version 2.0
 ~~~~~~~~~~~~~~~~~~
@@ -215,10 +255,11 @@ To enable pagination on scroll, the code was the following:
     <script src="{{ STATIC_URL }}endless_pagination/js/endless.js"></script>
     <script src="{{ STATIC_URL }}endless_pagination/js/endless_on_scroll.js"></script>
 
-However, please consider migrating as soon as possible: the old JavaScript
-files are deprecated, are no longer maintained, and don't provide the new
-JavaScript features.
+However, please consider :ref:`migrating<javascript-migrate>` as soon as
+possible: the old JavaScript files are deprecated, are no longer maintained,
+and don't provide the new JavaScript features. Also note that the old
+Javascript files will not work if jQuery >= 1.9 is used.
 
 Please refer to the :doc:`javascript` for a detailed overview of the new
-features and for instructions on **how to migrate** from the old JavaScript
-files to the new one.
+features and for instructions on :ref:`how to migrate<javascript-migrate>` from
+the old JavaScript files to the new one.

@@ -65,3 +65,7 @@ you can use Digg-style pagination to display objects just by adding:
     {% show_pages %}
 
 Done.
+
+This is just a basic example. To continue exploring all the Django Endless
+Pagination features, have a look at :doc:`twitter_pagination` or
+:doc:`digg_pagination`.
