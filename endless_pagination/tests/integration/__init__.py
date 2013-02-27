@@ -40,9 +40,9 @@ def setup_package():
 def teardown_package():
     """Quit the Selenium driver."""
     if tests_are_run:
+        SeleniumTestCase.selenium.quit()
         if not SHOW_BROWSER:
             SeleniumTestCase.vdisplay.stop()
-        SeleniumTestCase.selenium.quit()
 
 
 # FIXME: do not exclude integration tests on Python3 once Selenium is updated
