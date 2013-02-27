@@ -40,7 +40,7 @@ cleanall: clean
 
 check: test lint
 
-$(VENV_ACTIVATE): tests/develop.py tests/test-requires.pip
+$(VENV_ACTIVATE): tests/develop.py tests/requirements.pip
 	@$(PYTHON) tests/develop.py
 	@touch $(VENV_ACTIVATE)
 

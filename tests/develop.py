@@ -7,21 +7,17 @@ import sys
 
 
 if sys.version_info[0] >= 3:
-    # FIXME: a different requirements file will no longer be required once
-    # Django 1.5 is released (bug #15).
-    REQUIREMENTS_FILE = 'test-requires3.pip'
     VENV_NAME = '.venv3'
     # FIXME: running 2to3 on django-nose will no longer be required once
     # the project supports Python 3 (bug #16).
     PATCH_DJANGO_NOSE = True
 else:
-    REQUIREMENTS_FILE = 'test-requires.pip'
     VENV_NAME = '.venv'
     PATCH_DJANGO_NOSE = False
 
 
 TESTS = os.path.abspath(os.path.dirname(__file__))
-REQUIREMENTS = os.path.join(TESTS, REQUIREMENTS_FILE)
+REQUIREMENTS = os.path.join(TESTS, 'requirements.pip')
 WITH_VENV = os.path.join(TESTS, 'with_venv.sh')
 VENV = os.path.abspath(os.path.join(TESTS, '..', VENV_NAME))
 
