@@ -74,7 +74,7 @@ class MultipleObjectMixin(object):
         the template will be ``blog/entry_list_page.html``.
         """
         queryset = kwargs.pop('object_list')
-        page_template = kwargs.pop('page_template')
+        page_template = kwargs.pop('page_template', None)
 
         context_object_name = self.get_context_object_name(queryset)
         context = {'object_list': queryset, 'view': self}
