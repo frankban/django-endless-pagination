@@ -146,7 +146,7 @@ class AjaxListView(AjaxMultipleObjectTemplateResponseMixin, BaseListView):
 
     For instance, assume you have this code (taken from Django docs)::
 
-        from django.conf.urls.defaults import *
+        from django.conf.urls import patterns
         from django.views.generic import ListView
 
         from books.models import Publisher
@@ -161,7 +161,7 @@ class AjaxListView(AjaxMultipleObjectTemplateResponseMixin, BaseListView):
 
     This is straightforward, you only need to replace the view class, e.g.::
 
-        from django.conf.urls.defaults import *
+        from django.conf.urls import patterns
 
         from books.models import Publisher
 
