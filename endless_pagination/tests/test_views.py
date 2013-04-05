@@ -14,6 +14,15 @@ from endless_pagination.tests import (
 )
 
 
+class CustomizedListView(views.AjaxListView):
+    """An AjaxListView subclass overriding the *get* method."""
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.queryset
+        context = self.get_context_data(object_list=self.object_list)
+        return self.render_to_response(context)
+
+
 class AjaxListViewTest(TestCase):
 
     model_page_template = 'endless_pagination/testmodel_list_page.html'
@@ -123,3 +132,10 @@ class AjaxListViewTest(TestCase):
         response = view(self.request)
         view_instance = response.context_data['view']
         self.assertIsInstance(view_instance, views.AjaxListView)
+
+    def test_customized_view(self):
+        # Ensure the customized view correctly adds the queryset to context.
+        queryset = make_model_instances(30)
+        view = CustomizedListView.as_view(queryset=queryset)
+        response = view(self.request)
+        self.check_response(response, self.model_template_name, queryset)
