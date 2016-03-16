@@ -1,5 +1,6 @@
 **This project is abandoned.**
-Thnaks to the community that supported django-endless-pagination over time.
+
+Thanks to the community that supported django-endless-pagination over time.
 I do not have time to properly maintain and develop this application.
 From now on, please use one of the great forks like 
 https://github.com/shtalinberg/django-el-pagination
